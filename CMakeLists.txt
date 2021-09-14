@@ -13,7 +13,7 @@ set(ITKCudaCommon_INCLUDE_DIRS ${ITKCudaCommon_SOURCE_DIR}/include)
 # --------------------------------------------------------
 # Find ITK (required)
 if(NOT ITK_SOURCE_DIR)
-  find_package(ITK 5.1 REQUIRED)
+  find_package(ITK 5.2 REQUIRED)
 endif()
 
 if(NOT ITK_SOURCE_DIR)
