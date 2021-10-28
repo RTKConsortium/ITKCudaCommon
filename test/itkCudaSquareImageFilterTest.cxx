@@ -25,7 +25,7 @@
 
 using ItkImage2f = itk::CudaImage<float, 2>;
 
-int itkCudaSquareImageTest(int argc, char* argv[])
+int itkCudaSquareImageFilterTest(int argc, char* argv[])
 {
   unsigned int width, height;
   width = 256;

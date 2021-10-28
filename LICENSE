@@ -187,7 +187,15 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright [yyyy] [name of copyright owner]
+   Copyright [2010-] [RTK Consortium]
+
+   The RTK consortium comprises:
+     - CREATIS CNRS laboratory             http://www.creatis.insa-lyon.fr/
+     - Massachusetts General Hospital      http://www.mgh.harvard.edu/
+     - Université Catholique de Louvain    http://www.uclouvain.be/
+     - IBA                                 http://www.iba-protontherapy.com/
+     - Kitware                             http://www.kitware.com/
+     - radART                              http://www.open-radart.org/
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
