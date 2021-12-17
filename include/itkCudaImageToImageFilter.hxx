@@ -18,7 +18,6 @@
 #ifndef itkCudaImageToImageFilter_hxx
 #define itkCudaImageToImageFilter_hxx
 
-#include "itkCudaImageToImageFilter.h"
 
 namespace itk
 {
