@@ -19,7 +19,6 @@
 #define itkCudaSquareImageFilter_hxx
 
 #include "itkCudaSquareImage.hcu"
-#include "itkCudaSquareImageFilter.h"
 
 namespace itk
 {

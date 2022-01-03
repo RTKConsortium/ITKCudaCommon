@@ -18,7 +18,6 @@
 #ifndef itkCudaImageDataManager_hxx
 #define itkCudaImageDataManager_hxx
 
-#include "itkCudaImageDataManager.h"
 #include "itkCudaUtil.h"
 //#define VERBOSE
 

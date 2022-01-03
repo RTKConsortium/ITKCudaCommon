@@ -18,7 +18,6 @@
 #ifndef itkCudaImage_hxx
 #define itkCudaImage_hxx
 
-#include "itkCudaImage.h"
 
 namespace itk
 {
