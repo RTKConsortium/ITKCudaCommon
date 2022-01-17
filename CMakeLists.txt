@@ -7,7 +7,7 @@ if(NOT ITK_SOURCE_DIR)
 endif()
 
 set(CudaCommon_LIBRARIES CudaCommon)
-set(CudaCommon_INCLUDE_DIRS ${CudaCommon_SOURCE_DIR}/include)
+set(CudaCommon_INCLUDE_DIRS ${CudaCommon_SOURCE_DIR}/include ${CUDAToolkit_INCLUDE_DIRS})
 
 # --------------------------------------------------------
 # Find ITK (required)
