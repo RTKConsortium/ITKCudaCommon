@@ -1,4 +1,6 @@
-itk_wrap_class("itk::CudaImageToImageFilter" POINTER)
+itk_wrap_include(itkCudaImage.h)
+
+itk_wrap_class("itk::ImageToImageFilter" POINTER)
 
   foreach(d ${ITK_WRAP_IMAGE_DIMS})
     itk_wrap_template("CI${ITKM_F}${d}CI${ITKM_F}${d}"
@@ -13,3 +15,5 @@ itk_wrap_class("itk::CudaImageToImageFilter" POINTER)
   endforeach()
 
 itk_end_wrap_class()
+
+
