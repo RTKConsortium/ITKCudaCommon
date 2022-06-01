@@ -13,7 +13,7 @@ jobs:
           - os: self-hosted
             c-compiler: "gcc"
             cxx-compiler: "g++"
-            itk-git-tag: "a89145bccda6a36f42cfdd45d3a6b27234ff54fe"
+            itk-git-tag: "d6acfd26bfcdec606d605beb1301bddfb17c05a6"
             cmake-build-type: "MinSizeRel"
 
     steps:
