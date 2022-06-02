@@ -1,35 +1,21 @@
-if(RTK_USE_CUDA)
+itk_wrap_include(itkCudaImage.h)
 
-  itk_wrap_include(itkCudaImage.h)
+itk_wrap_class("itk::CudaImageDataManager" POINTER)
 
-  itk_wrap_class("itk::CudaImageDataManager" POINTER)
+  UNIQUE(types "UC;UL;${ITKM_IT};${WRAP_ITK_SCALAR}")
+  foreach(d ${ITK_WRAP_IMAGE_DIMS})
+    foreach(t ${types})
+      itk_wrap_template("CI${ITKM_${t}}${d}" "itk::CudaImage<${ITKT_${t}}, ${d}>")
+    endforeach()
+  endforeach()
 
+  UNIQUE(vector_types "${WRAP_ITK_VECTOR_REAL};${WRAP_ITK_COV_VECTOR_REAL}")
+  foreach(c ${ITK_WRAP_VECTOR_COMPONENTS})
     foreach(d ${ITK_WRAP_IMAGE_DIMS})
-      itk_wrap_template("CI${ITKM_F}${d}" "itk::CudaImage<${ITKT_F}, ${d}>")
-    endforeach()
-
-    list(FIND ITK_WRAP_IMAGE_DIMS "4" _index)
-    if(${_index} EQUAL -1)
-      itk_wrap_template("CI${ITKM_F}4" "itk::CudaImage<${ITKT_F}, 4>")
-    endif()
-
-    # Force VECTOR_COMPONENTS to "2;3;4;5"
-    UNIQUE(vectorComponents "${ITK_WRAP_VECTOR_COMPONENTS};2;3;4;5")
-    foreach(component ${vectorComponents})
-
-      foreach(d ${ITK_WRAP_IMAGE_DIMS})
-        itk_wrap_template("CI${ITKM_VF${component}}${d}" "itk::CudaImage<${ITKT_VF${component}}, ${d}>")
-        itk_wrap_template("CI${ITKM_CVF${component}}${d}" "itk::CudaImage<${ITKT_CVF${component}}, ${d}>")
+      foreach(vt ${vector_types})
+        itk_wrap_template("CI${ITKM_${vt}${c}}${d}" "itk::CudaImage<${ITKT_${vt}${c}}, ${d}>")
       endforeach()
-
-      list(FIND ITK_WRAP_IMAGE_DIMS "4" _index)
-      if(${_index} EQUAL -1)
-        itk_wrap_template("CI${ITKM_VF${component}}4" "itk::CudaImage<${ITKT_VF${component}}, 4>")
-        itk_wrap_template("CI${ITKM_CVF${component}}4" "itk::CudaImage<${ITKT_CVF${component}}, 4>")
-      endif()
-
     endforeach()
+  endforeach()
 
-  itk_end_wrap_class()
-
-endif()
+itk_end_wrap_class()
