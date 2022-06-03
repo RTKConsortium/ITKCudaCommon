@@ -16,6 +16,7 @@
  *
  *=========================================================================*/
 #include "itkCudaSquareImage.hcu"
+#include "CudaCommonExport.h"
 
 namespace itk
 {
@@ -57,7 +58,7 @@ void CudaSquareImage3D(int imSize[3], PixelType* in, PixelType* out)
   CudaSquareImage3D_kernel<PixelType> << <dimGrid, dimBlock >> > (imageSize, in, out);
 }
 
-template void CudaSquareImage3D<float>(int imSize[3], float* in, float* out);
-template void CudaSquareImage3D<double>(int imSize[3], double* in, double* out);
+template void CudaCommon_EXPORT CudaSquareImage3D<float>(int imSize[3], float* in, float* out);
+template void CudaCommon_EXPORT CudaSquareImage3D<double>(int imSize[3], double* in, double* out);
 
 } // end namespace itk
