@@ -20,7 +20,7 @@
 
 #include "itkResourceProbe.h"
 #include "itkIntTypes.h"
-#include "itkCudaWin32Header.h"
+#include "CudaCommonExport.h"
 
 namespace itk
 {
@@ -35,7 +35,7 @@ namespace itk
  *
  * \ingroup ITKCudaCommon
  */
-class ITKCudaCommon_EXPORT CudaMemoryProbe : public ResourceProbe<OffsetValueType, double>
+class CudaCommon_EXPORT CudaMemoryProbe : public ResourceProbe<OffsetValueType, double>
 {
 public:
   CudaMemoryProbe();

@@ -47,7 +47,7 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(CudaSquareImageFilter, CudaImageToImageFilter);
 
-  ITK_DISALLOW_COPY_AND_ASSIGN(CudaSquareImageFilter);
+  ITK_DISALLOW_COPY_AND_MOVE(CudaSquareImageFilter);
 
   /** ImageDimension constants */
   static constexpr unsigned int ImageDimension = TImage::ImageDimension;

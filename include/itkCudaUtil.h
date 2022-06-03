@@ -33,7 +33,7 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
-#include "itkCudaWin32Header.h"
+#include "CudaCommonExport.h"
 
 namespace itk
 {
@@ -68,10 +68,10 @@ int
 CudaSelectPlatform(const char * name);
 
 /** Check Cuda error */
-void ITKCudaCommon_EXPORT
+void CudaCommon_EXPORT
      CudaCheckError(cudaError_t error, const char * filename = "", int lineno = 0, const char * location = "");
 
-void ITKCudaCommon_EXPORT
+void CudaCommon_EXPORT
      CudaCheckError(CUresult error, const char * filename = "", int lineno = 0, const char * location = "");
 
 /** Check if Cuda-enabled Cuda is present. */

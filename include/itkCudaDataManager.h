@@ -23,7 +23,7 @@
 #include "itkObjectFactory.h"
 #include "itkCudaUtil.h"
 #include "itkCudaContextManager.h"
-#include "itkCudaWin32Header.h"
+#include "CudaCommonExport.h"
 
 #include <mutex>
 #include <memory>
@@ -32,7 +32,7 @@
 
 namespace itk
 {
-class ITKCudaCommon_EXPORT GPUMemPointer : public Object
+class CudaCommon_EXPORT GPUMemPointer : public Object
 {
 public:
   using Self = GPUMemPointer;
@@ -121,7 +121,7 @@ protected:
  *
  * \ingroup ITKCudaCommon
  */
-class ITKCudaCommon_EXPORT CudaDataManager : public Object
+class CudaCommon_EXPORT CudaDataManager : public Object
 {
 public:
   using Self = CudaDataManager;
