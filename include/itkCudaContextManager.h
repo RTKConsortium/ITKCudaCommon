@@ -20,7 +20,7 @@
 
 #include "itkCudaUtil.h"
 #include <itkLightObject.h>
-#include "itkCudaWin32Header.h"
+#include "CudaCommonExport.h"
 
 //
 // Singleton class for CudaContextManager
@@ -34,7 +34,7 @@
  */
 namespace itk
 {
-class ITKCudaCommon_EXPORT CudaContextManager : public LightObject
+class CudaCommon_EXPORT CudaContextManager : public LightObject
 {
 public:
   static CudaContextManager *

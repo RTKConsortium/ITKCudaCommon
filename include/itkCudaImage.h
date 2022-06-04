@@ -20,7 +20,7 @@
 
 #include "itkImage.h"
 #include "itkCudaImageDataManager.h"
-#include "itkCudaWin32Header.h"
+#include "CudaCommonExport.h"
 #include "itkVersion.h"
 #include "itkObjectFactoryBase.h"
 
@@ -221,7 +221,7 @@ private:
   typename CudaImageDataManager<CudaImage>::Pointer m_DataManager;
 };
 
-class ITKCudaCommon_EXPORT CudaImageFactory : public itk::ObjectFactoryBase
+class CudaCommon_EXPORT CudaImageFactory : public itk::ObjectFactoryBase
 {
 public:
   using Self = CudaImageFactory;
