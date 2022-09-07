@@ -2,6 +2,10 @@ name: Build, test, package
 
 on: [push,pull_request]
 
+env:
+  itk-git-tag: "abf5fa10522a36bc51f42f20f426a622f42ed90d"
+  itk-wheel-tag: "v5.3rc04.post4"
+
 jobs:
   build-test-cxx:
     runs-on: ${{ matrix.os }}
@@ -13,12 +17,10 @@ jobs:
           - os: self-hosted-linux
             c-compiler: "gcc"
             cxx-compiler: "g++"
-            itk-git-tag: "d6acfd26bfcdec606d605beb1301bddfb17c05a6"
             cmake-build-type: "MinSizeRel"
           - os: self-hosted-windows
             c-compiler: "cl.exe"
             cxx-compiler: "cl.exe"
-            itk-git-tag: "d6acfd26bfcdec606d605beb1301bddfb17c05a6"
             cmake-build-type: "Release"
 
     steps:
@@ -44,7 +46,7 @@ jobs:
         cd ..
         git clone https://github.com/InsightSoftwareConsortium/ITK.git
         cd ITK
-        git checkout ${{ matrix.itk-git-tag }}
+        git checkout ${{ env.itk-git-tag }}
 
     - name: Build ITK
       if: matrix.os != 'self-hosted-windows'
@@ -61,7 +63,7 @@ jobs:
         cd ..
         mkdir ITK-build
         cd ITK-build
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
         ninja
       shell: cmd
@@ -123,7 +125,7 @@ jobs:
     - name: Build and test
       if: matrix.os == 'self-hosted-windows'
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
         ctest --output-on-failure -j 2 -V -S dashboard.cmake
       shell: cmd
 
@@ -133,9 +135,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        python-version: [37, 38, 39, 310]
-        include:
-          - itk-python-git-tag: "v5.3rc04"
+        python-version: ["37", "38", "39", "310", "311"]
 
     steps:
     - uses: actions/checkout@v2
@@ -147,9 +147,14 @@ jobs:
 
     - name: 'Build 🐍 Python 📦 package'
       run: |
-        export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
+        export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
         export LD_LIBRARY_PATH="/home/srit/Downloads/cuda116:/home/srit/Downloads/cuda116/targets/x86_64-linux/lib:/home/srit/Downloads/cuda116/lib64/stubs"
-        ./dockcross-manylinux-download-cache-and-build-module-wheels.sh -c "-DCUDAToolkit_ROOT=/usr/lib64/cuda116 -DCMAKE_CUDA_COMPILER=/usr/lib64/cuda116/bin/nvcc" -x "libcuda.so;libcuda.so.1;libcudart.so;libcudart.so.11.0;libcublas.so;libcublas.so.11;libcublasLt.so;libcublasLt.so.11;libcufft.so;libcufft.so.10" cp${{ matrix.python-version }}
+        for tarball in "-manylinux_2_28" "-manylinux2014"; do
+           rm -rf ITKPythonPackage
+           export TARBALL_SPECIALIZATION=${tarball}
+           ./dockcross-manylinux-download-cache-and-build-module-wheels.sh -c "-DCUDAToolkit_ROOT=/usr/lib64/cuda116 -DCMAKE_CUDA_COMPILER=/usr/lib64/cuda116/bin/nvcc" -x "libcuda.so;libcuda.so.1;libcudart.so;libcudart.so.11.0;libcublas.so;libcublas.so.11;libcublasLt.so;libcublasLt.so.11;libcufft.so;libcufft.so.10" cp${{ matrix.python-version }}
+        done
+
 
     - name: Publish Python package as GitHub Artifact
       uses: actions/upload-artifact@v1
@@ -162,9 +167,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        python-version-minor: [7, 8, 9, 10]
-        include:
-          - itk-python-git-tag: "v5.3rc04"
+        python-version-minor: ["7", "8", "9", "10", "11"]
 
     steps:
     - uses: actions/checkout@v2
@@ -187,7 +190,7 @@ jobs:
       run: |
         mv im ../../
         cd ../../im
-        curl -L "https://github.com/InsightSoftwareConsortium/ITKPythonBuilds/releases/download/${{ matrix.itk-python-git-tag }}/ITKPythonBuilds-windows.zip" -o "ITKPythonBuilds-windows.zip"
+        curl -L "https://github.com/InsightSoftwareConsortium/ITKPythonBuilds/releases/download/${{ env.itk-wheel-tag }}/ITKPythonBuilds-windows.zip" -o "ITKPythonBuilds-windows.zip"
         7z x ITKPythonBuilds-windows.zip -o/c/P -aoa -r
         curl -L "https://data.kitware.com/api/v1/file/5c0ad59d8d777f2179dd3e9c/download" -o "doxygen-1.8.11.windows.bin.zip"
         7z x doxygen-1.8.11.windows.bin.zip -o/c/P/doxygen -aoa -r
@@ -198,7 +201,7 @@ jobs:
       shell: cmd
       run: |
         cd ../../im
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
         set PATH=C:\P\grep;%PATH%
         set CC=cl.exe
         set CXX=cl.exe
@@ -232,7 +235,7 @@ jobs:
 
     - name: Publish 🐍 Python 📦 package to PyPI
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@v1.5.1
       with:
         user: __token__
         password: ${{ secrets.pypi_password }}
