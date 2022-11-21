@@ -10,9 +10,17 @@ except ImportError:
     print('  python -m pip install scikit-build')
     sys.exit(1)
 
+# Configure wheel name if CUDA is used
+wheel_name='itk-cudacommon'
+# Extract cuda version from the CUDACOMMON_CUDA_VERSION cmake option
+for arg in sys.argv:
+  if "CUDACOMMON_CUDA_VERSION" in str(arg):
+    cuda_version = arg.rsplit('CUDACOMMONG_CUDA_VERSION=', 1)[-1]
+    wheel_name += '-cuda' + cuda_version.replace('.', '')
+
 setup(
-    name='itk-cudacommon',
-    version='0.1.0',
+    name=wheel_name,
+    version='1.0.0',
     author='RTK Consortium',
     author_email='simon.rit@creatis.insa-lyon.fr',
     packages=['itk'],
@@ -40,9 +48,8 @@ setup(
         "Operating System :: MacOS"
         ],
     license='Apache',
-    keywords='RTK Reconstruction Toolkit',
-    url=r'https://www.openrtk.org/',
+    url=r'https://github.com/SimonRit/ITKCudaCommon',
     install_requires=[
-        r'itk>=5.2.1.post1'
+        r'itk>=5.3rc04'
     ]
     )

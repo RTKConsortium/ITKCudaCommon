@@ -12,7 +12,6 @@ if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
     set(CMAKE_CUDA_ARCHITECTURES "52" CACHE STRING "CUDA architectures")
   endif()
 endif()
-
 include(CheckLanguage)
 check_language(CUDA)
 
@@ -25,7 +24,11 @@ if (CMAKE_CUDA_COMPILER)
 endif()
 
 # Configure CUDA compilation options
+option(CUDACOMMON_CUDA_VERSION "Specify the exact CUDA version that must be used for CudaCommon")
 if(CUDAToolkit_FOUND)
   enable_language(CUDA)
   set(CMAKE_CUDA_RUNTIME_LIBRARY Static)
+  if(CUDACOMMON_CUDA_VERSION)
+    find_package(CUDAToolkit EXACT ${CUDACOMMON_CUDA_VERSION})
+  endif()
 endif()
