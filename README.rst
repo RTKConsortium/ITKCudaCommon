@@ -1,7 +1,7 @@
 ITKCudaCommon
 =================================
 
-.. image:: https://github.com/SimonRit/ITKCudaCommon/workflows/Build,%20test,%20package/badge.svg
+.. image:: https://github.com/RTKConsortium/ITKCudaCommon/workflows/Build,%20test,%20package/badge.svg
     :alt:    Build Status
 
 .. image:: https://img.shields.io/pypi/v/itk-cudacommon.svg
@@ -9,7 +9,7 @@ ITKCudaCommon
     :alt: PyPI Version
 
 .. image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
-    :target: https://github.com/SimonRit/ITKCudaCommon/blob/main/LICENSE
+    :target: https://github.com/RTKConsortium/ITKCudaCommon/blob/main/LICENSE
     :alt: License
 
 Overview

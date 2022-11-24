@@ -25,7 +25,7 @@ setup(
     author_email='simon.rit@creatis.insa-lyon.fr',
     packages=['itk'],
     package_dir={'itk': 'itk'},
-    download_url=r'https://github.com/SimonRit/ITKCudaCommon',
+    download_url=r'https://github.com/RTKConsortium/ITKCudaCommon',
     description=r'Framework for processing images with Cuda.',
     long_description='This module contains the framework for processing images with Cuda. This includes base classes for the Cuda image filters and classes to manage memory transfers between the CPU and GPU.',
     classifiers=[
@@ -48,7 +48,7 @@ setup(
         "Operating System :: MacOS"
         ],
     license='Apache',
-    url=r'https://github.com/SimonRit/ITKCudaCommon',
+    url=r'https://github.com/RTKConsortium/ITKCudaCommon',
     install_requires=[
         r'itk>=5.3rc04'
     ]
