@@ -15,7 +15,7 @@ wheel_name='itk-cudacommon'
 # Extract cuda version from the CUDACOMMON_CUDA_VERSION cmake option
 for arg in sys.argv:
   if "CUDACOMMON_CUDA_VERSION" in str(arg):
-    cuda_version = arg.rsplit('CUDACOMMONG_CUDA_VERSION=', 1)[-1]
+    cuda_version = arg.rsplit('CUDACOMMON_CUDA_VERSION=', 1)[-1]
     wheel_name += '-cuda' + cuda_version.replace('.', '')
 
 setup(
