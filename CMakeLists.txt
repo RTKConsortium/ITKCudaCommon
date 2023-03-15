@@ -1,5 +1,17 @@
 # Require a CMake version providing FindCUDAToolkit
 cmake_minimum_required(VERSION 3.17 FATAL_ERROR)
+
+## Only policies introduced after the cmake_minimum_required
+## version need to explicitly be set to NEW.
+## Refer to https://cmake.org/cmake/help/v3.11/manual/cmake-policies.7.html
+set(CMAKE_POLICIES CMP0135)
+
+foreach(p ${CMAKE_POLICIES})
+  if(POLICY ${p})
+    cmake_policy(SET ${p} NEW)
+  endif()
+endforeach()
+
 project(CudaCommon)
 
 if(NOT ITK_SOURCE_DIR)
