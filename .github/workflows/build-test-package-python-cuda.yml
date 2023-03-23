@@ -104,7 +104,7 @@ jobs:
         $env:ITKPYTHONPACKAGE_TAG = "${{ env.itk-python-package-tag }}"
         $env:ITKPYTHONPACKAGE_ORG = "${{ env.itk-python-package-org }}"
         $env:ITK_MODULE_PREQ = "${{ env.itk-module-deps }}"
-        ./windows-download-cache-and-build-module-wheels.ps1 "${{ matrix.python-version-minor }}" -setup-options "--lib-paths ""C:/Program\ Files/NVIDIA\ GPU\ Computing\ Toolkit/CUDA/v11.6/bin"" --exclude-libs ""nvcuda.dll;concrt140.dll;cublas64_11.dll;cublasLt64_11.dll;cudart64_110.dll;cufft64_10.dll""" -cmake_options "${{ env.cmake-options }}"
+        ./windows-download-cache-and-build-module-wheels.ps1 "${{ matrix.python-version-minor }}" -setup_options "--lib-paths ""C:/Program\ Files/NVIDIA\ GPU\ Computing\ Toolkit/CUDA/v11.6/bin"" --exclude-libs ""nvcuda.dll;cudart64_110.dll""" -cmake_options "${{ env.cmake-options }}"
 
         mkdir -p '${{ github.workspace }}\dist'
         cp 'dist\*.whl' '${{ github.workspace }}\dist'
