@@ -26,7 +26,7 @@ namespace itk
   void CudaSquareImageFilter<ImageType>::GPUGenerateData()
   {
     int size[3] = {1, 1, 1};
-    for (int i = 0; i < ImageDimension; i++)
+    for (unsigned int i = 0; i < ImageDimension; i++)
     {
       size[i] = this->GetInput()->GetBufferedRegion().GetSize()[i];
     }
