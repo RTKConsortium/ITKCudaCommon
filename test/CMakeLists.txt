@@ -1,3 +1,11 @@
+#-----------------------------------------------------------------------------
+# Find ITK to include ITK_USE_FILE and correctly configure dynamic libraries.
+if (NOT ITK_DIR)
+  set(ITK_DIR ${ITK_BINARY_DIR}/CMakeTmp)
+endif()
+find_package(ITK REQUIRED COMPONENTS ${ITK_MODULE_CudaCommon_DEPENDS})
+include(${ITK_USE_FILE})
+
 itk_module_test()
 
 set(CudaCommonTests
