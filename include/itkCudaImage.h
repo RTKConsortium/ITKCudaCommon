@@ -48,7 +48,11 @@ public:
 
   itkNewMacro(Self);
 
+#ifdef itkOverrideGetNameOfClassMacro
+  itkOverrideGetNameOfClassMacro(CudaImage);
+#else
   itkTypeMacro(CudaImage, Image);
+#endif
 
   static constexpr unsigned int ImageDimension = VImageDimension;
 
@@ -245,7 +249,11 @@ public:
   itkFactorylessNewMacro(Self);
 
   /** Run-time type information (and related methods). */
+#ifdef itkOverrideGetNameOfClassMacro
+  itkOverrideGetNameOfClassMacro(CudaImageFactory);
+#else
   itkTypeMacro(CudaImageFactory, itk::ObjectFactoryBase);
+#endif
 
   /** Register one factory of this type  */
   static void
