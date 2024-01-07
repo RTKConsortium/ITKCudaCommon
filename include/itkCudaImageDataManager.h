@@ -49,7 +49,11 @@ public:
   using SizeType = typename ImageType::SizeType;
 
   itkNewMacro(Self);
+#ifdef itkOverrideGetNameOfClassMacro
+  itkOverrideGetNameOfClassMacro(CudaImageDataManager);
+#else
   itkTypeMacro(CudaImageDataManager, CudaDataManager);
+#endif
 
   itkGetModifiableObjectMacro(GPUBufferedRegionIndex, CudaDataManager);
   itkGetModifiableObjectMacro(GPUBufferedRegionSize, CudaDataManager);
