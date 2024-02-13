@@ -43,6 +43,9 @@ jobs:
         fi
 
         MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
+        if [[ ${MANYLINUX_PLATFORM} == "_2_28-x64" ]]; then
+          export IMAGE_TAG=20230106-1aeaea0
+        fi
         echo "Manylinux platform ${MANYLINUX_PLATFORM}"
         rm -rf ITKPythonPackage
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
