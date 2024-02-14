@@ -4,8 +4,8 @@ on: [push,pull_request]
 
 env:
   cmake-options: '-DCUDACOMMON_CUDA_VERSION=11.6'
-  itk-wheel-tag: 'v5.4rc01'
-  itk-python-package-tag: '5ad02309321621cdc7269b9b68a35013c912271c'
+  itk-wheel-tag: 'v5.4rc02'
+  itk-python-package-tag: '80c77b93098ccd2352e9f3a86d7cbe7df803a7c8'
   itk-python-package-org: 'InsightSoftwareConsortium'
 
 jobs:
@@ -14,7 +14,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        python3-minor-versions: ["7", "8", "9", "10", "11"]
+        python3-minor-versions: ["8","9","10","11"]
         manylinux-platform: ["_2_28-x64","2014-x64"]
 
     steps:
@@ -80,7 +80,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        python3-minor-version: ["7", "8", "9", "10", "11"]
+        python3-minor-version: ["8","9","10","11"]
 
     steps:
     - uses: actions/checkout@v3
