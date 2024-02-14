@@ -1,5 +1,4 @@
 set(CudaCommon_SRCS
-  itkCudaContextManager.cxx
   itkCudaDataManager.cxx
   itkCudaUtil.cxx
   itkCudaMemoryProbe.cxx
