@@ -22,7 +22,6 @@
 #include "itkDataObject.h"
 #include "itkObjectFactory.h"
 #include "itkCudaUtil.h"
-#include "itkCudaContextManager.h"
 #include "CudaCommonExport.h"
 
 #include <mutex>
@@ -232,6 +231,8 @@ protected:
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
+  int m_Device;
+
 private:
   CudaDataManager(const Self &) = delete; // purposely not implemented
   void
@@ -239,8 +240,6 @@ private:
 
 protected:
   size_t m_BufferSize; // # of bytes
-
-  CudaContextManager * m_ContextManager;
 
   /** buffer type */
   int m_MemFlags;

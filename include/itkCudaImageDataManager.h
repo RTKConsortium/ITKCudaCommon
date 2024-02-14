@@ -23,7 +23,6 @@
 #include <itkObjectFactory.h>
 #include "itkCudaUtil.h"
 #include "itkCudaDataManager.h"
-#include "itkCudaContextManager.h"
 
 namespace itk
 {

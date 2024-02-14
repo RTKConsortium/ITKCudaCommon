@@ -24,18 +24,8 @@ namespace itk
 // constructor
 CudaDataManager::CudaDataManager()
 {
-  m_ContextManager = CudaContextManager::GetInstance();
-
-  // Creating the context in the constructor allows avoiding a memory leak.
-  // However, the cuda data manager is created even if there is no use of CUDA
-  // software and sometimes one compiles RTK with CUDA but wants to use it
-  // without CUDA. So if the context pointer is nullptr, which indicates that there
-  // is no CUDA device available, we just do not set the context (SR). This fixes
-  // the problem reported here:
-  // https://www.creatis.insa-lyon.fr/pipermail/rtk-users/2015-July/000570.html
-  CUcontext * ctx = m_ContextManager->GetCurrentContext();
-  if (ctx)
-    CUDA_CHECK(cuCtxSetCurrent(*ctx));
+  m_Device = itk::CudaGetMaxFlopsDev();
+  CUDA_CHECK(cudaSetDevice(m_Device));
 
   m_CPUBuffer = nullptr;
   m_GPUBuffer = GPUMemPointer::New();
@@ -56,7 +46,6 @@ CudaDataManager::CudaDataManager()
 CudaDataManager::~CudaDataManager()
 {
   m_GPUBuffer = nullptr;
-  CudaContextManager::DestroyInstance();
 }
 
 void
@@ -91,9 +80,7 @@ CudaDataManager::Free()
   {
     try
     {
-      CUDA_CHECK(cuCtxSetCurrent(
-        *(this->m_ContextManager->GetCurrentContext()))); // This is necessary when running multithread to bind the host
-                                                          // CPU thread to the right context
+      CUDA_CHECK(cudaSetDevice(m_Device));
       m_GPUBuffer->Free();
     }
     catch (itk::ExceptionObject & e)
@@ -171,9 +158,7 @@ CudaDataManager::UpdateCPUBuffer()
       std::cout << this << "::UpdateCPUBuffer GPU->CPU data copy " << m_GPUBuffer->GetPointer() << "->" << m_CPUBuffer
                 << " : " << m_BufferSize << std::endl;
 #endif
-      CUDA_CHECK(cuCtxSetCurrent(
-        *(this->m_ContextManager->GetCurrentContext()))); // This is necessary when running multithread to bind the host
-                                                          // CPU thread to the right context
+      CUDA_CHECK(cudaSetDevice(m_Device));
       CUDA_CHECK(cudaMemcpy(m_CPUBuffer, m_GPUBuffer->GetPointer(), m_BufferSize, cudaMemcpyDeviceToHost));
       m_IsCPUBufferDirty = false;
     }
@@ -212,9 +197,7 @@ CudaDataManager::UpdateGPUBuffer()
       std::cout << this << "::UpdateGPUBuffer CPU->GPU data copy " << m_CPUBuffer << "->" << m_GPUBuffer->GetPointer()
                 << " : " << m_BufferSize << std::endl;
 #endif
-      CUDA_CHECK(cuCtxSetCurrent(
-        *(this->m_ContextManager->GetCurrentContext()))); // This is necessary when running multithread to bind the host
-                                                          // CPU thread to the right context
+      CUDA_CHECK(cudaSetDevice(m_Device));
       CUDA_CHECK(cudaMemcpy(m_GPUBuffer->GetPointer(), m_CPUBuffer, m_BufferSize, cudaMemcpyHostToDevice));
     }
     m_IsGPUBufferDirty = false;
@@ -259,7 +242,6 @@ CudaDataManager::Graft(const CudaDataManager * data)
   if (data)
   {
     m_BufferSize = data->m_BufferSize;
-    m_ContextManager = data->m_ContextManager;
     m_GPUBuffer = data->m_GPUBuffer;
     m_CPUBuffer = data->m_CPUBuffer;
     m_IsCPUBufferDirty = data->m_IsCPUBufferDirty;

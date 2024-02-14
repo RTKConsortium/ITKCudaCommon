@@ -76,9 +76,7 @@ CudaImageDataManager<ImageType>::MakeCPUBufferUpToDate()
       std::cout << this << ": GPU->CPU data copy" << std::endl;
 #endif
 
-      CUDA_CHECK(cuCtxSetCurrent(
-        *(this->m_ContextManager->GetCurrentContext()))); // This is necessary when running multithread to bind the host
-                                                          // CPU thread to the right context
+      CUDA_CHECK(cudaSetDevice(m_Device));
       errid = cudaMemcpy(m_CPUBuffer, m_GPUBuffer->GetPointer(), m_BufferSize, cudaMemcpyDeviceToHost);
       CudaCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);
 
@@ -117,9 +115,7 @@ CudaImageDataManager<ImageType>::MakeGPUBufferUpToDate()
       std::cout << "CPU->GPU data copy" << std::endl;
 #endif
 
-      CUDA_CHECK(cuCtxSetCurrent(
-        *(this->m_ContextManager->GetCurrentContext()))); // This is necessary when running multithread to bind the host
-                                                          // CPU thread to the right context
+      CUDA_CHECK(cudaSetDevice(m_Device));
       errid = cudaMemcpy(m_GPUBuffer->GetPointer(), m_CPUBuffer, m_BufferSize, cudaMemcpyHostToDevice);
       CudaCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);
 
