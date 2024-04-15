@@ -3,7 +3,7 @@ name: 'Build, Test ITKCudaCommon with CUDA'
 on: [push,pull_request]
 
 env:
-  itk-git-tag: "v5.4rc01"
+  itk-git-tag: "65306d5f6230eb3c5dc9a5df89a4740ba383041e"
 
 jobs:
   build-test-cxx:
