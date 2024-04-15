@@ -50,6 +50,6 @@ setup(
     license='Apache',
     url=r'https://github.com/RTKConsortium/ITKCudaCommon',
     install_requires=[
-        r'itk>=5.4rc1'
+        r'itk==5.4.0'
     ]
     )
