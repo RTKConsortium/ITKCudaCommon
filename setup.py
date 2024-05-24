@@ -20,7 +20,7 @@ for arg in sys.argv:
 
 setup(
     name=wheel_name,
-    version='1.0.1',
+    version='1.1.0',
     author='RTK Consortium',
     author_email='simon.rit@creatis.insa-lyon.fr',
     packages=['itk'],
@@ -50,6 +50,6 @@ setup(
     license='Apache',
     url=r'https://github.com/RTKConsortium/ITKCudaCommon',
     install_requires=[
-        r'itk==5.4.0'
+        r'itk==5.4.*'
     ]
     )
