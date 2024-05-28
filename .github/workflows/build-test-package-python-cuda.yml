@@ -4,7 +4,7 @@ on: [push,pull_request]
 
 env:
   itk-wheel-tag: 'v5.4.0'
-  itk-python-package-tag: 'v5.4.0'
+  itk-python-package-tag: 'f38e8b0f38580807809b0412235fb2ba0946deba'
   itk-python-package-org: 'InsightSoftwareConsortium'
 
 jobs:
@@ -64,6 +64,7 @@ jobs:
         export ITK_MODULE_NO_CLEANUP=TRUE
         echo "Building for manylinux specialization ${MANYLINUX_VERSION} and target architecture ${TARGET_ARCH}"
         LIBCUDART=`basename /home/srit/Downloads/cuda${CUDA_VERSION}/targets/x86_64-linux/lib/libcudart.so.${CUDA_VERSION_MAJOR}*`
+        sed -i "s/itk-cudacommon/itk-cudacommon-cuda${CUDA_VERSION}/g" pyproject.toml
         ./dockcross-manylinux-download-cache-and-build-module-wheels.sh "${CMAKE_OPTIONS[@]}" -x "libcuda.so.1;${LIBCUDART}" cp3${{ matrix.python3-minor-version }}
         mv *zst ../..
 
@@ -142,9 +143,11 @@ jobs:
         $CUDA_VERSION_MAJOR=$CUDA_VERSION.substring(0,2)
         $CUDA_VERSION_MINOR=$CUDA_VERSION.substring(2,$CUDA_VERSION.Length-2)
         $env:CUDA_PATH = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v${CUDA_VERSION_MAJOR}.${CUDA_VERSION_MINOR}"
+        $env:CMAKE_GENERATOR_TOOLSET = "cuda=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v${CUDA_VERSION_MAJOR}.${CUDA_VERSION_MINOR}"
         $env:Path = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v${CUDA_VERSION_MAJOR}.${CUDA_VERSION_MINOR}\bin;" + $env:Path
         $LIBCUDART= (Get-Item "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v${CUDA_VERSION_MAJOR}.${CUDA_VERSION_MINOR}\bin\cudart64*dll" ).Name
-        ./windows-download-cache-and-build-module-wheels.ps1 "${{ matrix.python3-minor-version }}" -setup_options "--lib-paths ""C:/Program\ Files/NVIDIA\ GPU\ Computing\ Toolkit/CUDA/v${CUDA_VERSION_MAJOR}.${CUDA_VERSION_MINOR}/bin"" --exclude-libs ""nvcuda.dll;${LIBCUDART}""" -cmake_options "-DCUDACOMMON_CUDA_VERSION=${CUDA_VERSION_MAJOR}.${CUDA_VERSION_MINOR}"
+        ((Get-Content -Path pyproject.toml) -replace "itk-cudacommon","itk-cudacommon-cuda${CUDA_VERSION}") | Set-Content -Path pyproject.toml
+        ./windows-download-cache-and-build-module-wheels.ps1 "${{ matrix.python3-minor-version }}" -setup_options "--lib-paths ""C:/Program\ Files/NVIDIA\ GPU\ Computing\ Toolkit/CUDA/v${CUDA_VERSION_MAJOR}.${CUDA_VERSION_MINOR}/bin"" --exclude-libs ""nvcuda.dll;${LIBCUDART}""" -cmake_options """-DCUDACOMMON_CUDA_VERSION=${CUDA_VERSION_MAJOR}.${CUDA_VERSION_MINOR}"""
 
         mkdir -p '${{ github.workspace }}\dist'
         cp 'dist\*.whl' '${{ github.workspace }}\dist'
