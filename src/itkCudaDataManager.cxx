@@ -209,7 +209,7 @@ void *
 CudaDataManager::GetGPUBufferPointer()
 {
   SetCPUBufferDirty();
-  return m_GPUBuffer->GetPointerPtr();
+  return m_GPUBuffer->GetPointer();
 }
 
 void *
