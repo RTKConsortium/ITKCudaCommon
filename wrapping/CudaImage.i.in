@@ -1,0 +1,17 @@
+%extend itkCudaImage@CudaImageTypes@{
+    %pythoncode %{
+    @property
+    def __cuda_array_interface__(self):
+        _pixelType = "@PixelType@"
+        _typestr = _get_type_string(_pixelType)
+        return {
+            'shape': (self.GetLargestPossibleRegion().GetSize()[0], self.GetLargestPossibleRegion().GetSize()[1], self.GetLargestPossibleRegion().GetSize()[2]),
+            'data': (int(self.GetCudaDataManager().GetGPUBufferPointer()), False),
+            'typestr': _typestr,
+            'descr': [('', _typestr)],
+            'version': 3,
+            'stream': None,
+            'strides': None
+        }
+    %}
+};
