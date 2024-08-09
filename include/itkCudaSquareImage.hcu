@@ -21,8 +21,9 @@
 namespace itk
 {
 
-template<class PixelType>
-void CudaSquareImage3D(int imSize[3], PixelType* in, PixelType* out);
+template <class PixelType>
+void
+CudaSquareImage3D(int imSize[3], PixelType * in, PixelType * out);
 
 } // end namespace itk
 
