@@ -1,9 +1,15 @@
-itk_wrap_class("itk::CudaImage" POINTER_WITH_CONST_POINTER)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CudaImage.i.init" "${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i" @ONLY)
 
+itk_wrap_class("itk::CudaImage" POINTER_WITH_CONST_POINTER)
   UNIQUE(types "UC;UL;${ITKM_IT};${WRAP_ITK_SCALAR}")
-  foreach(d ${ITK_WRAP_IMAGE_DIMS})
-    foreach(t ${types})
+  foreach(t ${types})
+    set(PixelType ${t})
+    foreach(d ${ITK_WRAP_IMAGE_DIMS})
       itk_wrap_template("${t}${d}" "${ITKT_${t}}, ${d}")
+      set(CudaImageTypes ${t}${d})
+      configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CudaImage.i.in ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i.temp @ONLY)
+      file(READ ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i.temp CudaImageInterfaceTemp)
+      file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i ${CudaImageInterfaceTemp})
     endforeach()
   endforeach()
 
@@ -17,3 +23,21 @@ itk_wrap_class("itk::CudaImage" POINTER_WITH_CONST_POINTER)
   endforeach()
 
 itk_end_wrap_class()
+
+# Add library files to be included at a submodule level and copy them into
+# ITK's wrapping typedef directory.
+# Another approach is to add CudaImage.i to the WRAPPER_SWIG_LIBRARY_FILES list
+# but then the %pythoncode from CudaImage.i.init gets only included in
+# itkCudaDataManagerPython.py even if the WRAPPER_SUBMODULE_ORDER is set.
+# Prefer using ITK_WRAP_PYTHON_SWIG_EXT to make sure the block is included in
+# the right file exclusively.
+set(ITK_WRAP_PYTHON_SWIG_EXT
+  "%include CudaImage.i\n${ITK_WRAP_PYTHON_SWIG_EXT}")
+
+file(COPY "${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i"
+  DESTINATION "${WRAPPER_MASTER_INDEX_OUTPUT_DIR}")
+
+# Make sure to rebuild the python file when CudaImage.i is modified.
+# Touching CudaImage.i directly does not force a rebuild because it is just
+# appended to the ITK_WRAP_PYTHON_SWIG_EXT variable
+file(TOUCH ${WRAPPER_MASTER_INDEX_OUTPUT_DIR}/itkCudaImage.i)
