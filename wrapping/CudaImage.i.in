@@ -7,7 +7,17 @@
 
         _itksize = self.GetBufferedRegion().GetSize()
         _dim     = len(_itksize)
-        _shape   = tuple(int(_itksize[idx]) for idx in range(_dim))
+        _shape   = [int(_itksize[idx]) for idx in range(_dim)]
+
+        if self.GetNumberOfComponentsPerPixel() > 1:
+            _shape = [self.GetNumberOfComponentsPerPixel(), ] + _shape
+
+        # Reverse array to force C-order indexing. This is the reverse of how
+        # indices are specified in ITK, i.e. k,j,i versus i,j,k. However
+        # C-order indexing is expected by most algorithms in NumPy / SciPy.
+        _shape.reverse()
+        _shape = tuple(_shape)
+
         return {
             'shape': _shape,
             'data': (int(self.GetCudaDataManager().GetGPUBufferPointer()), False),
