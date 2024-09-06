@@ -27,6 +27,11 @@ if(NOT ITK_SOURCE_DIR)
   find_package(ITK 5.2 REQUIRED)
 endif()
 
+set(CudaCommon_EXPORT_CODE_BUILD "
+# Pass source dir to allow other modules, e.g. RTK, to use CudaImage.i.init and CudaImage.i.in
+set(CudaCommon_SOURCE_DIR ${CudaCommon_SOURCE_DIR})
+")
+
 if(NOT ITK_SOURCE_DIR)
   if(NOT EXISTS ${ITK_CMAKE_DIR}/ITKModuleMacros.cmake)
     message(FATAL_ERROR "Modules can only be built against an ITK build tree; they cannot be built against an ITK install tree.")
