@@ -162,6 +162,12 @@ public:
   void
   SetGPUDirtyFlag(bool isDirty);
 
+  /** Controls whether GPU memory should be released when dirty. On by default.
+   * When turning it off, one must call Free() to release the GPU memory. */
+  itkGetConstMacro(ReleaseDirtyGPUBuffer, bool);
+  itkSetMacro(ReleaseDirtyGPUBuffer, bool);
+  itkBooleanMacro(ReleaseDirtyGPUBuffer);
+
   /** Make GPU up-to-date and mark CPU as dirty.
    * Call this function when you want to modify CPU data */
   void
