@@ -213,6 +213,10 @@ public:
   void *
   GetGPUBufferPointer();
 
+  /** Get pointer to the Cuda buffer pointer */
+  void *
+  GetGPUBufferPointerPtr();
+
   /** Get CPU buffer pointer */
   void *
   GetCPUBufferPointer();
