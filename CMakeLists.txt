@@ -14,6 +14,19 @@ endforeach()
 
 project(CudaCommon)
 
+## CudaCommon Version
+set(CUDACOMMON_VERSION_MAJOR "2")
+set(CUDACOMMON_VERSION_MINOR "0")
+set(CUDACOMMON_VERSION_PATCH "0")
+set(CUDACOMMON_VERSION_STRING "${CUDACOMMON_VERSION_MAJOR}.${CUDACOMMON_VERSION_MINOR}")
+
+#=========================================================
+# Installation variables
+#=========================================================
+if(NOT CudaCommon_INSTALL_INCLUDE_DIR)
+  set(CudaCommon_INSTALL_INCLUDE_DIR include/CudaCommon)
+endif()
+
 if(NOT ITK_SOURCE_DIR)
   include(itk-module-init.cmake)
 endif()
@@ -26,6 +39,12 @@ set(CudaCommon_INCLUDE_DIRS ${CudaCommon_SOURCE_DIR}/include ${CUDAToolkit_INCLU
 if(NOT ITK_SOURCE_DIR)
   find_package(ITK 5.2 REQUIRED)
 endif()
+
+# Propagate cmake options in a header file
+configure_file(${CudaCommon_SOURCE_DIR}/cudaCommonConfiguration.h.in
+  ${CudaCommon_BINARY_DIR}/cudaCommonConfiguration.h)
+
+list(APPEND CudaCommon_INCLUDE_DIRS ${CudaCommon_BINARY_DIR})
 
 set(CudaCommon_EXPORT_CODE_BUILD "
 # Pass source dir to allow other modules, e.g. RTK, to use CudaImage.i.init and CudaImage.i.in
@@ -43,3 +62,6 @@ else()
   set(ITK_DIR ${CMAKE_BINARY_DIR})
   itk_module_impl()
 endif()
+
+# Install configuration file
+install(FILES ${CudaCommon_BINARY_DIR}/cudaCommonConfiguration.h DESTINATION ${CudaCommon_INSTALL_INCLUDE_DIR})
