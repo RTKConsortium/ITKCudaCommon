@@ -49,6 +49,12 @@ list(APPEND CudaCommon_INCLUDE_DIRS ${CudaCommon_BINARY_DIR})
 set(CudaCommon_EXPORT_CODE_BUILD "
 # Pass source dir to allow other modules, e.g. RTK, to use CudaImage.i.init and CudaImage.i.in
 set(CudaCommon_SOURCE_DIR ${CudaCommon_SOURCE_DIR})
+
+# Also pass CudaCommon version
+set(CUDACOMMON_VERSION_MAJOR ${CUDACOMMON_VERSION_MAJOR})
+set(CUDACOMMON_VERSION_MINOR ${CUDACOMMON_VERSION_MINOR})
+set(CUDACOMMON_VERSION_PATCH ${CUDACOMMON_VERSION_PATCH})
+set(CUDACOMMON_VERSION_STRING ${CUDACOMMON_VERSION_STRING})
 ")
 
 if(NOT ITK_SOURCE_DIR)
