@@ -15,10 +15,10 @@ endforeach()
 project(CudaCommon)
 
 ## CudaCommon Version
-set(CUDACOMMON_VERSION_MAJOR "2")
-set(CUDACOMMON_VERSION_MINOR "0")
-set(CUDACOMMON_VERSION_PATCH "0")
-set(CUDACOMMON_VERSION_STRING "${CUDACOMMON_VERSION_MAJOR}.${CUDACOMMON_VERSION_MINOR}")
+set(CudaCommon_VERSION_MAJOR "2")
+set(CudaCommon_VERSION_MINOR "0")
+set(CudaCommon_VERSION_PATCH "0")
+set(CudaCommon_VERSION_STRING "${CudaCommon_VERSION_MAJOR}.${CudaCommon_VERSION_MINOR}")
 
 #=========================================================
 # Installation variables
@@ -51,10 +51,10 @@ set(CudaCommon_EXPORT_CODE_BUILD "
 set(CudaCommon_SOURCE_DIR ${CudaCommon_SOURCE_DIR})
 
 # Also pass CudaCommon version
-set(CUDACOMMON_VERSION_MAJOR ${CUDACOMMON_VERSION_MAJOR})
-set(CUDACOMMON_VERSION_MINOR ${CUDACOMMON_VERSION_MINOR})
-set(CUDACOMMON_VERSION_PATCH ${CUDACOMMON_VERSION_PATCH})
-set(CUDACOMMON_VERSION_STRING ${CUDACOMMON_VERSION_STRING})
+set(CudaCommon_VERSION_MAJOR ${CudaCommon_VERSION_MAJOR})
+set(CudaCommon_VERSION_MINOR ${CudaCommon_VERSION_MINOR})
+set(CudaCommon_VERSION_PATCH ${CudaCommon_VERSION_PATCH})
+set(CudaCommon_VERSION_STRING ${CudaCommon_VERSION_STRING})
 ")
 
 if(NOT ITK_SOURCE_DIR)
