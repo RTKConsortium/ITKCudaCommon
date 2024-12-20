@@ -31,8 +31,8 @@ namespace itk
       size[i] = this->GetInput()->GetBufferedRegion().GetSize()[i];
     }
 
-    typename ImageType::PixelType* pin0 = *(typename ImageType::PixelType**)(this->GetInput(0)->GetCudaDataManager()->GetGPUBufferPointer());
-    typename ImageType::PixelType* pout = *(typename ImageType::PixelType**)(this->GetOutput()->GetCudaDataManager()->GetGPUBufferPointer());
+    typename ImageType::PixelType* pin0 = (typename ImageType::PixelType*)(this->GetInput(0)->GetCudaDataManager()->GetGPUBufferPointer());
+    typename ImageType::PixelType* pout = (typename ImageType::PixelType*)(this->GetOutput()->GetCudaDataManager()->GetGPUBufferPointer());
 
     CudaSquareImage3D<typename ImageType::PixelType>(size, pin0, pout);
   }
