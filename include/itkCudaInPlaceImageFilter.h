@@ -50,7 +50,7 @@ public:
 #ifdef itkOverrideGetNameOfClassMacro
   itkOverrideGetNameOfClassMacro(CudaInPlaceImageFilter);
 #else
-  itkTypeMacro(CudaInPlaceImageFilter, CudaImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(CudaInPlaceImageFilter);
 #endif
 
   /** Superclass type alias. */

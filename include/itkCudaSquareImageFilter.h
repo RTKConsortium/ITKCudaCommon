@@ -48,7 +48,7 @@ public:
 #ifdef itkOverrideGetNameOfClassMacro
   itkOverrideGetNameOfClassMacro(CudaSquareImageFilter);
 #else
-  itkTypeMacro(CudaSquareImageFilter, CudaImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(CudaSquareImageFilter);
 #endif
 
   ITK_DISALLOW_COPY_AND_MOVE(CudaSquareImageFilter);

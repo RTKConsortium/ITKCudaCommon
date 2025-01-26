@@ -51,7 +51,7 @@ public:
 #ifdef itkOverrideGetNameOfClassMacro
   itkOverrideGetNameOfClassMacro(CudaImageDataManager);
 #else
-  itkTypeMacro(CudaImageDataManager, CudaDataManager);
+  itkOverrideGetNameOfClassMacro(CudaImageDataManager);
 #endif
 
   itkGetModifiableObjectMacro(GPUBufferedRegionIndex, CudaDataManager);

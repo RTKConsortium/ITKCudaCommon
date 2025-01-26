@@ -43,7 +43,7 @@ public:
 #ifdef itkOverrideGetNameOfClassMacro
   itkOverrideGetNameOfClassMacro(GPUMemPointer);
 #else
-  itkTypeMacro(GPUMemPointer, Object);
+  itkOverrideGetNameOfClassMacro(GPUMemPointer);
 #endif
 
   void
@@ -137,7 +137,7 @@ public:
 #ifdef itkOverrideGetNameOfClassMacro
   itkOverrideGetNameOfClassMacro(CudaDataManager);
 #else
-  itkTypeMacro(CudaDataManager, Object);
+  itkOverrideGetNameOfClassMacro(CudaDataManager);
 #endif
 
   /** total buffer size in bytes */
