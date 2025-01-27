@@ -40,11 +40,7 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   itkNewMacro(Self);
-#ifdef itkOverrideGetNameOfClassMacro
   itkOverrideGetNameOfClassMacro(GPUMemPointer);
-#else
-  itkTypeMacro(GPUMemPointer, Object);
-#endif
 
   void
   Allocate(size_t bufferSize)
@@ -134,11 +130,7 @@ public:
   using ModifiedTimeType = unsigned long;
 
   itkNewMacro(Self);
-#ifdef itkOverrideGetNameOfClassMacro
   itkOverrideGetNameOfClassMacro(CudaDataManager);
-#else
-  itkTypeMacro(CudaDataManager, Object);
-#endif
 
   /** total buffer size in bytes */
   void

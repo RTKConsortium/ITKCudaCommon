@@ -47,11 +47,7 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   /** Run-time type information (and related methods). */
-#ifdef itkOverrideGetNameOfClassMacro
   itkOverrideGetNameOfClassMacro(CudaInPlaceImageFilter);
-#else
-  itkTypeMacro(CudaInPlaceImageFilter, CudaImageToImageFilter);
-#endif
 
   /** Superclass type alias. */
   using OutputImageType = typename GPUSuperclass::OutputImageType;
