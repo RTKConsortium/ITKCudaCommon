@@ -58,13 +58,14 @@ protected:
   CudaSquareImageFilter() = default;
   ~CudaSquareImageFilter() = default;
 
-  virtual void GPUGenerateData();
+  virtual void
+  GPUGenerateData();
 };
 
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkCudaSquareImageFilter.hxx"
+#  include "itkCudaSquareImageFilter.hxx"
 #endif
 
 #endif

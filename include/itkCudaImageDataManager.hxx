@@ -19,7 +19,7 @@
 #define itkCudaImageDataManager_hxx
 
 #include "itkCudaUtil.h"
-//#define VERBOSE
+// #define VERBOSE
 
 namespace itk
 {

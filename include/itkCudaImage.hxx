@@ -132,14 +132,16 @@ CudaImage<TPixel, VImageDimension>::GetPixel(const IndexType & index)
 }
 
 template <class TPixel, unsigned int VImageDimension>
-TPixel & CudaImage<TPixel, VImageDimension>::operator[](const IndexType & index)
+TPixel &
+CudaImage<TPixel, VImageDimension>::operator[](const IndexType & index)
 {
   m_DataManager->UpdateCPUBuffer();
   return Superclass::operator[](index);
 }
 
 template <class TPixel, unsigned int VImageDimension>
-const TPixel & CudaImage<TPixel, VImageDimension>::operator[](const IndexType & index) const
+const TPixel &
+CudaImage<TPixel, VImageDimension>::operator[](const IndexType & index) const
 {
   m_DataManager->UpdateCPUBuffer();
   return Superclass::operator[](index);
