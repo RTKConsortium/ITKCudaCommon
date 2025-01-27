@@ -51,11 +51,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-#ifdef itkOverrideGetNameOfClassMacro
   itkOverrideGetNameOfClassMacro(CudaImageToImageFilter);
-#else
-  itkTypeMacro(CudaImageToImageFilter, TParentImageFilter);
-#endif
 
   /** Superclass type alias. */
   using DataObjectIdentifierType = typename Superclass::DataObjectIdentifierType;
