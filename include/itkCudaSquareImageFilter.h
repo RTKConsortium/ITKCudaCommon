@@ -52,9 +52,7 @@ public:
   /** ImageDimension constants */
   static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
-#ifdef ITK_USE_CONCEPT_CHECKING
   itkConceptMacro(ImageDimensionCheck, (itk::Concept::SameDimensionOrMinusOneOrTwo<3, TImage::ImageDimension>));
-#endif
 
 protected:
   CudaSquareImageFilter() = default;
