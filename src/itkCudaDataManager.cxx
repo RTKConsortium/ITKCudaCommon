@@ -43,10 +43,7 @@ CudaDataManager::CudaDataManager()
   }
 }
 
-CudaDataManager::~CudaDataManager()
-{
-  m_GPUBuffer = nullptr;
-}
+CudaDataManager::~CudaDataManager() { m_GPUBuffer = nullptr; }
 
 void
 CudaDataManager::SetBufferSize(size_t num)

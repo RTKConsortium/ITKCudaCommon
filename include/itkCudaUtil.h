@@ -69,10 +69,10 @@ CudaSelectPlatform(const char * name);
 
 /** Check Cuda error */
 void CudaCommon_EXPORT
-     CudaCheckError(cudaError_t error, const char * filename = "", int lineno = 0, const char * location = "");
+CudaCheckError(cudaError_t error, const char * filename = "", int lineno = 0, const char * location = "");
 
 void CudaCommon_EXPORT
-     CudaCheckError(CUresult error, const char * filename = "", int lineno = 0, const char * location = "");
+CudaCheckError(CUresult error, const char * filename = "", int lineno = 0, const char * location = "");
 
 /** Check if Cuda-enabled Cuda is present. */
 bool

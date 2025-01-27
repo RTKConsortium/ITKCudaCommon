@@ -27,7 +27,7 @@
 #include <mutex>
 #include <memory>
 
-//#define VERBOSE
+// #define VERBOSE
 
 namespace itk
 {
