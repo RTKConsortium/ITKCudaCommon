@@ -3,7 +3,7 @@ name: 'Build, Test ITKCudaCommon with CUDA'
 on: [push,pull_request]
 
 env:
-  itk-git-tag: "v5.4.0"
+  itk-git-tag: "v5.4.2"
 
 concurrency:
   group: '${{ github.workflow }}@${{ github.head_ref || github.run_id }}'
@@ -27,15 +27,12 @@ jobs:
             cmake-build-type: "Release"
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install build dependencies
       run: |
         python -m pip install --upgrade pip
         python -m pip install ninja
-
-    - name: Get specific version of CMake, Ninja
-      uses: lukka/get-cmake@v3.24.2
 
     - name: self-hosted cleanup
       shell: bash
@@ -158,11 +155,11 @@ jobs:
     - name: Build and test
       if: matrix.os != 'self-hosted-windows'
       run: |
-        ctest --output-on-failure -j 2 -V -S dashboard.cmake ${{ env.ctest-options }}
+        ctest --output-on-failure -j 2 -VV -S dashboard.cmake ${{ env.ctest-options }}
 
     - name: Build and test
       if: matrix.os == 'self-hosted-windows'
       shell: pwsh
       run: |
         & "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -SkipAutomaticLocation
-        ctest --output-on-failure -j 2 -V -S dashboard.cmake ${{ env.ctest-options }}
+        ctest --output-on-failure -j 2 -VV -S dashboard.cmake ${{ env.ctest-options }}

@@ -3,9 +3,9 @@ name: 'Package ITKCudaCommon with CUDA'
 on: [push,pull_request]
 
 env:
-  itk-wheel-tag: 'v5.4.0'
-  itk-python-package-tag: '45cfd02a22661731ca5b155f210cfa2f887d50e7'
-  itk-python-package-org: 'SimonRit'
+  itk-wheel-tag: 'v5.4.2.post1'
+  itk-python-package-tag: 'v5.4.2.post1'
+  itk-python-package-org: 'InsightSoftwareConsortium'
 
 concurrency:
   group: '${{ github.workflow }}@${{ github.head_ref || github.run_id }}'
@@ -22,7 +22,7 @@ jobs:
         cuda-version: ["116","121"]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: 'Fetch build script'
       run: |
