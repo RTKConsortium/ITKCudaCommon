@@ -18,3 +18,8 @@ itk_add_test(NAME itkCudaSquareImageFilterTest
   COMMAND CudaCommonTestDriver
   itkCudaSquareImageFilterTest
   )
+
+if(ITK_WRAP_PYTHON)
+  itk_python_add_test(NAME itkCudaImageFromImagePythonTest
+    COMMAND itkCudaImageFromImageTest.py)
+endif()
