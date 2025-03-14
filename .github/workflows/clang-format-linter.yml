@@ -9,6 +9,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: InsightSoftwareConsortium/ITKClangFormatLinterAction@master
+    - uses: SimonRit/ITKClangFormatLinterAction@a87b73743ee2f32d37ce628c87731a0373612fa6
       with:
         itk-branch: master
