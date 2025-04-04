@@ -108,6 +108,20 @@ CudaDataManager::SetCPUBufferPointer(void * ptr)
 }
 
 void
+CudaDataManager::SetGPUBufferPointer(uint64_t ptr)
+{
+  m_GPUBuffer->SetPointer((void *)ptr);
+  m_GPUBuffer->SetBufferSize(m_BufferSize);
+}
+
+void
+CudaDataManager::SetGPUBufferPointer(void * ptr)
+{
+  m_GPUBuffer->SetPointer(ptr);
+  m_GPUBuffer->SetBufferSize(m_BufferSize);
+}
+
+void
 CudaDataManager::SetCPUDirtyFlag(bool isDirty)
 {
   m_IsCPUBufferDirty = isDirty;
