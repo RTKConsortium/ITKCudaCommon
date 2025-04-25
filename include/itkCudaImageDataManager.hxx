@@ -92,6 +92,20 @@ CudaImageDataManager<ImageType>::MakeCPUBufferUpToDate()
 
 template <class ImageType>
 void
+CudaImageDataManager<ImageType>::
+UpdateCPUBuffer()
+{
+  if(m_Image && !m_CPUBuffer)
+  {
+    m_Image->Superclass::Allocate();
+    this->SetCPUBufferPointer(m_Image->Superclass::GetBufferPointer());
+  }
+
+  Superclass::UpdateCPUBuffer();
+}
+
+template <class ImageType>
+void
 CudaImageDataManager<ImageType>::MakeGPUBufferUpToDate()
 {
   if (m_Image)
