@@ -69,6 +69,9 @@ public:
   virtual void
   MakeGPUBufferUpToDate();
 
+  void
+  UpdateCPUBuffer() override;
+
   /** Grafting Cuda Image Data */
   void
   Graft(const CudaDataManager * data) override;
@@ -85,7 +88,7 @@ private:
   void
   operator=(const Self &);
 
-  ImageType *                       m_Image;
+  ImageType *                       m_Image = nullptr;
   IndexType                         m_BufferedRegionIndex;
   SizeType                          m_BufferedRegionSize;
   typename CudaDataManager::Pointer m_GPUBufferedRegionIndex;
