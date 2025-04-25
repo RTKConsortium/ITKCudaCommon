@@ -1,37 +1,49 @@
 %pythoncode %{
+
+# This is a Mapping from system byte order to typestr byte order.
+_byteorder_typestr = {
+    "big":">",
+    "little":"<",
+}
+import sys
+_byteorder = _byteorder_typestr[sys.byteorder]
+
+# This is a Mapping from itk pixel types to typestr.
+_itk_typestr = {
+    "UC":"|u1",
+    "US":_byteorder + "u2",
+    "UI":_byteorder + "u4",
+    "UL":_byteorder + "u8",
+    "ULL":_byteorder + "u8",
+    "SC":"|i1",
+    "SS":_byteorder + "i2",
+    "SI":_byteorder + "i4",
+    "SL":_byteorder + "i8",
+    "SLL":_byteorder + "i8",
+    "F":_byteorder + "f4",
+    "D":_byteorder + "f8",
+}
+import os
+if os.name == 'nt':
+    _itk_typestr['UL'] = _byteorder + "u4"
+    _itk_typestr['SL'] = _byteorder + "i4"
+
 def _get_type_string(itk_Image_type):
     """Returns the type string of the ITK PixelType as defined in the NumPy array interface."""
 
-    # This is a Mapping from system byte order to typestr byte order.
-    _byteorder_typestr = {
-        "big":">",
-        "little":"<",
-    }
-    import sys
-    _byteorder = _byteorder_typestr[sys.byteorder]
-
-    # This is a Mapping from itk pixel types to typestr.
-    _itk_typestr = {
-        "UC":"|u1",
-        "US":_byteorder + "u2",
-        "UI":_byteorder + "u4",
-        "UL":_byteorder + "u8",
-        "ULL":_byteorder + "u8",
-        "SC":"|i1",
-        "SS":_byteorder + "i2",
-        "SI":_byteorder + "i4",
-        "SL":_byteorder + "i8",
-        "SLL":_byteorder + "i8",
-        "F":_byteorder + "f4",
-        "D":_byteorder + "f8",
-    }
-    import os
-    if os.name == 'nt':
-        _itk_typestr['UL'] = _byteorder + "u4"
-        _itk_typestr['SL'] = _byteorder + "i4"
-
     try:
         return _itk_typestr[itk_Image_type]
+    except KeyError as e:
+        raise e
+
+# This is a Mapping from typestr to itk pixel types.
+_typestr_itk = {v: k for k, v in _itk_typestr.items()}
+
+def get_itk_type(type_str):
+    """Returns the ITK PixelType from the type string as defined by the NumPy array interface."""
+
+    try:
+        return _typestr_itk[type_str]
     except KeyError as e:
         raise e
 %}
