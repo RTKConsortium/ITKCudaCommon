@@ -96,6 +96,7 @@ CudaImage<TPixel, VImageDimension>::SetBufferedRegion(const RegionType & region)
   m_DataManager->SetBufferSize(sizeof(TPixel) * numPixel);
   m_DataManager->SetCPUDirtyFlag(false); // prevent the GPU to copy to the CPU
   m_DataManager->SetGPUBufferDirty();
+  m_DataManager->SetImagePointer(this);
 }
 
 
