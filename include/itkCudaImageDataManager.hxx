@@ -97,8 +97,9 @@ UpdateCPUBuffer()
 {
   if(m_Image && !m_CPUBuffer)
   {
-    m_Image->Superclass::Allocate();
-    this->SetCPUBufferPointer(m_Image->Superclass::GetBufferPointer());
+    using CPUImageType = typename ImageType::Superclass;
+    m_Image->CPUImageType::Allocate();
+    this->SetCPUBufferPointer(m_Image->CPUImageType::GetBufferPointer());
   }
 
   Superclass::UpdateCPUBuffer();
