@@ -253,7 +253,7 @@ public:
   static void
   RegisterOneFactory(void)
   {
-    CudaImageFactory::Pointer factory = CudaImageFactory::New();
+    auto factory = CudaImageFactory::New();
 
     itk::ObjectFactoryBase::RegisterFactory(factory);
   }

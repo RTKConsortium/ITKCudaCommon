@@ -52,7 +52,7 @@ itkCudaSquareImageFilterTest(int, char *[])
   src->Allocate();
   src->FillBuffer(fillValue);
 
-  itk::CudaSquareImageFilter<ItkImage2f>::Pointer sqImageFilter = itk::CudaSquareImageFilter<ItkImage2f>::New();
+  auto sqImageFilter = itk::CudaSquareImageFilter<ItkImage2f>::New();
   sqImageFilter->SetInput(src);
   sqImageFilter->Update();
 
