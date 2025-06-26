@@ -28,27 +28,10 @@ using ItkImage2f = itk::CudaImage<float, 2>;
 int
 itkCudaSquareImageFilterTest(int, char *[])
 {
-  unsigned int width, height;
-  width = 256;
-  height = 256;
-
-  // set size & region
-  ItkImage2f::Pointer src;
-
-  ItkImage2f::IndexType start;
-  start[0] = 0;
-  start[1] = 0;
-  ItkImage2f::SizeType size;
-  size[0] = width;
-  size[1] = height;
-  ItkImage2f::RegionType region;
-  region.SetSize(size);
-  region.SetIndex(start);
-
   // create
   float fillValue = 2.0f;
-  src = ItkImage2f::New();
-  src->SetRegions(region);
+  auto src = ItkImage2f::New();
+  src->SetRegions(itk::MakeSize(256, 256));
   src->Allocate();
   src->FillBuffer(fillValue);
 
@@ -57,11 +40,7 @@ itkCudaSquareImageFilterTest(int, char *[])
   sqImageFilter->Update();
 
   // check pixel value
-  ItkImage2f::IndexType idx;
-  idx[0] = 0;
-  idx[1] = 0;
-
-  if (sqImageFilter->GetOutput()->GetPixel(idx) != fillValue * fillValue)
+  if (sqImageFilter->GetOutput()->GetPixel(itk::MakeIndex(0, 0)) != fillValue * fillValue)
   {
     return EXIT_FAILURE;
   }
