@@ -90,6 +90,30 @@ jobs:
         echo "Searching for wheels matching pattern ${WHEEL_PATTERN}"
         python -m twine check ${WHEEL_PATTERN}
 
+    - name: Install Python Package Artifact
+      run: |
+        ls .
+        wheel_name_full=`(find . -name "itk_*_cuda${{ matrix.cuda-version }}*cp3${{ matrix.python3-minor-version }}*.whl")`
+        echo "wheel_name_full ${wheel_name_full}"
+        # extract wheel name which may be an abbreviation of the module name
+        # ex. ./itk_splitcomponents-cp310..._64.whl -> itk-splitcomponents
+        wheel_name_prefix=`(echo ${wheel_name_full} | cut -d'-' -f1 | cut -d'/' -f2 | sed -e 's/_/-/g')`
+        echo "wheel_name_prefix ${wheel_name_prefix}"
+        python -m pip uninstall ${wheel_name_prefix} -y
+        python -m pip install ${wheel_name_full}
+
+    - name: Install test dependencies
+      shell: bash
+      run: |
+        if [[ -f ./test/requirements.txt ]]; then
+          python -m pip install -r ./test/requirements.txt
+        fi
+        python -m pip install pytest nbmake
+
+    - name: Run Python tests
+      run: |
+        ctest -L Python -VV
+
     - name: Publish Python package as GitHub Artifact
       uses: actions/upload-artifact@v4
       with:
