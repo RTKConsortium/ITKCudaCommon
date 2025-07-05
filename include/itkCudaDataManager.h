@@ -46,13 +46,14 @@ public:
   Allocate(size_t bufferSize)
   {
 #ifdef VERBOSE
-    if (m_GPUBuffer)
+    if (m_GPUBuffer && m_ManageMemory)
       std::cout << this << "::Freed GPU buffer of size " << m_BufferSize << " Bytes"
                 << " : " << m_GPUBuffer << std::endl;
 #endif
     m_BufferSize = bufferSize;
     CUDA_CHECK(cudaFree(m_GPUBuffer));
     CUDA_CHECK(cudaMalloc(&m_GPUBuffer, bufferSize));
+    m_ManageMemory = true;
 #ifdef VERBOSE
     std::cout << this << "::Allocate Create GPU buffer of size " << bufferSize << " Bytes"
               << " : " << m_GPUBuffer << std::endl;
@@ -63,11 +64,15 @@ public:
   Free()
   {
 #ifdef VERBOSE
-    if (m_GPUBuffer)
+    if (m_GPUBuffer && m_ManageMemory)
       std::cout << this << "::Freed GPU buffer of size " << m_BufferSize << " Bytes"
                 << " : " << m_GPUBuffer << std::endl;
 #endif
-    CUDA_CHECK(cudaFree(m_GPUBuffer));
+
+    if (m_GPUBuffer && m_ManageMemory)
+    {
+      CUDA_CHECK(cudaFree(m_GPUBuffer));
+    }
     m_GPUBuffer = nullptr;
     m_BufferSize = 0;
   }
@@ -86,6 +91,13 @@ public:
     return m_GPUBuffer;
   }
 
+  void
+  SetPointer(void *ptr)
+  {
+    m_GPUBuffer = ptr;
+    m_ManageMemory = false;
+  }
+
   void *
   GetPointerPtr()
   {
@@ -98,6 +110,12 @@ public:
     return m_BufferSize;
   }
 
+  void
+  SetBufferSize(size_t size)
+  {
+    m_BufferSize = size;
+  }
+
 protected:
   GPUMemPointer()
   {
@@ -107,6 +125,7 @@ protected:
 
   void * m_GPUBuffer;
   size_t m_BufferSize;
+  bool m_ManageMemory = true;
 };
 
 /** \class CudaDataManager
@@ -148,11 +167,23 @@ public:
   void
   SetCPUBufferPointer(void * ptr);
 
+  /** Sets the internal GPU buffer pointer which must have m_BufferSize elements. */
+  void
+  SetGPUBufferPointer(uint64_t ptr);
+  void
+  SetGPUBufferPointer(void * ptr);
+
   void
   SetCPUDirtyFlag(bool isDirty);
 
   void
   SetGPUDirtyFlag(bool isDirty);
+
+  /** Controls whether GPU memory should be released when dirty. On by default.
+   * When turning it off, one must call Free() to release the GPU memory. */
+  itkGetConstMacro(ReleaseDirtyGPUBuffer, bool);
+  itkSetMacro(ReleaseDirtyGPUBuffer, bool);
+  itkBooleanMacro(ReleaseDirtyGPUBuffer);
 
   /** Make GPU up-to-date and mark CPU as dirty.
    * Call this function when you want to modify CPU data */
@@ -204,6 +235,10 @@ public:
   /** Get Cuda buffer pointer */
   void *
   GetGPUBufferPointer();
+
+  /** Get pointer to the Cuda buffer pointer */
+  void *
+  GetGPUBufferPointerPtr();
 
   /** Get CPU buffer pointer */
   void *

@@ -2,7 +2,7 @@ import sys
 import importlib
 
 itk_module = sys.modules['itk']
-cuda_submodules = ['itk.itkCudaImageFromImage']
+cuda_submodules = ['itk.itkCudaImageFromImage', 'itk.itkCudaImageFromCudaArray']
 
 for mod_name in cuda_submodules:
   mod = importlib.import_module(mod_name)
