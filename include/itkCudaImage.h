@@ -76,12 +76,16 @@ public:
    * example usage:
    * using OutputImageType = typename ImageType::template Rebind< float >::Type;
    *
+   * \deprecated Use RebindImageType instead
    */
   template <typename TRebindPixel, unsigned int VRebindImageDimension = VImageDimension>
   struct Rebind
   {
     using Type = itk::CudaImage<TRebindPixel, VRebindImageDimension>;
   };
+
+  template <typename TRebindPixel, unsigned int VRebindImageDimension = VImageDimension>
+  using RebindImageType = itk::CudaImage<TRebindPixel, VRebindImageDimension>;
 
   //
   // Allocate CPU and Cuda memory space
