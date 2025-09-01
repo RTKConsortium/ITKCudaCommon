@@ -9,7 +9,8 @@ include(${ITK_USE_FILE})
 itk_module_test()
 
 set(CudaCommonTests
- itkCudaSquareImageFilterTest.cxx
+  itkCudaSquareImageFilterTest.cxx
+  itkCudaImageFromImageFilterTest.cxx
   )
 
 CreateTestDriver(CudaCommon "${CudaCommon-Test_LIBRARIES}" "${CudaCommonTests}")
@@ -17,6 +18,11 @@ CreateTestDriver(CudaCommon "${CudaCommon-Test_LIBRARIES}" "${CudaCommonTests}")
 itk_add_test(NAME itkCudaSquareImageFilterTest
   COMMAND CudaCommonTestDriver
   itkCudaSquareImageFilterTest
+  )
+
+itk_add_test(NAME itkCudaImageFromImageFilterTest
+  COMMAND CudaCommonTestDriver
+  itkCudaImageFromImageFilterTest
   )
 
 if(ITK_WRAP_PYTHON)
