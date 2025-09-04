@@ -15,16 +15,12 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef CudaSquareImage_hcu
-#define CudaSquareImage_hcu
+#ifndef __cudaCommonConfiguration_h
+#define __cudaCommonConfiguration_h
 
-namespace itk
-{
-
-template <class PixelType>
-void
-CudaSquareImage3D(int imSize[3], PixelType * in, PixelType * out);
-
-} // end namespace itk
+#define CudaCommon_VERSION_MAJOR @CudaCommon_VERSION_MAJOR@
+#define CudaCommon_VERSION_MINOR @CudaCommon_VERSION_MINOR@
+#define CudaCommon_VERSION_PATCH @CudaCommon_VERSION_PATCH@
+#define CudaCommon_VERSION_STRING "@CudaCommon_VERSION_STRING@"
 
 #endif
