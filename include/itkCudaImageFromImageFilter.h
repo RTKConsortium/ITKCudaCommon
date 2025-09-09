@@ -50,7 +50,7 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   itkNewMacro(Self);
-  itkTypeMacro(CudaImageFromImageFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(CudaImageFromImageFilter);
 
 protected:
   CudaImageFromImageFilter() = default;
