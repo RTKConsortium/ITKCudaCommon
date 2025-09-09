@@ -4,6 +4,7 @@ on: [push,pull_request]
 
 env:
   itk-git-tag: "v5.4.3"
+  itk-cmake-options: "-DITK_LEGACY_REMOVE:BOOL=ON -DITK_FUTURE_LEGACY_REMOVE:BOOL=ON"
 
 concurrency:
   group: '${{ github.workflow }}@${{ github.head_ref || github.run_id }}'
