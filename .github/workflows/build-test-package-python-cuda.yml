@@ -229,5 +229,8 @@ jobs:
         echo "Installing wheel: $wheel"
         pip install $wheel --force-reinstall
 
+        echo "Installing cupy and torch"
+        pip install cupy-cuda12x torch
+
         pip install pytest
         pytest $GITHUB_WORKSPACE/test/*.py
