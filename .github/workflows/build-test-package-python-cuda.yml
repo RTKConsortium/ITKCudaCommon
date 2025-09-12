@@ -226,8 +226,12 @@ jobs:
         # Find the CUDA 124 wheel for Python 3.11 dynamically
         wheel=$(find wheels -name "*cuda124*cp311*manylinux_2_28_x86_64.whl" -type f | head -1)
 
+        pip uninstall -y $(pip freeze |  grep -E '^itk-')
         echo "Installing wheel: $wheel"
-        pip install $wheel --force-reinstall
+        pip install $wheel
+
+        echo "Installing cupy and torch"
+        pip install cupy-cuda12x torch
 
         pip install pytest
         pytest $GITHUB_WORKSPACE/test/*.py
