@@ -215,12 +215,12 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         path: wheels
-      
+
     - name: Set up Python 3.11
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-        
+
     - name: Test python wheel
       run: |
         # Find the CUDA 124 wheel for Python 3.11 dynamically

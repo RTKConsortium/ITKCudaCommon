@@ -6,7 +6,7 @@ img = GPUImageType.New()
 
 img.SetSpacing([0.7, 0.7])
 img.SetOrigin([10.0, 20.0])
-img.SetRegions((16,20))
+img.SetRegions((16, 20))
 img.Allocate()
 img.FillBuffer(50)
 

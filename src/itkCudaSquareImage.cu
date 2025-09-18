@@ -21,8 +21,9 @@
 namespace itk
 {
 
-template<class PixelType>
-__global__ void CudaSquareImage3D_kernel(int3 imSize, PixelType* in, PixelType* out)
+template <class PixelType>
+__global__ void
+CudaSquareImage3D_kernel(int3 imSize, PixelType * in, PixelType * out)
 {
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
   unsigned int j = blockIdx.y * blockDim.y + threadIdx.y;
@@ -37,8 +38,9 @@ __global__ void CudaSquareImage3D_kernel(int3 imSize, PixelType* in, PixelType* 
   out[gidx] = in[gidx] * in[gidx];
 }
 
-template<class PixelType>
-void CudaSquareImage3D(int imSize[3], PixelType* in, PixelType* out)
+template <class PixelType>
+void
+CudaSquareImage3D(int imSize[3], PixelType * in, PixelType * out)
 {
   // Thread Block Dimensions
   constexpr int tBlock_x = 16;
@@ -55,10 +57,12 @@ void CudaSquareImage3D(int imSize[3], PixelType* in, PixelType* out)
 
   int3 imageSize = make_int3(imSize[0], imSize[1], imSize[2]);
 
-  CudaSquareImage3D_kernel<PixelType> << <dimGrid, dimBlock >> > (imageSize, in, out);
+  CudaSquareImage3D_kernel<PixelType><<<dimGrid, dimBlock>>>(imageSize, in, out);
 }
 
-template void CudaCommon_EXPORT CudaSquareImage3D<float>(int imSize[3], float* in, float* out);
-template void CudaCommon_EXPORT CudaSquareImage3D<double>(int imSize[3], double* in, double* out);
+template void CudaCommon_EXPORT
+CudaSquareImage3D<float>(int imSize[3], float * in, float * out);
+template void CudaCommon_EXPORT
+CudaSquareImage3D<double>(int imSize[3], double * in, double * out);
 
 } // end namespace itk

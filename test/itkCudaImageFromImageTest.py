@@ -1,5 +1,6 @@
 import itk
 
+
 def test_cuda_image_from_image():
     # Define image type (2D float Image)
     PixelType = itk.F

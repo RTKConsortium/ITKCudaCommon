@@ -92,7 +92,7 @@ public:
   }
 
   void
-  SetPointer(void *ptr)
+  SetPointer(void * ptr)
   {
     m_GPUBuffer = ptr;
     m_ManageMemory = false;
@@ -125,7 +125,7 @@ protected:
 
   void * m_GPUBuffer;
   size_t m_BufferSize;
-  bool m_ManageMemory = true;
+  bool   m_ManageMemory = true;
 };
 
 /** \class CudaDataManager

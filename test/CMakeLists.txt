@@ -1,6 +1,6 @@
 #-----------------------------------------------------------------------------
 # Find ITK to include ITK_USE_FILE and correctly configure dynamic libraries.
-if (NOT ITK_DIR)
+if(NOT ITK_DIR)
   set(ITK_DIR ${ITK_BINARY_DIR}/CMakeTmp)
 endif()
 find_package(ITK REQUIRED COMPONENTS ${ITK_MODULE_CudaCommon_DEPENDS})
@@ -8,24 +8,26 @@ include(${ITK_USE_FILE})
 
 itk_module_test()
 
-set(CudaCommonTests
+set(
+  CudaCommonTests
   itkCudaSquareImageFilterTest.cxx
   itkCudaImageFromImageFilterTest.cxx
-  )
+)
 
-CreateTestDriver(CudaCommon "${CudaCommon-Test_LIBRARIES}" "${CudaCommonTests}")
+createtestdriver(CudaCommon "${CudaCommon-Test_LIBRARIES}" "${CudaCommonTests}")
 
 itk_add_test(NAME itkCudaSquareImageFilterTest
   COMMAND CudaCommonTestDriver
   itkCudaSquareImageFilterTest
-  )
+)
 
 itk_add_test(NAME itkCudaImageFromImageFilterTest
   COMMAND CudaCommonTestDriver
   itkCudaImageFromImageFilterTest
-  )
+)
 
 if(ITK_WRAP_PYTHON)
   itk_python_add_test(NAME itkCudaImageFromImagePythonTest
-    COMMAND itkCudaImageFromImageTest.py)
+    COMMAND itkCudaImageFromImageTest.py
+  )
 endif()

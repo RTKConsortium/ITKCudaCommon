@@ -1,5 +1,6 @@
 import itk
 
+
 def cuda_image_from_image(image):
     """Convert a CPU itk.Image instance to an itk.CudaImage using CudaImageFromImageFilter."""
     InputImageT = image.__class__

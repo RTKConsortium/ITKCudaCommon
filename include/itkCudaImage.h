@@ -267,11 +267,11 @@ private:
   void
   operator=(const Self &); // purposely not implemented
 
-#define OverrideImageTypeMacro(pt, dm)                                                                                 \
-  this->RegisterOverride(typeid(itk::Image<pt, dm>).name(),                                                            \
-                         typeid(itk::CudaImage<pt, dm>).name(),                                                        \
-                         "Cuda Image Override",                                                                        \
-                         true,                                                                                         \
+#define OverrideImageTypeMacro(pt, dm)                          \
+  this->RegisterOverride(typeid(itk::Image<pt, dm>).name(),     \
+                         typeid(itk::CudaImage<pt, dm>).name(), \
+                         "Cuda Image Override",                 \
+                         true,                                  \
                          itk::CreateObjectFunction<CudaImage<pt, dm>>::New())
 
   CudaImageFactory()

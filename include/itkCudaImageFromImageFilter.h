@@ -37,15 +37,14 @@ namespace itk
  */
 template <typename TInputImage>
 class ITK_TEMPLATE_EXPORT CudaImageFromImageFilter
-  : public ImageToImageFilter<TInputImage,
-                              CudaImage<typename TInputImage::PixelType, TInputImage::ImageDimension>>
+  : public ImageToImageFilter<TInputImage, CudaImage<typename TInputImage::PixelType, TInputImage::ImageDimension>>
 {
 public:
   ITK_DISALLOW_COPY_AND_MOVE(CudaImageFromImageFilter);
 
   using Self = CudaImageFromImageFilter;
-  using Superclass = ImageToImageFilter<TInputImage,
-                                        CudaImage<typename TInputImage::PixelType, TInputImage::ImageDimension>>;
+  using Superclass =
+    ImageToImageFilter<TInputImage, CudaImage<typename TInputImage::PixelType, TInputImage::ImageDimension>>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
@@ -56,7 +55,8 @@ protected:
   CudaImageFromImageFilter() = default;
   ~CudaImageFromImageFilter() override = default;
 
-  void GenerateData() override;
+  void
+  GenerateData() override;
 };
 
 } // namespace itk
