@@ -3,6 +3,7 @@ import itk
 import cupy as cp
 import torch
 
+
 def create_cuda_image(size_list, fill_value=None):
     Dim = len(size_list)
     GPUImageType = itk.CudaImage[itk.F, Dim]
@@ -15,11 +16,13 @@ def create_cuda_image(size_list, fill_value=None):
     img.FillBuffer(fill_value)
     return img
 
+
 def image_to_array(img):
     _, params = itk.template(img)
     PixelType, Dim = params
     CPUImageT = itk.Image[PixelType, Dim]
     return itk.GetArrayFromImage(img, ttype=CPUImageT)
+
 
 def test_cuda_array_interface_cupy_2d():
     H, W = 16, 8
@@ -33,6 +36,7 @@ def test_cuda_array_interface_cupy_2d():
     arr2 = image_to_array(img2)
     np.testing.assert_allclose(arr2, np.full((H, W), 15, dtype=arr2.dtype))
 
+
 def test_cuda_array_interface_cupy_3d():
     Z, Y, X = 4, 3, 5
     img = create_cuda_image([X, Y, Z], fill_value=10)
@@ -44,6 +48,7 @@ def test_cuda_array_interface_cupy_3d():
     assert np.allclose(img2.GetDirection(), img.GetDirection())
     arr2 = image_to_array(img2)
     np.testing.assert_allclose(arr2, np.full((Z, Y, X), 15, dtype=arr2.dtype))
+
 
 def test_cuda_array_interface_torch_2d():
     H, W = 10, 12
@@ -57,6 +62,7 @@ def test_cuda_array_interface_torch_2d():
     arr2 = image_to_array(img2)
     np.testing.assert_allclose(arr2, np.full((H, W), 15, dtype=arr2.dtype))
 
+
 def test_cuda_array_interface_torch_3d():
     Z, Y, X = 2, 3, 4
     img = create_cuda_image([X, Y, Z], fill_value=10)
@@ -69,6 +75,7 @@ def test_cuda_array_interface_torch_3d():
     arr2 = image_to_array(img2)
     np.testing.assert_allclose(arr2, np.full((Z, Y, X), 15, dtype=arr2.dtype))
 
+
 def test_cupy_getpixel():
     x_gpu = cp.array([[0, 1, 2], [3, 4, 5]], dtype=cp.float32, order="C")
     cuda_img = itk.cuda_image_from_cuda_array(x_gpu)
@@ -79,6 +86,7 @@ def test_cupy_getpixel():
 
     val = cuda_img.GetPixel(pixelIndex)
     assert np.isclose(val, 5.0)
+
 
 def test_torch_getpixel():
     t = torch.tensor([[0, 1, 2], [3, 4, 5]], dtype=torch.float32, device="cuda")

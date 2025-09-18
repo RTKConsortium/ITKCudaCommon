@@ -19,4 +19,3 @@ itk_wrap_class("itk::CudaImageFromImageFilter" POINTER)
 	endforeach()
 
 itk_end_wrap_class()
-

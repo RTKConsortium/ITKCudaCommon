@@ -7,7 +7,12 @@
 # CUDAARCHS environment variable.
 if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
   if(DEFINED ENV{CUDAARCHS})
-    set(CMAKE_CUDA_ARCHITECTURES "$ENV{CUDAARCHS}" CACHE STRING "CUDA architectures")
+    set(
+      CMAKE_CUDA_ARCHITECTURES
+      "$ENV{CUDAARCHS}"
+      CACHE STRING
+      "CUDA architectures"
+    )
   else()
     set(CMAKE_CUDA_ARCHITECTURES "52" CACHE STRING "CUDA architectures")
   endif()
@@ -15,7 +20,7 @@ endif()
 include(CheckLanguage)
 check_language(CUDA)
 
-if (CMAKE_CUDA_COMPILER)
+if(CMAKE_CUDA_COMPILER)
   set(CUDAToolkit_NVCC_EXECUTABLE ${CMAKE_CUDA_COMPILER})
   find_package(CUDAToolkit REQUIRED)
   if(NOT CUDAToolkit_FOUND)
@@ -24,7 +29,10 @@ if (CMAKE_CUDA_COMPILER)
 endif()
 
 # Configure CUDA compilation options
-option(CUDACOMMON_CUDA_VERSION "Specify the exact CUDA version that must be used for CudaCommon")
+option(
+  CUDACOMMON_CUDA_VERSION
+  "Specify the exact CUDA version that must be used for CudaCommon"
+)
 if(CUDAToolkit_FOUND)
   enable_language(CUDA)
   set(CMAKE_CUDA_RUNTIME_LIBRARY Static)

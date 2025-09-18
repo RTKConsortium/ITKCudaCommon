@@ -18,7 +18,10 @@ project(CudaCommon)
 set(CudaCommon_VERSION_MAJOR "2")
 set(CudaCommon_VERSION_MINOR "0")
 set(CudaCommon_VERSION_PATCH "0")
-set(CudaCommon_VERSION_STRING "${CudaCommon_VERSION_MAJOR}.${CudaCommon_VERSION_MINOR}")
+set(
+  CudaCommon_VERSION_STRING
+  "${CudaCommon_VERSION_MAJOR}.${CudaCommon_VERSION_MINOR}"
+)
 
 #=========================================================
 # Installation variables
@@ -32,7 +35,11 @@ if(NOT ITK_SOURCE_DIR)
 endif()
 
 set(CudaCommon_LIBRARIES CudaCommon)
-set(CudaCommon_INCLUDE_DIRS ${CudaCommon_SOURCE_DIR}/include ${CUDAToolkit_INCLUDE_DIRS})
+set(
+  CudaCommon_INCLUDE_DIRS
+  ${CudaCommon_SOURCE_DIR}/include
+  ${CUDAToolkit_INCLUDE_DIRS}
+)
 
 # --------------------------------------------------------
 # Find ITK (required)
@@ -41,12 +48,16 @@ if(NOT ITK_SOURCE_DIR)
 endif()
 
 # Propagate cmake options in a header file
-configure_file(${CudaCommon_SOURCE_DIR}/itkCudaCommonConfiguration.h.in
-    ${CudaCommon_BINARY_DIR}/include/itkCudaCommonConfiguration.h)
+configure_file(
+  ${CudaCommon_SOURCE_DIR}/itkCudaCommonConfiguration.h.in
+  ${CudaCommon_BINARY_DIR}/include/itkCudaCommonConfiguration.h
+)
 
 list(APPEND CudaCommon_INCLUDE_DIRS ${CudaCommon_BINARY_DIR})
 
-set(CudaCommon_EXPORT_CODE_BUILD "
+set(
+  CudaCommon_EXPORT_CODE_BUILD
+  "
 # Pass source dir to allow other modules, e.g. RTK, to use CudaImage.i.init and CudaImage.i.in
 set(CudaCommon_SOURCE_DIR ${CudaCommon_SOURCE_DIR})
 
@@ -55,11 +66,15 @@ set(CudaCommon_VERSION_MAJOR ${CudaCommon_VERSION_MAJOR})
 set(CudaCommon_VERSION_MINOR ${CudaCommon_VERSION_MINOR})
 set(CudaCommon_VERSION_PATCH ${CudaCommon_VERSION_PATCH})
 set(CudaCommon_VERSION_STRING ${CudaCommon_VERSION_STRING})
-")
+"
+)
 
 if(NOT ITK_SOURCE_DIR)
   if(NOT EXISTS ${ITK_CMAKE_DIR}/ITKModuleMacros.cmake)
-    message(FATAL_ERROR "Modules can only be built against an ITK build tree; they cannot be built against an ITK install tree.")
+    message(
+      FATAL_ERROR
+      "Modules can only be built against an ITK build tree; they cannot be built against an ITK install tree."
+    )
   endif()
 
   list(APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR})
@@ -70,4 +85,8 @@ else()
 endif()
 
 # Install configuration file
-install(FILES ${CudaCommon_BINARY_DIR}/include/itkCudaCommonConfiguration.h DESTINATION ${CudaCommon_INSTALL_INCLUDE_DIR})
+install(
+  FILES
+    ${CudaCommon_BINARY_DIR}/include/itkCudaCommonConfiguration.h
+  DESTINATION ${CudaCommon_INSTALL_INCLUDE_DIR}
+)

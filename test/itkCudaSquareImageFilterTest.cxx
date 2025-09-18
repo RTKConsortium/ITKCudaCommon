@@ -30,7 +30,7 @@ itkCudaSquareImageFilterTest(int, char *[])
 {
   // create
   float fillValue = 2.0f;
-  auto src = ItkImage2f::New();
+  auto  src = ItkImage2f::New();
   src->SetRegions(itk::MakeSize(256, 256));
   src->Allocate();
   src->FillBuffer(fillValue);

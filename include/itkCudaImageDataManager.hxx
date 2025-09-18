@@ -92,10 +92,9 @@ CudaImageDataManager<ImageType>::MakeCPUBufferUpToDate()
 
 template <class ImageType>
 void
-CudaImageDataManager<ImageType>::
-UpdateCPUBuffer()
+CudaImageDataManager<ImageType>::UpdateCPUBuffer()
 {
-  if(m_Image && !m_CPUBuffer)
+  if (m_Image && !m_CPUBuffer)
   {
     using CPUImageType = typename ImageType::Superclass;
     m_Image->CPUImageType::Allocate();

@@ -22,7 +22,8 @@ namespace itk
 {
 
 template <typename TInputImage>
-void CudaImageFromImageFilter<TInputImage>::GenerateData()
+void
+CudaImageFromImageFilter<TInputImage>::GenerateData()
 {
   const auto * in = this->GetInput();
   auto *       out = this->GetOutput();

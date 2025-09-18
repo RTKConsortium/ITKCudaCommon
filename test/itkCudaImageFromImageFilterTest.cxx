@@ -22,13 +22,14 @@
 #include <iostream>
 #include <cstring>
 
-int itkCudaImageFromImageFilterTest(int, char * [])
+int
+itkCudaImageFromImageFilterTest(int, char *[])
 {
   using InputImageType = itk::Image<float, 3>;
-  auto input = InputImageType::New();
+  auto                       input = InputImageType::New();
   InputImageType::RegionType region;
-  InputImageType::IndexType  start{ {0,0,0} };
-  InputImageType::SizeType   size{ {4,4,4} };
+  InputImageType::IndexType  start{ { 0, 0, 0 } };
+  InputImageType::SizeType   size{ { 4, 4, 4 } };
   region.SetIndex(start);
   region.SetSize(size);
   input->SetRegions(region);
@@ -39,10 +40,10 @@ int itkCudaImageFromImageFilterTest(int, char * [])
 
   // Prepare a smaller output requested region (simulate downstream streaming request)
   InputImageType::RegionType smallRegion = region;
-  InputImageType::SizeType smallSize = size;
+  InputImageType::SizeType   smallSize = size;
   smallSize[0] /= 2;
   smallRegion.SetSize(smallSize);
-  
+
   auto * out = filter->GetOutput();
   out->SetRequestedRegion(smallRegion);
 
