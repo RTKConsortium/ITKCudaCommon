@@ -33,12 +33,12 @@ namespace itk
  * \ingroup ITKCudaCommon
  */
 template <class TImage>
-class ITK_TEMPLATE_EXPORT CudaSquareImageFilter : public CudaImageToImageFilter<TImage, TImage>
+class ITK_TEMPLATE_EXPORT CudaSquareImageFilter : public CudaInPlaceImageFilter<TImage, TImage>
 {
 public:
   /** Standard class type alias. */
   using Self = CudaSquareImageFilter;
-  using Superclass = CudaImageToImageFilter<TImage, TImage>;
+  using Superclass = CudaInPlaceImageFilter<TImage, TImage>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
