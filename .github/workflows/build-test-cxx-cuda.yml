@@ -3,7 +3,7 @@ name: 'Build, Test ITKCudaCommon with CUDA'
 on: [push,pull_request]
 
 env:
-  itk-git-tag: "v5.4.3"
+  itk-git-tag: "v5.4.4"
   itk-cmake-options: "-DITK_LEGACY_REMOVE:BOOL=ON -DITK_FUTURE_LEGACY_REMOVE:BOOL=ON"
 
 concurrency:
