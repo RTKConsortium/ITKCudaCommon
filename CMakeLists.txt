@@ -47,13 +47,22 @@ if(NOT ITK_SOURCE_DIR)
   find_package(ITK 5.2 REQUIRED)
 endif()
 
-# Propagate cmake options in a header file
+# Propagate cmake options in a header file at the same location as CudaCommonExport.h
+if(ITK_SOURCE_DIR)
+  set(
+    _configuration_header_file
+    "${ITKCommon_BINARY_DIR}/itkCudaCommonConfiguration.h"
+  )
+else()
+  set(
+    _configuration_header_file
+    "${CudaCommon_BINARY_DIR}/include/itkCudaCommonConfiguration.h"
+  )
+endif()
 configure_file(
   ${CudaCommon_SOURCE_DIR}/itkCudaCommonConfiguration.h.in
-  ${CudaCommon_BINARY_DIR}/include/itkCudaCommonConfiguration.h
+  ${_configuration_header_file}
 )
-
-list(APPEND CudaCommon_INCLUDE_DIRS ${CudaCommon_BINARY_DIR})
 
 set(
   CudaCommon_EXPORT_CODE_BUILD
