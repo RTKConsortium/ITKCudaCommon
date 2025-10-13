@@ -38,9 +38,9 @@ itkCudaMemoryProbeTest(int, char *[])
   // Compute the expected GPU allocation size directly from image size.
   // numPixels * sizeof(float) / 1024 -> kB
   size_t gpuBytes = img->GetCudaDataManager()->GetGPUBufferSize();
-  double expectedKB = static_cast<double>(gpuBytes / 1024);
+  double expectedKB = gpuBytes / 1024.0;
 
-  double    mean = probe.GetMean();
+  double mean = probe.GetMean();
 
   if (mean != expectedKB)
   {
