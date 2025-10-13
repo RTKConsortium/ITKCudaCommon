@@ -96,6 +96,6 @@ endif()
 # Install configuration file
 install(
   FILES
-    ${CudaCommon_BINARY_DIR}/include/itkCudaCommonConfiguration.h
+    ${_configuration_header_file}
   DESTINATION ${CudaCommon_INSTALL_INCLUDE_DIR}
 )
