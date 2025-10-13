@@ -41,7 +41,6 @@ itkCudaMemoryProbeTest(int, char *[])
   double expectedKB = static_cast<double>(gpuBytes / 1024);
 
   double    mean = probe.GetMean();
-  long long observedKB = static_cast<long long>(expectedKB);
 
   if (mean != expectedKB)
   {
