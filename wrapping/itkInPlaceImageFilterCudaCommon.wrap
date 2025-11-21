@@ -1,0 +1,22 @@
+itk_wrap_include(itkCudaImage.h)
+itk_wrap_include(itkInPlaceImageFilter.h)
+
+itk_wrap_class("itk::InPlaceImageFilter" POINTER)
+
+  UNIQUE(types "UC;UL;${ITKM_IT};${WRAP_ITK_SCALAR}")
+  foreach(d ${ITK_WRAP_IMAGE_DIMS})
+    foreach(t ${types})
+      itk_wrap_template("IPCI${ITKM_${t}}${d}" "itk::CudaImage<${ITKT_${t}}, ${d}>")
+    endforeach()
+  endforeach()
+
+  UNIQUE(vector_types "${WRAP_ITK_VECTOR_REAL};${WRAP_ITK_COV_VECTOR_REAL}")
+  foreach(c ${ITK_WRAP_VECTOR_COMPONENTS})
+    foreach(d ${ITK_WRAP_IMAGE_DIMS})
+      foreach(vt ${vector_types})
+        itk_wrap_template("IPCI${ITKM_${vt}${c}}${d}" "itk::CudaImage<${ITKT_${vt}${c}}, ${d}>")
+      endforeach()
+    endforeach()
+  endforeach()
+
+itk_end_wrap_class()

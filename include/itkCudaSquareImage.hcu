@@ -25,6 +25,10 @@ template <class PixelType>
 void
 CudaSquareImage3D(int imSize[3], PixelType * in, PixelType * out);
 
+template <class PixelType>
+void
+CudaSquareImage2D(int imSize[2], PixelType * in, PixelType * out);
+
 } // end namespace itk
 
 #endif
