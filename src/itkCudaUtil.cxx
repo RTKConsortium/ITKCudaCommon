@@ -85,7 +85,9 @@ CudaGetMaxFlopsDev()
   int max_flops_device = 0;
   for (int i = 0; i < numAvailableDevices; ++i)
   {
-    int flops = devices[i].multiProcessorCount * devices[i].clockRate;
+    int clockRate;
+    cudaDeviceGetAttribute(&clockRate, cudaDevAttrClockRate, i);
+    int flops = devices[i].multiProcessorCount * clockRate;
     if (flops > max_flops)
     {
       max_flops = flops;
@@ -121,9 +123,12 @@ CudaPrintDeviceInfo(int device, bool verbose)
     return;
   }
 
+  int clockRate;
+  cudaDeviceGetAttribute(&clockRate, cudaDevAttrClockRate, device);
+
   std::cout << prop.name << std::endl;
   std::cout << "Compute capability: " << prop.major << "." << prop.minor << std::endl;
-  std::cout << "Clockrate: " << prop.clockRate << std::endl;
+  std::cout << "Clockrate: " << clockRate << std::endl;
   std::cout << "Global memory: " << prop.totalGlobalMem << std::endl;
   std::cout << "Constant memory: " << prop.totalConstMem << std::endl;
   std::cout << "Number of Multi Processors: " << prop.multiProcessorCount << std::endl;
