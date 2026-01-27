@@ -3,20 +3,29 @@ itk_wrap_include(itkImage.h)
 
 itk_wrap_class("itk::ImageToImageFilter" POINTER)
 
-  UNIQUE(types "UC;UL;${ITKM_IT};${WRAP_ITK_SCALAR}")
-  foreach(d ${ITK_WRAP_IMAGE_DIMS})
-    foreach(t ${types})
-      itk_wrap_template("CI${ITKM_${t}}${d}CI${ITKM_${t}}${d}" "itk::CudaImage<${ITKT_${t}}, ${d}>, itk::CudaImage<${ITKT_${t}}, ${d}>")
-      itk_wrap_template("I${ITKM_${t}}${d}CI${ITKM_${t}}${d}" "itk::Image<${ITKT_${t}}, ${d}>, itk::CudaImage<${ITKT_${t}}, ${d}>")
-    endforeach()
-  endforeach()
-
+  unique(from_types "D;UC;UL;${WRAP_ITK_SCALAR}")
+  unique(to_types "D;UC;UL;${ITKM_IT};${WRAP_ITK_SCALAR}")
   UNIQUE(vector_types "${WRAP_ITK_VECTOR_REAL};${WRAP_ITK_COV_VECTOR_REAL}")
-  foreach(c ${ITK_WRAP_VECTOR_COMPONENTS})
-    foreach(d ${ITK_WRAP_IMAGE_DIMS})
+
+  foreach(d ${ITK_WRAP_IMAGE_DIMS})
+    foreach(from ${from_types})
+      foreach(to ${to_types})
+        itk_wrap_template("I${ITKM_${from}}${d}CI${ITKM_${to}}${d}"
+                          "itk::Image< ${ITKT_${from}}, ${d} >, itk::CudaImage< ${ITKT_${to}}, ${d} >")
+        itk_wrap_template("CI${ITKM_${from}}${d}I${ITKM_${to}}${d}"
+                          "itk::CudaImage< ${ITKT_${from}}, ${d} >, itk::Image< ${ITKT_${to}}, ${d} >")
+        itk_wrap_template("CI${ITKM_${from}}${d}CI${ITKM_${to}}${d}"
+                          "itk::CudaImage< ${ITKT_${from}}, ${d} >, itk::CudaImage< ${ITKT_${to}}, ${d} >")
+      endforeach()
+    endforeach()
+    foreach(c ${ITK_WRAP_VECTOR_COMPONENTS})
       foreach(vt ${vector_types})
-        itk_wrap_template("CI${ITKM_${vt}${c}}${d}CI${ITKM_${vt}${c}}${d}" "itk::CudaImage<${ITKT_${vt}${c}}, ${d}>, itk::CudaImage<${ITKT_${vt}${c}}, ${d}>")
-        itk_wrap_template("I${ITKM_${vt}${c}}${d}CI${ITKM_${vt}${c}}${d}" "itk::Image<${ITKT_${vt}${c}}, ${d}>, itk::CudaImage<${ITKT_${vt}${c}}, ${d}>")
+        itk_wrap_template("I${ITKM_${vt}${c}}${d}CI${ITKM_${vt}${c}}${d}"
+                          "itk::Image< ${ITKT_${vt}${c}}, ${d} >, itk::CudaImage< ${ITKT_${vt}${c}}, ${d} >")
+        itk_wrap_template("CI${ITKM_${vt}${c}}${d}I${ITKM_${vt}${c}}${d}"
+                          "itk::CudaImage< ${ITKT_${vt}${c}}, ${d} >, itk::Image< ${ITKT_${vt}${c}}, ${d} >")
+        itk_wrap_template("CI${ITKM_${vt}${c}}${d}CI${ITKM_${vt}${c}}${d}"
+                          "itk::CudaImage< ${ITKT_${vt}${c}}, ${d} >, itk::CudaImage< ${ITKT_${vt}${c}}, ${d} >")
       endforeach()
     endforeach()
   endforeach()

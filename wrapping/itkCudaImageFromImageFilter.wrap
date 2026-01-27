@@ -2,7 +2,7 @@ itk_wrap_include(itkImage.h)
 
 itk_wrap_class("itk::CudaImageFromImageFilter" POINTER)
 
-	UNIQUE(types "UC;UL;${ITKM_IT};${WRAP_ITK_SCALAR}")
+	UNIQUE(types "D;UC;UL;${ITKM_IT};${WRAP_ITK_SCALAR}")
 	foreach(d ${ITK_WRAP_IMAGE_DIMS})
 		foreach(t ${types})
 			itk_wrap_template("${t}${d}" "itk::Image<${ITKT_${t}}, ${d}>")
