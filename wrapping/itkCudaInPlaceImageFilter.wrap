@@ -1,0 +1,15 @@
+itk_wrap_include(itkCudaImage.h)
+
+itk_wrap_class("itk::CudaInPlaceImageFilter" POINTER)
+
+  unique(from_types "D;UC;UL;${WRAP_ITK_SCALAR}")
+  unique(to_types "D;UC;UL;${ITKM_IT};${WRAP_ITK_SCALAR}")
+  UNIQUE(vector_types "${WRAP_ITK_VECTOR_REAL};${WRAP_ITK_COV_VECTOR_REAL}")
+
+  cuda_wrap_image_filter_combinations("${from_types}" "${to_types}" "IP")
+  cuda_wrap_image_filter_combinations("${from_types}" "${to_types}" "IP" "itk::InPlaceImageFilter")
+
+  cuda_wrap_vector_combinations("${vector_types}" "IP")
+  cuda_wrap_vector_combinations("${vector_types}" "IP" "itk::InPlaceImageFilter")
+
+itk_end_wrap_class()
