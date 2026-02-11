@@ -26,18 +26,19 @@ template <class ImageType>
 void
 CudaSquareImageFilter<ImageType>::GPUGenerateData()
 {
-  int size[3] = { 1, 1, 1 };
-  for (unsigned int i = 0; i < ImageDimension; i++)
-  {
-    size[i] = this->GetInput()->GetBufferedRegion().GetSize()[i];
-  }
-
   typename ImageType::PixelType * pin0 =
     (typename ImageType::PixelType *)(this->GetInput(0)->GetCudaDataManager()->GetGPUBufferPointer());
   typename ImageType::PixelType * pout =
     (typename ImageType::PixelType *)(this->GetOutput()->GetCudaDataManager()->GetGPUBufferPointer());
 
-  CudaSquareImage3D<typename ImageType::PixelType>(size, pin0, pout);
+  int size[ImageDimension];
+  for (unsigned int i = 0; i < ImageDimension; ++i)
+    size[i] = this->GetInput()->GetBufferedRegion().GetSize()[i];
+
+  if constexpr (ImageDimension == 2)
+    CudaSquareImage2D<typename ImageType::PixelType>(size, pin0, pout);
+  else if constexpr (ImageDimension == 3)
+    CudaSquareImage3D<typename ImageType::PixelType>(size, pin0, pout);
 }
 
 } // end namespace itk
