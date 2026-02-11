@@ -23,6 +23,42 @@ namespace itk
 
 template <class PixelType>
 __global__ void
+CudaSquareImage2D_kernel(int2 imSize, PixelType * in, PixelType * out)
+{
+  unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+  unsigned int j = blockIdx.y * blockDim.y + threadIdx.y;
+
+  if (i >= imSize.x || j >= imSize.y)
+  {
+    return;
+  }
+  unsigned int gidx = i + j * imSize.x;
+
+  out[gidx] = in[gidx] * in[gidx];
+}
+
+template <class PixelType>
+void
+CudaSquareImage2D(int imSize[2], PixelType * in, PixelType * out)
+{
+  // Thread Block Dimensions
+  constexpr int tBlock_x = 16;
+  constexpr int tBlock_y = 16;
+
+  unsigned int blocksInX = (imSize[0] - 1) / tBlock_x + 1;
+  unsigned int blocksInY = (imSize[1] - 1) / tBlock_y + 1;
+
+  // Compute block and grid sizes
+  dim3 dimGrid = dim3(blocksInX, blocksInY);
+  dim3 dimBlock = dim3(tBlock_x, tBlock_y);
+
+  int2 imageSize = make_int2(imSize[0], imSize[1]);
+
+  CudaSquareImage2D_kernel<PixelType><<<dimGrid, dimBlock>>>(imageSize, in, out);
+}
+
+template <class PixelType>
+__global__ void
 CudaSquareImage3D_kernel(int3 imSize, PixelType * in, PixelType * out)
 {
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -60,9 +96,19 @@ CudaSquareImage3D(int imSize[3], PixelType * in, PixelType * out)
   CudaSquareImage3D_kernel<PixelType><<<dimGrid, dimBlock>>>(imageSize, in, out);
 }
 
-template void CudaCommon_EXPORT
-CudaSquareImage3D<float>(int imSize[3], float * in, float * out);
-template void CudaCommon_EXPORT
-CudaSquareImage3D<double>(int imSize[3], double * in, double * out);
 
+#define ITK_CUDA_SQUARE_IMAGE_INSTANTIATE(T)                                            \
+  template void CudaCommon_EXPORT CudaSquareImage3D<T>(int imSize[3], T * in, T * out); \
+  template void CudaCommon_EXPORT CudaSquareImage2D<T>(int imSize[2], T * in, T * out)
+
+ITK_CUDA_SQUARE_IMAGE_INSTANTIATE(float);
+ITK_CUDA_SQUARE_IMAGE_INSTANTIATE(double);
+ITK_CUDA_SQUARE_IMAGE_INSTANTIATE(int);
+ITK_CUDA_SQUARE_IMAGE_INSTANTIATE(unsigned int);
+ITK_CUDA_SQUARE_IMAGE_INSTANTIATE(unsigned long);
+ITK_CUDA_SQUARE_IMAGE_INSTANTIATE(short);
+ITK_CUDA_SQUARE_IMAGE_INSTANTIATE(unsigned short);
+ITK_CUDA_SQUARE_IMAGE_INSTANTIATE(unsigned char);
+
+#undef ITK_CUDA_SQUARE_IMAGE_INSTANTIATE
 } // end namespace itk
