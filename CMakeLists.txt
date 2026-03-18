@@ -47,6 +47,13 @@ if(NOT ITK_SOURCE_DIR)
   find_package(ITK 5.2 REQUIRED)
 endif()
 
+if(NOT ITK_SOURCE_DIR)
+  list(APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR})
+  include(GetGitRevisionDescription)
+  get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+  set(CudaCommon_VERSION_HASH ", git hash ${GIT_SHA1}")
+endif()
+
 # Propagate cmake options in a header file at the same location as CudaCommonExport.h
 if(ITK_SOURCE_DIR)
   set(
@@ -86,7 +93,6 @@ if(NOT ITK_SOURCE_DIR)
     )
   endif()
 
-  list(APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR})
   include(ITKModuleExternal)
 else()
   set(ITK_DIR ${CMAKE_BINARY_DIR})
