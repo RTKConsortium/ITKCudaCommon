@@ -49,8 +49,12 @@ endif()
 
 if(NOT ITK_SOURCE_DIR)
   list(APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR})
-  include(GetGitRevisionDescription)
-  get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+endif()
+include(GetGitRevisionDescription)
+get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+if(GIT_SHA1 MATCHES ".*NOTFOUND")
+  set(CudaCommon_VERSION_HASH "")
+else()
   set(CudaCommon_VERSION_HASH ", git hash ${GIT_SHA1}")
 endif()
 
@@ -92,7 +96,6 @@ if(NOT ITK_SOURCE_DIR)
       "Modules can only be built against an ITK build tree; they cannot be built against an ITK install tree."
     )
   endif()
-
   include(ITKModuleExternal)
 else()
   set(ITK_DIR ${CMAKE_BINARY_DIR})
