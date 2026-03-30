@@ -16,7 +16,7 @@ project(CudaCommon)
 
 ## CudaCommon Version
 set(CudaCommon_VERSION_MAJOR "2")
-set(CudaCommon_VERSION_MINOR "0")
+set(CudaCommon_VERSION_MINOR "1")
 set(CudaCommon_VERSION_PATCH "0")
 set(
   CudaCommon_VERSION_STRING
