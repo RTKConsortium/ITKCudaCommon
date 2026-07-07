@@ -69,18 +69,19 @@ CudaGetAvailableDevices(std::vector<cudaDeviceProp> & devices)
 }
 
 //
-// Get the device that has the maximum FLOPS
+// Compute the device that has the maximum FLOPS
 //
 int
-CudaGetMaxFlopsDev()
+ComputeMaxFlopsDevice()
 {
   std::vector<cudaDeviceProp> devices;
   int                         numAvailableDevices = CudaGetAvailableDevices(devices);
+
   if (numAvailableDevices == 0)
   {
-
     return -1;
   }
+
   int max_flops = 0;
   int max_flops_device = 0;
   for (int i = 0; i < numAvailableDevices; ++i)
@@ -94,6 +95,14 @@ CudaGetMaxFlopsDev()
       max_flops_device = i;
     }
   }
+
+  return max_flops_device;
+}
+
+int
+CudaGetMaxFlopsDev()
+{
+  static const int max_flops_device = ComputeMaxFlopsDevice();
 
   return max_flops_device;
 }
