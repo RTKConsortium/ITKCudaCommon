@@ -55,7 +55,7 @@ GetCudaComputeCapability(int device);
 int
 CudaGetAvailableDevices(std::vector<cudaDeviceProp> & devices);
 
-/** Get the device that has the maximum FLOPS in the current context */
+/** Get the device that has the maximum FLOPS in the current context. The result is cached for future calls. */
 int
 CudaGetMaxFlopsDev();
 
