@@ -17,6 +17,9 @@ set(
   itkCudaImageFromImageFilterTest.cxx
   itkCudaImageToImageFilterTest.cxx
   itkCudaMemoryProbeTest.cxx
+  itkCudaDataManagerDirtyFlagTest.cxx
+  itkCudaDataManagerReleaseFreeTest.cxx
+  itkCudaImageRegionGraftTest.cxx
 )
 
 createtestdriver(CudaCommon "${CudaCommon-Test_LIBRARIES}" "${CudaCommonTests}")
@@ -39,6 +42,21 @@ itk_add_test(NAME itkCudaImageToImageFilterTest
 itk_add_test(NAME itkCudaMemoryProbeTest
   COMMAND CudaCommonTestDriver
   itkCudaMemoryProbeTest
+)
+
+itk_add_test(NAME itkCudaDataManagerDirtyFlagTest
+  COMMAND CudaCommonTestDriver
+  itkCudaDataManagerDirtyFlagTest
+)
+
+itk_add_test(NAME itkCudaDataManagerReleaseFreeTest
+  COMMAND CudaCommonTestDriver
+  itkCudaDataManagerReleaseFreeTest
+)
+
+itk_add_test(NAME itkCudaImageRegionGraftTest
+  COMMAND CudaCommonTestDriver
+  itkCudaImageRegionGraftTest
 )
 
 if(ITK_WRAP_PYTHON)
