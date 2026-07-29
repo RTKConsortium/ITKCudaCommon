@@ -89,6 +89,8 @@ set(CudaCommon_VERSION_STRING ${CudaCommon_VERSION_STRING})
 "
 )
 
+set(CudaCommon_EXPORT_CODE_INSTALL "find_package(CUDAToolkit REQUIRED)")
+
 if(NOT ITK_SOURCE_DIR)
   if(NOT EXISTS ${ITK_CMAKE_DIR}/ITKModuleMacros.cmake)
     message(
@@ -108,3 +110,13 @@ install(
     ${_configuration_header_file}
   DESTINATION ${CudaCommon_INSTALL_INCLUDE_DIR}
 )
+
+if(NOT ITK_SOURCE_DIR)
+  # Install the CMake targets export file so that find_package(ITK
+  # COMPONENTS CudaCommon) can find the CudaCommon imported targets.
+  install(
+    EXPORT ${${itk-module}-targets}
+    DESTINATION "${ITK_INSTALL_PACKAGE_DIR}/Modules/Targets"
+    COMPONENT Development
+  )
+endif()
