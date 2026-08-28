@@ -76,12 +76,9 @@ configure_file(
 )
 
 set(
-  CudaCommon_EXPORT_CODE_BUILD
+  CudaCommon_VERSION_STRINGS
   "
-# Pass source dir to allow other modules, e.g. RTK, to use CudaImage.i.init and CudaImage.i.in
-set(CudaCommon_SOURCE_DIR ${CudaCommon_SOURCE_DIR})
-
-# Also pass CudaCommon version
+# CudaCommon version numbers
 set(CudaCommon_VERSION_MAJOR ${CudaCommon_VERSION_MAJOR})
 set(CudaCommon_VERSION_MINOR ${CudaCommon_VERSION_MINOR})
 set(CudaCommon_VERSION_PATCH ${CudaCommon_VERSION_PATCH})
@@ -89,7 +86,24 @@ set(CudaCommon_VERSION_STRING ${CudaCommon_VERSION_STRING})
 "
 )
 
-set(CudaCommon_EXPORT_CODE_INSTALL "find_package(CUDAToolkit REQUIRED)")
+set(
+  CudaCommon_EXPORT_CODE_BUILD
+  "
+# Pass source dir to allow other modules, e.g. RTK, to use CudaImage.i.init and CudaImage.i.in
+set(CudaCommon_SOURCE_DIR ${CudaCommon_SOURCE_DIR})
+
+${CudaCommon_VERSION_STRINGS}
+"
+)
+
+set(
+  CudaCommon_EXPORT_CODE_INSTALL
+  "
+find_package(CUDAToolkit REQUIRED)
+
+${CudaCommon_VERSION_STRINGS}
+"
+)
 
 if(NOT ITK_SOURCE_DIR)
   if(NOT EXISTS ${ITK_CMAKE_DIR}/ITKModuleMacros.cmake)
