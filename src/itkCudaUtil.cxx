@@ -19,6 +19,7 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <itksys/SystemTools.hxx>
 
 namespace itk
 {
@@ -107,6 +108,38 @@ CudaGetMaxFlopsDev()
   return max_flops_device;
 }
 
+static constexpr const char * CUDA_DEFAULT_DEVICE_ENV = "ITK_CUDA_DEFAULT_DEVICE";
+
+void
+SetDefaultCudaDevice(int device)
+{
+  int count = 0;
+  cudaGetDeviceCount(&count);
+  if (device < -1 || device >= count)
+  {
+    itkGenericExceptionMacro("Invalid CUDA device index: " << device);
+  }
+  if (device == -1)
+  {
+    itksys::SystemTools::UnPutEnv(CUDA_DEFAULT_DEVICE_ENV);
+  }
+  else
+  {
+    itksys::SystemTools::PutEnv(std::string(CUDA_DEFAULT_DEVICE_ENV) + "=" + std::to_string(device));
+  }
+}
+
+/** Get the current default device (-1 means auto / max FLOPS). */
+int
+GetDefaultCudaDevice()
+{
+  std::string envDevice;
+  if (itksys::SystemTools::GetEnv(CUDA_DEFAULT_DEVICE_ENV, envDevice))
+  {
+    return std::atoi(envDevice.c_str());
+  }
+  return -1;
+}
 
 std::pair<int, int>
 GetCudaComputeCapability(int device)
