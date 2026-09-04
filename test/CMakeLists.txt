@@ -20,6 +20,7 @@ set(
   itkCudaDataManagerDirtyFlagTest.cxx
   itkCudaDataManagerReleaseFreeTest.cxx
   itkCudaImageRegionGraftTest.cxx
+  itkCudaDeviceSelectionTest.cxx
 )
 
 createtestdriver(CudaCommon "${CudaCommon-Test_LIBRARIES}" "${CudaCommonTests}")
@@ -57,6 +58,11 @@ itk_add_test(NAME itkCudaDataManagerReleaseFreeTest
 itk_add_test(NAME itkCudaImageRegionGraftTest
   COMMAND CudaCommonTestDriver
   itkCudaImageRegionGraftTest
+)
+
+itk_add_test(NAME itkCudaDeviceSelectionTest
+  COMMAND CudaCommonTestDriver
+  itkCudaDeviceSelectionTest
 )
 
 if(ITK_WRAP_PYTHON)

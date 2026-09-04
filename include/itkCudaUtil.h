@@ -59,6 +59,14 @@ CudaGetAvailableDevices(std::vector<cudaDeviceProp> & devices);
 int
 CudaGetMaxFlopsDev();
 
+/** Set default device for all CudaDataManager. Use -1 to reset to auto (max FLOPS device). */
+void
+SetDefaultCudaDevice(int device);
+
+/** Get the current default device (-1 means auto / max FLOPS). */
+int
+GetDefaultCudaDevice();
+
 /** Print device name and info */
 void
 CudaPrintDeviceInfo(int device, bool verbose = false);

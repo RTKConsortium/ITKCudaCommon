@@ -1,5 +1,6 @@
 import sys
 import importlib
+import os
 
 
 itk_module = sys.modules["itk"]
@@ -19,3 +20,16 @@ for mod_name in cuda_submodules:
     for a in dir(mod):
         if a[0] != "_":
             setattr(itk_module, a, getattr(mod, a))
+
+
+def set_default_cuda_device(device):
+    """Set the default CUDA device used by all subsequently created CudaImages.
+
+    Pass an integer device index (0, 1, ...) to select that GPU, or -1 to
+    reset to automatic selection (the max FLOPS device). This is the same
+    behavior as the C++ itk::SetDefaultCudaDevice function.
+    """
+    os.environ["ITK_CUDA_DEFAULT_DEVICE"] = str(int(device))
+
+
+setattr(itk_module, "set_default_cuda_device", set_default_cuda_device)
