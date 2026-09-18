@@ -19,3 +19,22 @@ for mod_name in cuda_submodules:
     for a in dir(mod):
         if a[0] != "_":
             setattr(itk_module, a, getattr(mod, a))
+
+
+# Expose the global default CUDA device selection functions at the
+# top-level `itk` namespace. The imports are deferred until call time
+# because the SWIG sub-module is not fully usable during module init.
+def set_default_cuda_device(device):
+    from itk.itkCudaUtilPython import set_default_cuda_device as _set
+
+    return _set(device)
+
+
+def get_default_cuda_device():
+    from itk.itkCudaUtilPython import get_default_cuda_device as _get
+
+    return _get()
+
+
+itk_module.set_default_cuda_device = set_default_cuda_device
+itk_module.get_default_cuda_device = get_default_cuda_device
