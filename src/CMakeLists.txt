@@ -5,7 +5,11 @@ set(
   itkCudaMemoryProbe.cxx
 )
 
-set(CudaCommon_Kernels itkCudaSquareImage.cu)
+set(
+  CudaCommon_Kernels
+  itkCudaBinaryGeneratorImageFilter.cu
+  itkCudaUnaryGeneratorImageFilter.cu
+)
 
 itk_module_add_library(CudaCommon ${CudaCommon_SRCS} ${CudaCommon_Kernels})
 target_link_libraries(

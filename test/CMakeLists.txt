@@ -14,6 +14,7 @@ itk_module_test()
 set(
   CudaCommonTests
   itkCudaSquareImageFilterTest.cxx
+  itkCudaArithmeticImageFiltersTest.cxx
   itkCudaImageFromImageFilterTest.cxx
   itkCudaImageToImageFilterTest.cxx
   itkCudaMemoryProbeTest.cxx
@@ -27,6 +28,11 @@ createtestdriver(CudaCommon "${CudaCommon-Test_LIBRARIES}" "${CudaCommonTests}")
 itk_add_test(NAME itkCudaSquareImageFilterTest
   COMMAND CudaCommonTestDriver
   itkCudaSquareImageFilterTest
+)
+
+itk_add_test(NAME itkCudaArithmeticImageFiltersTest
+  COMMAND CudaCommonTestDriver
+  itkCudaArithmeticImageFiltersTest
 )
 
 itk_add_test(NAME itkCudaImageFromImageFilterTest
