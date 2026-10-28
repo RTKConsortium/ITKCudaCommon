@@ -20,7 +20,7 @@ What is a CudaImage?
 
 An `itk::CudaImage` is an `itk::Image` (by inheritance) with a new member, `m_DataManager` of type `itk::CudaDataManager`. The role of this member is to manage a GPU memory buffer with the same size as the `itk::Image::m_Buffer`. Data is transferred from one buffer to the other (`m_GPUBuffer` and `m_CPUBuffer`) only when necessary, i.e., when accessing one of the two buffers and the other has been accessed more recently and therefore marked as "dirty" (using the members `m_IsGPUBufferDirty` and `m_IsCPUBufferDirty`).
 
-The Python `CudaImage` wrapping exposes a [`__cuda_array_interface__`](https://numba.readthedocs.io/en/stable/cuda/cuda_array_interface.html) for zero-copy views to other packages such as `PyTorch` or `CuPy`. See the [CUDA array interface documentation](./cuda_array_interface.md) for more information.
+The Python `CudaImage` wrapping exposes a [`__cuda_array_interface__`](https://numba.readthedocs.io/en/stable/cuda/cuda_array_interface.html) and the [DLPack](https://dmlc.github.io/dlpack/latest/) protocol for zero-copy views to other packages such as `PyTorch` or `CuPy`. See the [CUDA array interface and DLPack documentation](./cuda_array_interface.md) for more information.
 
 Selecting the GPU device
 ------------------------
