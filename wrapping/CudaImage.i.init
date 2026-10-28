@@ -36,6 +36,40 @@ def _get_type_string(itk_Image_type):
     except KeyError as e:
         raise e
 
+def _dlpack_dtype(pixel_type):
+    """Return the DLPack (code, bits, lanes) for an ITK pixel type."""
+    _typestr = _get_type_string(pixel_type)
+    _code = {"i": 0, "u": 1, "f": 2}.get(_typestr[1])
+    if _code is None:
+        raise BufferError("Unsupported ITK pixel type for DLPack: %s" % pixel_type)
+    return _code, int(_typestr[2:]) * 8, 1
+
+def _dlpack_shape_strides(image):
+    """Return DLPack-compatible shape and strides for a CudaImage."""
+    _itksize = image.GetBufferedRegion().GetSize()
+    _dim = len(_itksize)
+    _dims = [int(_itksize[idx]) for idx in range(_dim)]
+    # C-order indexing expects the fastest-varying dimension last.
+    _dims.reverse()
+
+    _components = image.GetNumberOfComponentsPerPixel()
+    if _components > 1:
+        _shape = [_components] + _dims
+        _strides = [0] * len(_shape)
+        _strides[0] = 1
+        _stride = _components
+        for idx in range(len(_dims) - 1, -1, -1):
+            _strides[idx + 1] = _stride
+            _stride *= _dims[idx]
+        return tuple(_shape), tuple(_strides)
+
+    return tuple(_dims), ()
+
+def _dlpack_metadata(image, pixel_type):
+    _shape, _strides = _dlpack_shape_strides(image)
+    _code, _bits, _lanes = _dlpack_dtype(pixel_type)
+    return _shape, _strides, _code, _bits, _lanes
+
 # This is a Mapping from typestr to itk pixel types.
 _typestr_itk = {v: k for k, v in _itk_typestr.items()}
 

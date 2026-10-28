@@ -10,8 +10,10 @@ img.SetRegions((32, 48))
 img.Allocate()
 img.FillBuffer(50)
 
-# Convert to a Torch GPU tensor view
-t_view = torch.as_tensor(img, device="cuda")
+# Convert to a zero-copy Torch GPU tensor view with DLPack. The tensor is
+# created on the CUDA device used by the image, which is useful in multi-GPU
+# workflows.
+t_view = torch.from_dlpack(img)
 
 # Do some operations with torch
 t_view.mul_(2).add_(3)

@@ -27,5 +27,17 @@
             'stream': None,
             'strides': None
         }
+
+    def __dlpack__(self, *, stream=None, max_version=None, dl_device=None, copy=None):
+        _data_manager = self.GetCudaDataManager()
+        if copy or (dl_device is not None and tuple(dl_device) != (2, _data_manager.GetDevice())):
+            raise BufferError("Copying or changing the device is not supported")
+
+        _shape, _strides, _dtype_code, _dtype_bits, _dtype_lanes = _dlpack_metadata(self, "@PixelType@")
+        return _data_manager._create_dlpack_capsule(
+            _shape, _strides, _dtype_code, _dtype_bits, _dtype_lanes, stream)
+
+    def __dlpack_device__(self):
+        return (2, self.GetCudaDataManager().GetDevice())
     %}
 };

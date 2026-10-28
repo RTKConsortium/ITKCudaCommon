@@ -24,7 +24,7 @@ namespace itk
 // constructor
 CudaDataManager::CudaDataManager()
 {
-  m_Device = itk::CudaGetMaxFlopsDev();
+  m_Device = itk::GetDefaultCudaDevice();
   CUDA_CHECK(cudaSetDevice(m_Device));
 
   m_CPUBuffer = nullptr;

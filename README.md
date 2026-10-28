@@ -20,7 +20,38 @@ What is a CudaImage?
 
 An `itk::CudaImage` is an `itk::Image` (by inheritance) with a new member, `m_DataManager` of type `itk::CudaDataManager`. The role of this member is to manage a GPU memory buffer with the same size as the `itk::Image::m_Buffer`. Data is transferred from one buffer to the other (`m_GPUBuffer` and `m_CPUBuffer`) only when necessary, i.e., when accessing one of the two buffers and the other has been accessed more recently and therefore marked as "dirty" (using the members `m_IsGPUBufferDirty` and `m_IsCPUBufferDirty`).
 
-The Python `CudaImage` wrapping exposes a [`__cuda_array_interface__`](https://numba.readthedocs.io/en/stable/cuda/cuda_array_interface.html) for zero-copy views to other packages such as `PyTorch` or `CuPy`. See the [CUDA array interface documentation](./cuda_array_interface.md) for more information.
+The Python `CudaImage` wrapping exposes a [`__cuda_array_interface__`](https://numba.readthedocs.io/en/stable/cuda/cuda_array_interface.html) and the [DLPack](https://dmlc.github.io/dlpack/latest/) protocol for zero-copy views to other packages such as `PyTorch` or `CuPy`. See the [CUDA array interface and DLPack documentation](./cuda_array_interface.md) for more information.
+
+Selecting the GPU device
+------------------------
+
+When no device is explicitly selected (and no environment variable is set), the GPU used by all freshly created `itk::CudaImage` (or `itk::CudaDataManager`) objects is selected automatically as the device with the maximum FLOPS. In a multi-GPU system you may want to choose a specific device instead.
+
+Call this from C++ **before** creating any `CudaImage`:
+
+```c++
+// Use GPU number 2 for all subsequent images.
+itk::SetDefaultCudaDevice(2);
+
+// Automatically select the (first) device with the max FLOPS.
+itk::SetDefaultCudaDevice(-1);
+```
+
+The equivalent is available from Python:
+
+```python
+import itk
+
+# Use GPU number 2 for all subsequently created CudaImages.
+itk.set_default_cuda_device(2)
+
+# Automatically select the (first) device with the max FLOPS.
+itk.set_default_cuda_device(-1)
+```
+
+An explicitly set value takes precedence over the `ITK_CUDA_DEFAULT_DEVICE` environment variable which itself takes precedence over the automated value.
+
+Passing a device index outside the valid range throws an `itk::ExceptionObject`. The environment variable must be a non-negative integer, otherwise an exception is thrown.
 
 What is a CudaImageToImageFilter?
 ---------------------------------

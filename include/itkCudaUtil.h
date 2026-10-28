@@ -18,6 +18,7 @@
 #ifndef itkCudaUtil_h
 #define itkCudaUtil_h
 
+#include <climits>
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
@@ -56,8 +57,22 @@ int
 CudaGetAvailableDevices(std::vector<cudaDeviceProp> & devices);
 
 /** Get the device that has the maximum FLOPS in the current context. The result is cached for future calls. */
-int
+int CudaCommon_EXPORT
 CudaGetMaxFlopsDev();
+
+/** Set the default device used by all subsequently created CudaDataManagers.
+ * Use -1 to automatically select the (first) device with the max FLOPS.
+ * Overrides the ITK_CUDA_DEFAULT_DEVICE environment variable.
+ * Throws if the index is invalid. */
+void CudaCommon_EXPORT
+SetDefaultCudaDevice(int device);
+
+/** Get the current default device.
+ * -1 means automated selection of the (first) device with the max FLOPS.
+ * An explicitly set value takes precedence over the ITK_CUDA_DEFAULT_DEVICE
+ * environment variable which itself takes precedence over the automated value. */
+int CudaCommon_EXPORT
+GetDefaultCudaDevice();
 
 /** Print device name and info */
 void

@@ -19,6 +19,8 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <mutex>
+#include <itksys/SystemTools.hxx>
 
 namespace itk
 {
@@ -107,6 +109,74 @@ CudaGetMaxFlopsDev()
   return max_flops_device;
 }
 
+namespace
+{
+static constexpr const char * CUDA_DEFAULT_DEVICE_ENV = "ITK_CUDA_DEFAULT_DEVICE";
+static constexpr int          CUDA_UNINITIALIZED_DEVICE = INT_MIN;
+
+struct CudaDefaultDeviceGlobals
+{
+  int        Device{ CUDA_UNINITIALIZED_DEVICE };
+  std::mutex Mutex;
+};
+
+CudaDefaultDeviceGlobals &
+GetCudaDefaultDeviceGlobals()
+{
+  static CudaDefaultDeviceGlobals globals;
+  return globals;
+}
+} // namespace
+
+void
+SetDefaultCudaDevice(int device)
+{
+  int count = 0;
+  cudaGetDeviceCount(&count);
+  if (device < -1 || device >= count)
+  {
+    itkGenericExceptionMacro("Invalid CUDA device index: " << device);
+  }
+
+  auto &                            globals = GetCudaDefaultDeviceGlobals();
+  const std::lock_guard<std::mutex> lock(globals.Mutex);
+  globals.Device = device;
+}
+
+int
+GetDefaultCudaDevice()
+{
+  auto &                            globals = GetCudaDefaultDeviceGlobals();
+  const std::lock_guard<std::mutex> lock(globals.Mutex);
+
+  if (globals.Device >= 0)
+  {
+    return globals.Device;
+  }
+
+  if (globals.Device == CUDA_UNINITIALIZED_DEVICE)
+  {
+    std::string envDevice;
+    if (itksys::SystemTools::GetEnv(CUDA_DEFAULT_DEVICE_ENV, envDevice))
+    {
+      int envDev = std::atoi(envDevice.c_str());
+      if (envDev < 0)
+      {
+        itkGenericExceptionMacro("ITK_CUDA_DEFAULT_DEVICE must be a non-negative integer, got: " << envDevice);
+      }
+      int count = 0;
+      cudaGetDeviceCount(&count);
+      if (envDev >= count)
+      {
+        itkGenericExceptionMacro("ITK_CUDA_DEFAULT_DEVICE device index " << envDev << " is out of range (" << count
+                                                                         << " devices available)");
+      }
+      return envDev;
+    }
+  }
+
+  return itk::CudaGetMaxFlopsDev();
+}
 
 std::pair<int, int>
 GetCudaComputeCapability(int device)

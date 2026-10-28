@@ -232,6 +232,13 @@ public:
   virtual void
   Initialize();
 
+  /** Get the CUDA device used by this data manager. */
+  int
+  GetDevice() const
+  {
+    return m_Device;
+  }
+
   /** Get Cuda buffer pointer */
   void *
   GetGPUBufferPointer();
