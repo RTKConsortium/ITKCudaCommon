@@ -8,9 +8,26 @@ set(
   itkImageToImageFilterCudaCommon
   itkInPlaceImageFilterCudaCommon
   itkImageSourceCudaCommon
+  itkUnaryGeneratorImageFilterCudaCommon
+  itkSquareImageFilterCudaCommon
+  itkBinaryGeneratorImageFilterCudaCommon
+  itkAddImageFilterCudaCommon
+  itkSubtractImageFilterCudaCommon
+  itkMultiplyImageFilterCudaCommon
+  itkDivideImageFilterCudaCommon
+  itkDivideOrZeroOutImageFilterCudaCommon
+  itkThresholdImageFilterCudaCommon
   itkCudaImageToImageFilter
   itkCudaInPlaceImageFilter
   itkCudaImageFromImageFilter
+  itkCudaUnaryGeneratorImageFilter
+  itkCudaBinaryGeneratorImageFilter
+  itkCudaAddImageFilter
+  itkCudaSubtractImageFilter
+  itkCudaMultiplyImageFilter
+  itkCudaDivideImageFilter
+  itkCudaDivideOrZeroOutImageFilter
+  itkCudaThresholdImageFilter
   itkCudaSquareImageFilter
 )
 
