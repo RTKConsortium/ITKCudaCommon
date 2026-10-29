@@ -111,6 +111,16 @@ CudaDataManager::SetCPUBufferPointer(void * ptr)
 void
 CudaDataManager::SetGPUBufferPointer(uint64_t ptr)
 {
+  if (ptr)
+  {
+    cudaPointerAttributes attributes{};
+    CUDA_CHECK(cudaPointerGetAttributes(&attributes, reinterpret_cast<void *>(ptr)));
+    if (attributes.type == cudaMemoryTypeDevice && attributes.device != m_Device)
+    {
+      itkWarningMacro("GPU buffer is on CUDA device "
+                      << attributes.device << ", but this CudaDataManager uses CUDA device " << m_Device << '.');
+    }
+  }
   m_GPUBuffer->SetPointer((void *)ptr);
   m_GPUBuffer->SetBufferSize(m_BufferSize);
 }
@@ -118,6 +128,16 @@ CudaDataManager::SetGPUBufferPointer(uint64_t ptr)
 void
 CudaDataManager::SetGPUBufferPointer(void * ptr)
 {
+  if (ptr)
+  {
+    cudaPointerAttributes attributes{};
+    CUDA_CHECK(cudaPointerGetAttributes(&attributes, ptr));
+    if (attributes.type == cudaMemoryTypeDevice && attributes.device != m_Device)
+    {
+      itkWarningMacro("GPU buffer is on CUDA device "
+                      << attributes.device << ", but this CudaDataManager uses CUDA device " << m_Device << '.');
+    }
+  }
   m_GPUBuffer->SetPointer(ptr);
   m_GPUBuffer->SetBufferSize(m_BufferSize);
 }
