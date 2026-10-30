@@ -146,6 +146,20 @@ itkCudaDataManagerDirtyFlagTest(int, char *[])
   ITK_TEST_EXPECT_TRUE(!mgr->IsCPUBufferDirty());
   ITK_TEST_EXPECT_TRUE(!mgr->IsGPUBufferDirty());
 
+  // Only CPU marked dirty, but GPU buffer pointer is actually nullptr
+  // Update() should not attempt to regenerate CPU data from the GPU buffer
+  constexpr float CpuValueC = 5.0f;
+  constexpr float GpuValueC = 6.0f;
+  cpuBuffer.fill(CpuValueC);
+  FillGPUBuffer(GpuValueC, *gpuBufferPointerPtr);
+  mgr->SetGPUDirtyFlag(true); // Free GPU buffer
+  mgr->SetGPUDirtyFlag(false);
+  mgr->SetCPUDirtyFlag(true);
+  mgr->Update();
+  ITK_TEST_EXPECT_TRUE(*gpuBufferPointerPtr == nullptr);
+  ITK_TEST_EXPECT_TRUE(IsSingleValue(CpuValueC, cpuBuffer));
+  ITK_TEST_EXPECT_TRUE(!mgr->IsCPUBufferDirty());
+  ITK_TEST_EXPECT_TRUE(!mgr->IsGPUBufferDirty());
 
   std::cout << "CudaDataManagerDirtyFlagTest passed" << std::endl;
   return EXIT_SUCCESS;
