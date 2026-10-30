@@ -249,8 +249,6 @@ CudaDataManager::Update()
   this->UpdateGPUBuffer();
   this->UpdateCPUBuffer();
 
-  m_IsGPUBufferDirty = m_IsCPUBufferDirty = false;
-
   return true;
 }
 
