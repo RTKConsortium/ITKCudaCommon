@@ -161,7 +161,7 @@ CudaDataManager::UpdateCPUBuffer()
   {
     m_IsCPUBufferDirty = false;
   }
-  else if (m_IsCPUBufferDirty && m_GPUBuffer && m_CPUBuffer)
+  else if (m_IsCPUBufferDirty && m_GPUBuffer && m_GPUBuffer->GetPointer() && m_CPUBuffer)
   {
     try
     {
