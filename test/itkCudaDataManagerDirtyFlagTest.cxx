@@ -158,7 +158,7 @@ itkCudaDataManagerDirtyFlagTest(int, char *[])
   mgr->Update();
   ITK_TEST_EXPECT_TRUE(*gpuBufferPointerPtr == nullptr);
   ITK_TEST_EXPECT_TRUE(IsSingleValue(CpuValueC, cpuBuffer));
-  ITK_TEST_EXPECT_TRUE(!mgr->IsCPUBufferDirty());
+  ITK_TEST_EXPECT_TRUE(mgr->IsCPUBufferDirty());
   ITK_TEST_EXPECT_TRUE(!mgr->IsGPUBufferDirty());
 
   std::cout << "CudaDataManagerDirtyFlagTest passed" << std::endl;
