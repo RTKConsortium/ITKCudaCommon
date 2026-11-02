@@ -182,7 +182,7 @@ CudaDataManager::UpdateCPUBuffer()
   {
     m_IsCPUBufferDirty = false;
   }
-  else if (m_IsCPUBufferDirty && m_GPUBuffer && m_GPUBuffer->GetPointer() && m_CPUBuffer)
+  else if (m_IsCPUBufferDirty && m_GPUBuffer->GetPointer() && m_CPUBuffer)
   {
     try
     {
@@ -219,7 +219,7 @@ void
 CudaDataManager::UpdateGPUBuffer()
 {
   m_Mutex.lock();
-  if (m_IsGPUBufferDirty && m_GPUBuffer)
+  if (m_IsGPUBufferDirty)
   {
     this->Allocate(); // do the allocation
 
