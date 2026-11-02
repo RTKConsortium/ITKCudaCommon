@@ -130,6 +130,11 @@ CudaDataManager::SetCPUDirtyFlag(bool isDirty)
 void
 CudaDataManager::SetGPUDirtyFlag(bool isDirty)
 {
+  if (!isDirty && m_GPUBuffer->GetPointer() == nullptr)
+  {
+    itkExceptionMacro("Cannot mark GPU buffer clean: GPU memory is not allocated.");
+  }
+
   m_IsGPUBufferDirty = isDirty;
   if (isDirty && m_ReleaseDirtyGPUBuffer)
     this->Free();
