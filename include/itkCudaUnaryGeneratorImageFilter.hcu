@@ -1,4 +1,4 @@
-/*=========================================================================
+/*=========================================================================*
  *
  *  Copyright NumFOCUS
  *
@@ -15,20 +15,29 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef CudaSquareImage_hcu
-#define CudaSquareImage_hcu
+#ifndef itkCudaUnaryGeneratorImageFilter_hcu
+#define itkCudaUnaryGeneratorImageFilter_hcu
+
+#include "itkIntTypes.h"
 
 namespace itk
 {
+/** Operations supported by the shared unary CUDA kernel. */
+enum class CudaUnaryImageOperation
+{
+  Threshold,
+  Square
+};
 
-template <class PixelType>
+template <CudaUnaryImageOperation VOperation, typename TInputPixel, typename TOutputPixel>
 void
-CudaSquareImage3D(int imSize[3], PixelType * in, PixelType * out);
+LaunchUnaryKernel(itk::SizeValueType  numberOfPixels,
+                  const TInputPixel * input,
+                  TOutputPixel *      output,
+                  TInputPixel         lower,
+                  TInputPixel         upper,
+                  TOutputPixel        outsideValue);
 
-template <class PixelType>
-void
-CudaSquareImage2D(int imSize[2], PixelType * in, PixelType * out);
-
-} // end namespace itk
+} // namespace itk
 
 #endif

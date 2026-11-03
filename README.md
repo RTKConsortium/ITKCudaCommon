@@ -57,3 +57,24 @@ What is a CudaImageToImageFilter?
 ---------------------------------
 
 An `itk::CudaImageToImageFilter` and its in place child, `itk::CudaInPlaceImageFilter`, are ITK filters which can be integrated in an ITK pipeline to process an `itk::CudaImage`. They are CUDA equivalent to the CPU classes `itk::ImageToImageFilter` and `itk::InPlaceImageFilter` in [ITK's Common module](https://github.com/InsightSoftwareConsortium/ITK/tree/main/Modules/Core/Common). See the [ITK software guide](https://itk.org/ITKSoftwareGuide/html/) for more information. Their `GPUGenerateData` member function must process the output `CudaImage` objects.
+
+Pixel-wise arithmetic
+---------------------
+
+ITKCudaCommon provides CUDA implementations of `itk::AddImageFilter`,
+`itk::SubtractImageFilter`, `itk::MultiplyImageFilter`, `itk::DivideImageFilter`,
+`itk::DivideOrZeroOutImageFilter`, `itk::SquareImageFilter`, and
+`itk::ThresholdImageFilter`. The binary filters accept two `CudaImage` inputs or
+one `CudaImage` and an ITK constant input. Their CUDA kernels currently support `float`, `double`, `int`,
+`unsigned int`, `unsigned long`, `short`, `unsigned short`, and `unsigned char`
+pixels. Input and output pixel types must match. Mixed pixel types are rejected
+at compile time, including when CPU execution is selected. The CUDA filters share
+unary/binary generator bases and inherit their ordinary ITK filter APIs and CPU
+implementations from the corresponding ITK filters.
+
+The CUDA arithmetic filters support streaming when every image input and output
+buffers exactly the output requested region, with matching indices and sizes.
+ITK schedules the pieces and propagates requested regions. Each CUDA kernel
+processes the current piece using raw pointers and direct pixel indexing.
+Larger or differently positioned input buffers are rejected, even when they
+contain the requested region. Upstream sources must produce matching pieces.
