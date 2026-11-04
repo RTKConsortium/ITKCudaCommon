@@ -14,6 +14,7 @@ file(READ "${MY_CURRENT_DIR}/README.md" DOCUMENTATION)
 itk_module(CudaCommon
   DEPENDS
     ITKCommon
+    ITKImageIntensity
   TEST_DEPENDS
     ITKTestKernel
   DESCRIPTION

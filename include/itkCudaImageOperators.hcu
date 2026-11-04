@@ -1,0 +1,74 @@
+/*=========================================================================
+ *
+ *  Copyright NumFOCUS
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         https://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *=========================================================================*/
+#ifndef itkCudaImageOperators_hcu
+#define itkCudaImageOperators_hcu
+
+// CUDA-only implementation header: include it from .cu files.
+#include "itkCudaUtil.h"
+#include "itkIntTypes.h"
+#include "itkCudaCommonConfiguration.h"
+#include "CudaCommonExport.h"
+
+namespace itk
+{
+template <typename TOperation, typename TOutputPixel, typename... TInputPixels>
+__global__ void
+CudaImageOperationKernel(itk::SizeValueType numberOfPixels,
+                         TOperation         operation,
+                         TOutputPixel *     output,
+                         const TInputPixels *... inputs)
+{
+  const itk::SizeValueType blockSize = blockDim.x;
+  const itk::SizeValueType stride = gridDim.x * blockSize;
+  for (itk::SizeValueType index = blockIdx.x * blockSize + threadIdx.x; index < numberOfPixels; index += stride)
+  {
+    output[index] = operation(inputs[index]...);
+  }
+}
+
+/** Launch the shared CUDA kernel for unary or binary pixel-wise operations.
+ * Operator .cu files supply a device lambda and one input buffer for unary
+ * operations or two for binary operations. The concrete lambda type selects
+ * the operation at compile time.
+ */
+template <typename TOperation, typename TOutputPixel, typename... TInputPixels>
+void
+LaunchCudaImageOperation(itk::SizeValueType numberOfPixels,
+                         TOperation         operation,
+                         TOutputPixel *     output,
+                         const TInputPixels *... inputs)
+{
+  // Cap the grid so the launch is valid on every supported device. The kernel
+  // uses a grid-stride loop to cover any remaining pixels.
+  constexpr unsigned int       threadsPerBlock = 256;
+  constexpr itk::SizeValueType maxGridBlocks = 65535;
+  const itk::SizeValueType     totalBlocks = (numberOfPixels - 1) / threadsPerBlock + 1;
+  const itk::SizeValueType     cappedBlocks = totalBlocks < maxGridBlocks ? totalBlocks : maxGridBlocks;
+  const unsigned int           blocks = static_cast<unsigned int>(cappedBlocks);
+  CudaImageOperationKernel<<<blocks, threadsPerBlock>>>(numberOfPixels, operation, output, inputs...);
+  CUDA_CHECK(cudaGetLastError());
+}
+} // namespace itk
+
+// Use the function's declared type so operators can have different signatures.
+#define ITK_CUDA_IMAGE_OPERATOR_INSTANTIATE_TYPE(OP, T) template decltype(OP<T>) CudaCommon_EXPORT OP<T>;
+
+/** Instantiate an operator for every configured scalar pixel type. */
+#define ITK_CUDA_IMAGE_OPERATOR_INSTANTIATE(OP) CudaCommon_OPERATOR_TYPES(ITK_CUDA_IMAGE_OPERATOR_INSTANTIATE_TYPE, OP)
+
+#endif
