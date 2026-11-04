@@ -23,4 +23,14 @@
 #define CudaCommon_VERSION_PATCH @CudaCommon_VERSION_PATCH@
 #define CudaCommon_VERSION_STRING "@CudaCommon_VERSION_STRING@"
 
+/* Explicitly instantiate an operator for each C++ pixel type selected by
+ * CudaCommon_OPERATOR_INSTANTIATIONS_TYPES. */
+#define CudaCommon_INSTANTIATE_OPERATOR(OP) \
+  @CudaCommon_OPERATOR_INSTANTIATION_DEFINITIONS@
+
+/* Explicitly instantiate an operator for the configured floating-point pixels.
+ * Used for operators that ITK wraps for real pixels only. */
+#define CudaCommon_INSTANTIATE_REAL_OPERATOR(OP) \
+  @CudaCommon_REAL_OPERATOR_INSTANTIATION_DEFINITIONS@
+
 #endif

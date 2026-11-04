@@ -13,7 +13,7 @@ itk_module_test()
 
 set(
   CudaCommonTests
-  itkCudaSquareImageFilterTest.cxx
+  itkCudaImageOperatorsTest.cxx
   itkCudaImageFromImageFilterTest.cxx
   itkCudaImageToImageFilterTest.cxx
   itkCudaMemoryProbeTest.cxx
@@ -24,9 +24,9 @@ set(
 
 createtestdriver(CudaCommon "${CudaCommon-Test_LIBRARIES}" "${CudaCommonTests}")
 
-itk_add_test(NAME itkCudaSquareImageFilterTest
+itk_add_test(NAME itkCudaImageOperatorsTest
   COMMAND CudaCommonTestDriver
-  itkCudaSquareImageFilterTest
+  itkCudaImageOperatorsTest
 )
 
 itk_add_test(NAME itkCudaImageFromImageFilterTest
@@ -62,5 +62,8 @@ itk_add_test(NAME itkCudaImageRegionGraftTest
 if(ITK_WRAP_PYTHON)
   itk_python_add_test(NAME itkCudaImageFromImagePythonTest
     COMMAND itkCudaImageFromImageTest.py
+  )
+  itk_python_add_test(NAME itkCudaImageOperatorsPythonTest
+    COMMAND itkCudaImageOperatorsTest.py
   )
 endif()

@@ -58,6 +58,50 @@ else()
   set(CudaCommon_VERSION_HASH ", git hash ${GIT_SHA1}")
 endif()
 
+# Pixel types used for CUDA operator instantiations and Python wrapping.
+set(
+  CudaCommon_OPERATOR_INSTANTIATIONS_TYPES
+  "float;double;int;unsigned int;unsigned long;short;unsigned short;unsigned char"
+  CACHE STRING
+  "C++ pixel types instantiated and wrapped for CUDA operators"
+)
+list(REMOVE_DUPLICATES CudaCommon_OPERATOR_INSTANTIATIONS_TYPES)
+
+set(CudaCommon_OPERATOR_INSTANTIATION_DEFINITIONS "")
+foreach(type IN LISTS CudaCommon_OPERATOR_INSTANTIATIONS_TYPES)
+  if(CudaCommon_OPERATOR_INSTANTIATION_DEFINITIONS)
+    string(APPEND CudaCommon_OPERATOR_INSTANTIATION_DEFINITIONS " \\\n  ")
+  endif()
+  string(
+    APPEND
+    CudaCommon_OPERATOR_INSTANTIATION_DEFINITIONS
+    "template decltype(OP<${type}>) CudaCommon_EXPORT OP<${type}>;"
+  )
+endforeach()
+
+# Real-only operators use the floating-point subset of the same list.
+set(
+  CudaCommon_REAL_OPERATOR_INSTANTIATIONS_TYPES
+  "${CudaCommon_OPERATOR_INSTANTIATIONS_TYPES}"
+)
+list(
+  FILTER CudaCommon_REAL_OPERATOR_INSTANTIATIONS_TYPES
+  INCLUDE
+  REGEX "^(float|double)$"
+)
+
+set(CudaCommon_REAL_OPERATOR_INSTANTIATION_DEFINITIONS "")
+foreach(type IN LISTS CudaCommon_REAL_OPERATOR_INSTANTIATIONS_TYPES)
+  if(CudaCommon_REAL_OPERATOR_INSTANTIATION_DEFINITIONS)
+    string(APPEND CudaCommon_REAL_OPERATOR_INSTANTIATION_DEFINITIONS " \\\n  ")
+  endif()
+  string(
+    APPEND
+    CudaCommon_REAL_OPERATOR_INSTANTIATION_DEFINITIONS
+    "template decltype(OP<${type}>) CudaCommon_EXPORT OP<${type}>;"
+  )
+endforeach()
+
 # Propagate cmake options in a header file at the same location as CudaCommonExport.h
 if(ITK_SOURCE_DIR)
   set(
