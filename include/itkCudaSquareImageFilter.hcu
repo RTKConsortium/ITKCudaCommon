@@ -15,8 +15,8 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef CudaSquareImage_hcu
-#define CudaSquareImage_hcu
+#ifndef CudaSquareImageFilter_hcu
+#define CudaSquareImageFilter_hcu
 
 namespace itk
 {
