@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   build-linux-cuda-python-packages:
-    runs-on: self-hosted-linux
+    runs-on: [self-hosted, linux]
     strategy:
       max-parallel: 2
       matrix:
@@ -105,7 +105,7 @@ jobs:
         path: dist/*.whl
 
   build-windows-cuda-python-packages:
-    runs-on: self-hosted-windows
+    runs-on: [self-hosted, windows]
     strategy:
       max-parallel: 2
       matrix:
@@ -221,7 +221,7 @@ jobs:
   test-python-wheel:
     needs:
       - build-linux-cuda-python-packages
-    runs-on: self-hosted-linux
+    runs-on: [self-hosted, linux]
 
     steps:
     - uses: actions/checkout@v4
