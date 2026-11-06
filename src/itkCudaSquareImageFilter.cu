@@ -15,7 +15,7 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#include "itkCudaSquareImage.hcu"
+#include "itkCudaSquareImageFilter.hcu"
 #include "CudaCommonExport.h"
 
 namespace itk
