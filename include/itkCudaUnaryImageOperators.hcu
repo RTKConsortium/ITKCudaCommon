@@ -15,20 +15,22 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef CudaSquareImage_hcu
-#define CudaSquareImage_hcu
+#ifndef itkCudaUnaryImageOperators_hcu
+#define itkCudaUnaryImageOperators_hcu
+
+#include "itkIntTypes.h"
 
 namespace itk
 {
 
 template <class PixelType>
 void
-CudaSquareImage3D(int imSize[3], PixelType * in, PixelType * out);
+CudaSquareImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
 
 template <class PixelType>
 void
-CudaSquareImage2D(int imSize[2], PixelType * in, PixelType * out);
+CudaSqrtImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
 
-} // end namespace itk
+} // namespace itk
 
 #endif

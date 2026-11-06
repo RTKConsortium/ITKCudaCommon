@@ -18,27 +18,31 @@
 #ifndef itkCudaSquareImageFilter_h
 #define itkCudaSquareImageFilter_h
 
-#include "itkCudaInPlaceImageFilter.h"
+#include "itkCudaUnaryImageToImageFilter.h"
+#include "itkCudaUnaryImageOperators.hcu"
+#include "itkSquareImageFilter.h"
 
 namespace itk
 {
 
 /** \class CudaSquareImageFilter
  *
- * \brief class to demonstrate the use of Cuda filters.
+ * \brief CUDA implementation of itk::SquareImageFilter.
  *
- * CudaSquareImageFilter is the Cuda version of ImageToImageFilter that
- * computes the squared value of each pixel.
+ * Computes the squared value of each pixel using a device lambda. CPU execution
+ * uses itk::SquareImageFilter. GPU execution and the common buffer checks are
+ * provided by CudaUnaryImageToImageFilter.
  *
  * \ingroup ITKCudaCommon
  */
 template <class TImage>
-class ITK_TEMPLATE_EXPORT CudaSquareImageFilter : public CudaInPlaceImageFilter<TImage, TImage>
+class ITK_TEMPLATE_EXPORT CudaSquareImageFilter
+  : public CudaUnaryImageToImageFilter<TImage, TImage, SquareImageFilter<TImage, TImage>>
 {
 public:
   /** Standard class type alias. */
   using Self = CudaSquareImageFilter;
-  using Superclass = CudaInPlaceImageFilter<TImage, TImage>;
+  using Superclass = CudaUnaryImageToImageFilter<TImage, TImage, SquareImageFilter<TImage, TImage>>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
@@ -49,23 +53,19 @@ public:
 
   ITK_DISALLOW_COPY_AND_MOVE(CudaSquareImageFilter);
 
-  /** ImageDimension constants */
-  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
-
-  itkConceptMacro(ImageDimensionCheck, (itk::Concept::SameDimensionOrMinusOneOrTwo<3, TImage::ImageDimension>));
-
 protected:
   CudaSquareImageFilter() = default;
-  ~CudaSquareImageFilter() = default;
+  ~CudaSquareImageFilter() override = default;
 
-  virtual void
-  GPUGenerateData();
+  using PixelType = typename Superclass::InputPixelType;
+
+  void
+  GenerateUnaryData(const PixelType * input, PixelType * output, itk::SizeValueType numberOfPixels) override
+  {
+    CudaSquareImage(numberOfPixels, input, output);
+  }
 };
 
 } // end namespace itk
-
-#ifndef ITK_MANUAL_INSTANTIATION
-#  include "itkCudaSquareImageFilter.hxx"
-#endif
 
 #endif

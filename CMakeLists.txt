@@ -58,6 +58,22 @@ else()
   set(CudaCommon_VERSION_HASH ", git hash ${GIT_SHA1}")
 endif()
 
+# Pixel types explicitly instantiated for CUDA operations.
+set(
+  CudaCommon_OPERATOR_TYPES
+  "float;double;int;unsigned int;unsigned long;short;unsigned short;unsigned char"
+)
+set(_cuda_common_operator_definitions ${CudaCommon_OPERATOR_TYPES})
+list(TRANSFORM _cuda_common_operator_definitions PREPEND "X(OP, ")
+list(TRANSFORM _cuda_common_operator_definitions APPEND ")")
+string(
+  JOIN
+  " \\\n  "
+  CudaCommon_OPERATOR_TYPE_DEFINITIONS
+  ${_cuda_common_operator_definitions}
+)
+unset(_cuda_common_operator_definitions)
+
 # Propagate cmake options in a header file at the same location as CudaCommonExport.h
 if(ITK_SOURCE_DIR)
   set(

@@ -13,6 +13,7 @@ get_filename_component(MY_CURRENT_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 itk_module(CudaCommon
   DEPENDS
     ITKCommon
+    ITKImageIntensity
   TEST_DEPENDS
     ITKTestKernel
   DESCRIPTION

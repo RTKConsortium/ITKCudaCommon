@@ -23,4 +23,9 @@
 #define CudaCommon_VERSION_PATCH @CudaCommon_VERSION_PATCH@
 #define CudaCommon_VERSION_STRING "@CudaCommon_VERSION_STRING@"
 
+/* Pixel types for which CUDA image operations are explicitly instantiated.
+ * Configured from CudaCommon_OPERATOR_TYPES in the top-level CMakeLists.txt. */
+#define CudaCommon_OPERATOR_TYPES(X, OP) \
+  @CudaCommon_OPERATOR_TYPE_DEFINITIONS@
+
 #endif
