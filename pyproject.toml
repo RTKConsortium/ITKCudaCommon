@@ -107,3 +107,6 @@ minimum-version = "0.8.2"
 
 # The build directory. Defaults to a temporary directory, but can be set.
 build-dir = "build/{wheel_tag}"
+
+[dependency-groups]
+test = ["pytest>=7.0", "torch", "cupy-cuda12x"]
