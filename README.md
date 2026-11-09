@@ -15,6 +15,10 @@ Overview
 
 [ITKCudaCommon](https://github.com/RTKConsortium/ITKCudaCommon) is an [ITK](https://www.itk.org) module for processing images with Cuda, including the `itk::CudaImage` class and base classes for processing objects of this type, `itk::CudaImageToImageFilter` and `itk::CudaInPlaceImageFilter`. ITKCudaCommon was originally based on the [`GPUCommon` module](https://github.com/InsightSoftwareConsortium/ITK/tree/main/Modules/Core/GPUCommon) for OpenCL.
 
+The installation is described in [`INSTALLATION.md`](./INSTALLATION.md).
+
+CudaCommon's documentation is limited to a few Markdown files ([`README.md`](./README.md), [`cuda_array_interface.md`](./cuda_array_interface.md), [`INSTALLATION.md`](./INSTALLATION.md), etc.) integrated into [RTK's documentation](https://docs.openrtk.org/).
+
 What is a CudaImage?
 --------------------
 
