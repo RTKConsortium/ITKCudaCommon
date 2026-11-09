@@ -34,14 +34,14 @@ if(NOT CUDACOMMON_CUDA_VERSION)
     CUDACOMMON_CUDA_VERSION
     ${CUDAToolkit_VERSION}
     CACHE STRING
-    "Specify the exact CUDA version that must be used for CudaCommon"
+    "Specify the exact CUDA version that must be used by CudaCommon"
   )
 else()
   set(
     CUDACOMMON_CUDA_VERSION
     ${CUDACOMMON_CUDA_VERSION}
     CACHE STRING
-    "Specify the exact CUDA version that must be used for CudaCommon"
+    "Specify the exact CUDA version that must be used by CudaCommon"
   )
 endif()
 mark_as_advanced(CUDACOMMON_CUDA_VERSION)
