@@ -2,8 +2,8 @@ ITKCudaCommon
 =================================
 
 [![GitHub release](https://img.shields.io/github/release/RTKConsortium/ITKCudaCommon.svg)](https://github.com/RTKConsortium/ITKCudaCommon/releases/latest)
-[![PyPI](https://img.shields.io/pypi/v/itk-cudacommon-cuda116.svg)](https://pypi.python.org/pypi/itk-cudacommon-cuda116)
-[![Wheels](https://img.shields.io/pypi/wheel/itk-cudacommon-cuda116.svg)](https://pypi.org/project/itk-cudacommon-cuda116)
+[![PyPI](https://img.shields.io/pypi/v/itk-cudacommon-cuda130.svg)](https://pypi.org/project/itk-cudacommon-cuda130)
+[![Wheels](https://img.shields.io/pypi/wheel/itk-cudacommon-cuda130.svg)](https://pypi.org/project/itk-cudacommon-cuda130)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/RTKConsortium/ITKCudaCommon/blob/main/LICENSE)
 [![][gha-img]][gha-link]
 
