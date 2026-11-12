@@ -9,6 +9,10 @@ CudaCommon is a module of [ITK](https://www.itk.org), the Insight Toolkit. Follo
 
 CudaCommon will automatically be installed when installing ITK.
 
+### CUDA GPU architectures
+
+The default CUDA architecture is `75` (Turing). Builds using this default target Turing and newer GPUs only. To build from source for an older GPU (Maxwell, Pascal or Volta), explicitly set `CMAKE_CUDA_ARCHITECTURES` to its compute capability (for example, `-DCMAKE_CUDA_ARCHITECTURES=52` for compute capability 5.2) and use a compatible CUDA toolkit. CUDA 13 no longer supports compilation for architectures below `75`. Use CUDA 11 or 12 for those GPUs.
+
 ## Independent configuration and compilation
 For CudaCommon developers, it may be useful to compile CudaCommon independently from ITK. This is possible, simply:
 * Compile ITK with `Module_CudaCommon=OFF`.
