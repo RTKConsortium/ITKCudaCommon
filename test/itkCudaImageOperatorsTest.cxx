@@ -99,10 +99,11 @@ CheckUnaryOperator(float inputOffset = 0.0f, float inputScale = 0.25f)
   return CheckImageQuality<Image>(filter->GetOutput(), reference->GetOutput());
 }
 
+template <class TPixel>
 int
-itkCudaImageOperatorsTest(int, char *[])
+CheckOperators()
 {
-  using Image = itk::CudaImage<float, 2>;
+  using Image = itk::CudaImage<TPixel, 2>;
   ITK_TEST_EXPECT_EQUAL((CheckUnaryOperator<itk::CudaSquareImageFilter<Image>, itk::SquareImageFilter<Image, Image>>()),
                         EXIT_SUCCESS);
   ITK_TEST_EXPECT_EQUAL((CheckUnaryOperator<itk::CudaSqrtImageFilter<Image>, itk::SqrtImageFilter<Image, Image>>(2.5f)),
@@ -134,5 +135,20 @@ itkCudaImageOperatorsTest(int, char *[])
                         EXIT_SUCCESS);
   ITK_TEST_EXPECT_EQUAL((CheckUnaryOperator<itk::CudaTanImageFilter<Image>, itk::TanImageFilter<Image, Image>>()),
                         EXIT_SUCCESS);
+  return EXIT_SUCCESS;
+}
+
+int
+itkCudaImageOperatorsTest(int, char *[])
+{
+  // The unary operators are only instantiated for the configured floating-point
+  // pixels. Skip the pixel types that CudaCommon_OPERATOR_INSTANTIATIONS_TYPES
+  // disabled so that the test links against the available operators.
+#ifdef CudaCommon_TEST_float
+  ITK_TEST_EXPECT_EQUAL(CheckOperators<float>(), EXIT_SUCCESS);
+#endif
+#ifdef CudaCommon_TEST_double
+  ITK_TEST_EXPECT_EQUAL(CheckOperators<double>(), EXIT_SUCCESS);
+#endif
   return EXIT_SUCCESS;
 }

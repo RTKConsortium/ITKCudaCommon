@@ -24,6 +24,17 @@ set(
 
 createtestdriver(CudaCommon "${CudaCommon-Test_LIBRARIES}" "${CudaCommonTests}")
 
+# Let the tests skip pixel types whose operators are not instantiated.
+foreach(type IN LISTS CudaCommon_OPERATOR_INSTANTIATIONS_TYPES)
+  string(REGEX REPLACE "^signed " "" type "${type}")
+  string(MAKE_C_IDENTIFIER "${type}" type_id)
+  target_compile_definitions(
+    CudaCommonTestDriver
+    PRIVATE
+      "CudaCommon_TEST_${type_id}"
+  )
+endforeach()
+
 itk_add_test(NAME itkCudaImageOperatorsTest
   COMMAND CudaCommonTestDriver
   itkCudaImageOperatorsTest
