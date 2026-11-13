@@ -45,6 +45,17 @@ set(
 # Find ITK (required)
 if(NOT ITK_SOURCE_DIR)
   find_package(ITK 5.4.8 REQUIRED)
+else()
+  set(
+    _CudaCommon_ITK_VERSION
+    "${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}.${ITK_VERSION_PATCH}"
+  )
+  if(_CudaCommon_ITK_VERSION VERSION_LESS 5.4.8)
+    message(
+      FATAL_ERROR
+      "CudaCommon requires ITK 5.4.8 or newer, found ${_CudaCommon_ITK_VERSION}."
+    )
+  endif()
 endif()
 
 if(NOT ITK_SOURCE_DIR)
