@@ -109,4 +109,7 @@ minimum-version = "0.8.2"
 build-dir = "build/{wheel_tag}"
 
 [dependency-groups]
-test = ["pytest>=7.0", "torch", "cupy-cuda12x"]
+test = ["pytest>=7.0", "torch"]
+test-cuda11 = [{include-group = "test"}, "cupy-cuda11x"]
+test-cuda12 = [{include-group = "test"}, "cupy-cuda12x"]
+test-cuda13 = [{include-group = "test"}, "cupy-cuda13x"]

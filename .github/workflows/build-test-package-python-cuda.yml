@@ -285,7 +285,8 @@ jobs:
         echo "Installing wheel: $wheel"
         python -m pip install --upgrade pip
 
-        python -m pip install --group test "$wheel"
+        # Install the CuPy build matching the CUDA toolkit selected above
+        python -m pip install --group "test-cuda${CUDA_VERSION_MAJOR}" "$wheel"
 
         # Run tests with warning detection.
         # SWIG < 4.4 triggers the Py_LIMITED_API "builtin type swig…" warning when
