@@ -49,10 +49,10 @@ Each workflow shows a list of *Artifacts* at the bottom of its front page if you
 To run CudaCommon Python tests with pytest, install the test dependencies from the directory containing `pyproject.toml` (`--group` requires pip 25.1 or later):
 
 ```
-python -m pip install --group test itk-cudacommon-cuda128
+python -m pip install --group test-cuda12 itk-cudacommon-cuda128
 ```
 
-This installs pytest, torch and cupy, which the Python tests need.
+This installs pytest, torch and cupy, which the Python tests need. Use the group matching the major CUDA version of your package (`test-cuda11`, `test-cuda12` or `test-cuda13`) so that the CuPy build relies on the same CUDA runtime.
 
 After installing, run the tests with:
 ```
