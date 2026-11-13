@@ -18,6 +18,7 @@ set(
   itkCudaImageToImageFilterTest.cxx
   itkCudaMemoryProbeTest.cxx
   itkCudaDataManagerDirtyFlagTest.cxx
+  itkCudaImageDirtyFlagTest.cxx
   itkCudaDataManagerReleaseFreeTest.cxx
   itkCudaImageRegionGraftTest.cxx
   itkCudaDeviceSelectionTest.cxx
@@ -48,6 +49,11 @@ itk_add_test(NAME itkCudaMemoryProbeTest
 itk_add_test(NAME itkCudaDataManagerDirtyFlagTest
   COMMAND CudaCommonTestDriver
   itkCudaDataManagerDirtyFlagTest
+)
+
+itk_add_test(NAME itkCudaImageDirtyFlagTest
+  COMMAND CudaCommonTestDriver
+  itkCudaImageDirtyFlagTest
 )
 
 itk_add_test(NAME itkCudaDataManagerReleaseFreeTest

@@ -44,7 +44,7 @@ set(
 # --------------------------------------------------------
 # Find ITK (required)
 if(NOT ITK_SOURCE_DIR)
-  find_package(ITK 5.2 REQUIRED)
+  find_package(ITK 5.4.8 REQUIRED)
 endif()
 
 if(NOT ITK_SOURCE_DIR)

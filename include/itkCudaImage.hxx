@@ -173,8 +173,7 @@ template <class TPixel, unsigned int VImageDimension>
 TPixel *
 CudaImage<TPixel, VImageDimension>::GetBufferPointer()
 {
-  /* less conservative version - if you modify pixel value using
-   * this pointer then you must set the image as modified manually!!! */
+  // Assume the caller writes through the returned pointer
   m_DataManager->UpdateCPUBuffer();
   m_DataManager->SetGPUDirtyFlag(true);
   return Superclass::GetBufferPointer();
@@ -186,7 +185,6 @@ CudaImage<TPixel, VImageDimension>::GetBufferPointer() const
 {
   // const does not change buffer, but if CPU is dirty then make it up-to-date
   m_DataManager->UpdateCPUBuffer();
-  m_DataManager->SetGPUDirtyFlag(true); // THIS IS NEEDED BECAUSE NON-CONST ITERATORS USE THIS FUNCTION
   return Superclass::GetBufferPointer();
 }
 
