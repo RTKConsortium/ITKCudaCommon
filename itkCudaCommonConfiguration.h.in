@@ -24,7 +24,7 @@
 #define CudaCommon_VERSION_STRING "@CudaCommon_VERSION_STRING@"
 
 /* Explicitly instantiate an operator for each C++ pixel type selected by
- * CudaCommon_OPERATOR_INSTANTIATIONS_TYPES. */
+ * CudaCommon_OPERATOR_INSTANTIATIONS_TYPES (float is always included). */
 #define CudaCommon_INSTANTIATE_OPERATOR(OP) \
   @CudaCommon_OPERATOR_INSTANTIATION_DEFINITIONS@
 

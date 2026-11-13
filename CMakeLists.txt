@@ -63,8 +63,10 @@ set(
   CudaCommon_OPERATOR_INSTANTIATIONS_TYPES
   "float;double;int;unsigned int;unsigned long;short;unsigned short;unsigned char"
   CACHE STRING
-  "C++ pixel types instantiated and wrapped for CUDA operators"
+  "C++ pixel types instantiated and wrapped for CUDA operators (float is always instantiated)"
 )
+# float is the library baseline and is always available.
+list(APPEND CudaCommon_OPERATOR_INSTANTIATIONS_TYPES float)
 list(REMOVE_DUPLICATES CudaCommon_OPERATOR_INSTANTIATIONS_TYPES)
 
 set(CudaCommon_OPERATOR_INSTANTIATION_DEFINITIONS "")

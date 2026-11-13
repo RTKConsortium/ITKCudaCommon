@@ -30,7 +30,7 @@ An `itk::CudaImageToImageFilter` and its in place child, `itk::CudaInPlaceImageF
 CUDA operator pixel types
 -------------------------
 
-`CudaCommon_OPERATOR_INSTANTIATIONS_TYPES` is an editable CMake list of C++ pixel types. Its defaults are `float`, `double`, `int`, `unsigned int`, `unsigned long`, `short`, `unsigned short`, and `unsigned char`. For example, `-DCudaCommon_OPERATOR_INSTANTIATIONS_TYPES=float` builds and wraps CUDA operators for float only. Real-only operators use only the `float` and `double` entries present in this list.
+`CudaCommon_OPERATOR_INSTANTIATIONS_TYPES` is an editable CMake list of C++ pixel types. Its defaults are `float`, `double`, `int`, `unsigned int`, `unsigned long`, `short`, `unsigned short`, and `unsigned char`. `float` is always instantiated because it is the library baseline, so for example `-DCudaCommon_OPERATOR_INSTANTIATIONS_TYPES=int` builds and wraps CUDA operators for `int` and `float`. Real-only operators use only the `float` and `double` entries present in this list.
 
 Python wrapping aliases are derived automatically from this list (for example, `float` becomes `F` and `unsigned short` becomes `US`), so there is no separate wrapping type selection.
 
