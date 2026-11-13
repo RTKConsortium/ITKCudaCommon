@@ -285,6 +285,11 @@ jobs:
         echo "Installing wheel: $wheel"
         python -m pip install --upgrade pip
 
+        # torch on PyPI is CPU-only on Windows, install a CUDA build first
+        if [[ "${{ matrix.os }}" == "windows" ]]; then
+          python -m pip install torch --index-url "https://download.pytorch.org/whl/cu${CUDA_VERSION}"
+        fi
+
         # Install the CuPy build matching the CUDA toolkit selected above
         python -m pip install --group "test-cuda${CUDA_VERSION_MAJOR}" "$wheel"
 
