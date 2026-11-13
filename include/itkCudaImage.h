@@ -118,12 +118,16 @@ public:
   void
   UpdateBuffers();
 
-  //
-  // Get CPU buffer pointer
-  //
+  /** Get a pointer to the CPU buffer for writing. The CPU buffer is first
+   * updated from the GPU if needed, then the GPU buffer is preemptively marked
+   * dirty, assuming the caller modifies the pixels of the CPU buffer. Using
+   * the GPU buffer again requires its update, explicitly with UpdateBuffers()
+   * or implicitly with GetCudaDataManager()->GetGPUBufferPointer(). */
   TPixel *
   GetBufferPointer() override;
 
+  /** Get a pointer to the CPU buffer for reading. The CPU buffer is first
+   * updated from the GPU if needed and the GPU buffer is left unchanged. */
   const TPixel *
   GetBufferPointer() const override;
 
