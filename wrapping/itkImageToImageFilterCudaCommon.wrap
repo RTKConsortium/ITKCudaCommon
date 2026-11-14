@@ -3,7 +3,7 @@ itk_wrap_include(itkImage.h)
 
 itk_wrap_class("itk::ImageToImageFilter" POINTER)
 
-  UNIQUE(types "UC;UL;${WRAP_ITK_SCALAR}")
+  UNIQUE(types "UC;UL;${WRAP_ITK_SCALAR};${CudaCommon_WRAP_OPERATOR_TYPES}")
   UNIQUE(vector_types "${WRAP_ITK_VECTOR_REAL};${WRAP_ITK_COV_VECTOR_REAL}")
 
   foreach(d ${ITK_WRAP_IMAGE_DIMS})

@@ -61,3 +61,12 @@ What is a CudaImageToImageFilter?
 ---------------------------------
 
 An `itk::CudaImageToImageFilter` and its in place child, `itk::CudaInPlaceImageFilter`, are ITK filters which can be integrated in an ITK pipeline to process an `itk::CudaImage`. They are CUDA equivalent to the CPU classes `itk::ImageToImageFilter` and `itk::InPlaceImageFilter` in [ITK's Common module](https://github.com/InsightSoftwareConsortium/ITK/tree/main/Modules/Core/Common). See the [ITK software guide](https://itk.org/ITKSoftwareGuide/html/) for more information. Their `GPUGenerateData` member function must process the output `CudaImage` objects.
+
+CUDA operator pixel types
+-------------------------
+
+`CudaCommon_OPERATOR_INSTANTIATIONS_TYPES` is an editable CMake list of C++ pixel types. Its defaults are `float`, `double`, `int`, `unsigned int`, `unsigned long`, `short`, `unsigned short`, and `unsigned char`. `float` is always instantiated because it is the library baseline, so for example `-DCudaCommon_OPERATOR_INSTANTIATIONS_TYPES=int` builds and wraps CUDA operators for `int` and `float`. Real-only operators use only the `float` and `double` entries present in this list.
+
+Python wrapping aliases are derived automatically from this list (for example, `float` becomes `F` and `unsigned short` becomes `US`), so there is no separate wrapping type selection.
+
+This selection only restricts arithmetic operators. General image and pipeline wrappers retain ITK's configured types, and vector image wrapping follows ITK's vector settings independently.

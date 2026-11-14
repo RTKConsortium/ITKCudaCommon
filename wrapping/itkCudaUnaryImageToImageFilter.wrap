@@ -1,0 +1,64 @@
+itk_wrap_include(itkCudaImage.h)
+itk_wrap_include(itkCudaUnaryImageToImageFilter.h)
+itk_wrap_include(itkAbsImageFilter.h)
+itk_wrap_include(itkAcosImageFilter.h)
+itk_wrap_include(itkAsinImageFilter.h)
+itk_wrap_include(itkAtanImageFilter.h)
+itk_wrap_include(itkBoundedReciprocalImageFilter.h)
+itk_wrap_include(itkCosImageFilter.h)
+itk_wrap_include(itkExpImageFilter.h)
+itk_wrap_include(itkLogImageFilter.h)
+itk_wrap_include(itkLog10ImageFilter.h)
+itk_wrap_include(itkRoundImageFilter.h)
+itk_wrap_include(itkSinImageFilter.h)
+itk_wrap_include(itkSqrtImageFilter.h)
+itk_wrap_include(itkSquareImageFilter.h)
+itk_wrap_include(itkTanImageFilter.h)
+
+itk_wrap_class("itk::CudaUnaryImageToImageFilter" POINTER)
+
+  # Parents that ITK wraps for every scalar pixel type.
+  foreach(parent IN ITEMS
+      "ABSF;itk::AbsImageFilter"
+      "ACOSF;itk::AcosImageFilter"
+      "ASINF;itk::AsinImageFilter"
+      "BOUNDEDRECIPROCALF;itk::BoundedReciprocalImageFilter"
+      "EXPF;itk::ExpImageFilter"
+      "LOGF;itk::LogImageFilter"
+      "LOG10F;itk::Log10ImageFilter"
+      "SQF;itk::SquareImageFilter"
+      "SQRTF;itk::SqrtImageFilter")
+    list(GET parent 0 suffix)
+    list(GET parent 1 parentType)
+    UNIQUE(types "${CudaCommon_WRAP_OPERATOR_TYPES}")
+    foreach(d ${ITK_WRAP_IMAGE_DIMS})
+      if(d EQUAL 2 OR d EQUAL 3 OR d EQUAL 4)
+        foreach(t ${types})
+          itk_wrap_template("CI${ITKM_${t}}${d}CI${ITKM_${t}}${d}${suffix}"
+                            "itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${t}},${d}>, ${parentType}<itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${t}},${d}> >")
+        endforeach()
+      endif()
+    endforeach()
+  endforeach()
+
+  # Parents that ITK wraps for real pixel types only.
+  foreach(parent IN ITEMS
+      "ATANF;itk::AtanImageFilter"
+      "COSF;itk::CosImageFilter"
+      "ROUNDF;itk::RoundImageFilter"
+      "SINF;itk::SinImageFilter"
+      "TANF;itk::TanImageFilter")
+    list(GET parent 0 suffix)
+    list(GET parent 1 parentType)
+    UNIQUE(types "${CudaCommon_WRAP_REAL_OPERATOR_TYPES}")
+    foreach(d ${ITK_WRAP_IMAGE_DIMS})
+      if(d EQUAL 2 OR d EQUAL 3 OR d EQUAL 4)
+        foreach(t ${types})
+          itk_wrap_template("CI${ITKM_${t}}${d}CI${ITKM_${t}}${d}${suffix}"
+                            "itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${t}},${d}>, ${parentType}<itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${t}},${d}> >")
+        endforeach()
+      endif()
+    endforeach()
+  endforeach()
+
+itk_end_wrap_class()
