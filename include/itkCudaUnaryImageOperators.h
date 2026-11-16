@@ -34,6 +34,58 @@ template <class PixelType>
 void
 CudaSquareImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
 
+template <class PixelType>
+void
+CudaSqrtImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaAbsImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaAcosImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaAsinImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaAtanImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaBoundedReciprocalImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaCosImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaExpImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaLogImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaLog10Image(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaRoundImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaSinImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
+template <class PixelType>
+void
+CudaTanImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
+
 } // namespace itk
 
 // CUDA translation units get the template definitions, allowing them to

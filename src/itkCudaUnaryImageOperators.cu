@@ -21,10 +21,6 @@
 namespace itk
 {
 
-// Every unary operator provided by the library. Adding an operator here is all
-// that is needed to instantiate it for the scalar pixel types below.
-#define CudaCommon_UNARY_OPERATORS(M) M(CudaSquareImage)
-
 // Instantiate an operator for every ITK scalar pixel type.
 #define CudaCommon_INSTANTIATE_OPERATOR(OP)                                           \
   template decltype(OP<signed char>) CudaCommon_EXPORT        OP<signed char>;        \
@@ -40,9 +36,21 @@ namespace itk
   template decltype(OP<float>) CudaCommon_EXPORT              OP<float>;              \
   template decltype(OP<double>) CudaCommon_EXPORT             OP<double>;
 
-CudaCommon_UNARY_OPERATORS(CudaCommon_INSTANTIATE_OPERATOR);
+CudaCommon_INSTANTIATE_OPERATOR(CudaSquareImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaSqrtImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaAbsImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaAcosImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaAsinImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaAtanImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaBoundedReciprocalImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaCosImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaExpImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaLogImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaLog10Image);
+CudaCommon_INSTANTIATE_OPERATOR(CudaRoundImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaSinImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaTanImage);
 
 #undef CudaCommon_INSTANTIATE_OPERATOR
-#undef CudaCommon_UNARY_OPERATORS
 
 } // namespace itk
