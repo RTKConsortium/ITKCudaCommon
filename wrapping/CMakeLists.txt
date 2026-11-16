@@ -9,11 +9,37 @@ set(
   itkInPlaceImageFilterCudaCommon
   itkImageSourceCudaCommon
   itkUnaryGeneratorImageFilterCudaCommon
+  itkAbsImageFilterCudaCommon
+  itkAcosImageFilterCudaCommon
+  itkAsinImageFilterCudaCommon
+  itkAtanImageFilterCudaCommon
+  itkBoundedReciprocalImageFilterCudaCommon
+  itkCosImageFilterCudaCommon
+  itkExpImageFilterCudaCommon
+  itkLogImageFilterCudaCommon
+  itkLog10ImageFilterCudaCommon
+  itkRoundImageFilterCudaCommon
+  itkSinImageFilterCudaCommon
+  itkSqrtImageFilterCudaCommon
   itkSquareImageFilterCudaCommon
+  itkTanImageFilterCudaCommon
   itkCudaImageToImageFilter
   itkCudaInPlaceImageFilter
   itkCudaImageFromImageFilter
+  itkCudaAbsImageFilter
+  itkCudaAcosImageFilter
+  itkCudaAsinImageFilter
+  itkCudaAtanImageFilter
+  itkCudaBoundedReciprocalImageFilter
+  itkCudaCosImageFilter
+  itkCudaExpImageFilter
+  itkCudaLogImageFilter
+  itkCudaLog10ImageFilter
+  itkCudaRoundImageFilter
+  itkCudaSinImageFilter
+  itkCudaSqrtImageFilter
   itkCudaSquareImageFilter
+  itkCudaTanImageFilter
 )
 
 configure_file(

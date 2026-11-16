@@ -35,6 +35,164 @@ CudaSquareImage(itk::SizeValueType numberOfPixels, const PixelType * input, Pixe
   LaunchCudaImageOperation(numberOfPixels, square, output, input);
 }
 
+template <class PixelType>
+void
+CudaSqrtImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    return static_cast<PixelType>(sqrt(static_cast<double>(value)));
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaAbsImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    if constexpr (std::is_floating_point_v<PixelType>)
+    {
+      return fabs(value);
+    }
+    else if constexpr (std::is_signed_v<PixelType>)
+    {
+      return static_cast<PixelType>(value < PixelType{} ? -value : value);
+    }
+    else
+    {
+      return value;
+    }
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaAcosImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    return static_cast<PixelType>(acos(static_cast<double>(value)));
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaAsinImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    return static_cast<PixelType>(asin(static_cast<double>(value)));
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaAtanImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    return static_cast<PixelType>(atan(static_cast<double>(value)));
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaBoundedReciprocalImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    return static_cast<PixelType>(1.0 / (1.0 + static_cast<double>(value)));
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaCosImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    return static_cast<PixelType>(cos(static_cast<double>(value)));
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaExpImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    return static_cast<PixelType>(exp(static_cast<double>(value)));
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaLogImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    return static_cast<PixelType>(log(static_cast<double>(value)));
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaLog10Image(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    return static_cast<PixelType>(log10(static_cast<double>(value)));
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaRoundImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    if constexpr (std::is_integral_v<PixelType>)
+    {
+      return value;
+    }
+    else
+    {
+      // Match ITK's half-up rounding without changing large integral values.
+      PixelType integralLimit = 0x1p52;
+      if constexpr (std::is_same_v<PixelType, float>)
+      {
+        integralLimit = 0x1p23f;
+      }
+      if (fabs(value) >= integralLimit)
+      {
+        return value;
+      }
+      return static_cast<PixelType>(floor(value + PixelType{ 0.5 }));
+    }
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaSinImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    return static_cast<PixelType>(sin(static_cast<double>(value)));
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
+template <class PixelType>
+void
+CudaTanImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto operation = [] __device__(PixelType value) {
+    return static_cast<PixelType>(tan(static_cast<double>(value)));
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
 } // namespace itk
 
 #endif // __CUDACC__
