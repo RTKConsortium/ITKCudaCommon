@@ -8,6 +8,8 @@ set(
   itkImageToImageFilterCudaCommon
   itkInPlaceImageFilterCudaCommon
   itkImageSourceCudaCommon
+  itkUnaryGeneratorImageFilterCudaCommon
+  itkSquareImageFilterCudaCommon
   itkCudaImageToImageFilter
   itkCudaInPlaceImageFilter
   itkCudaImageFromImageFilter

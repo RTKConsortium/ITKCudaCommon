@@ -75,4 +75,7 @@ if(ITK_WRAP_PYTHON)
   itk_python_add_test(NAME itkCudaImageFromImagePythonTest
     COMMAND itkCudaImageFromImageTest.py
   )
+  itk_python_add_test(NAME itkCudaImageOperatorsPythonTest
+    COMMAND itkCudaImageOperatorsTest.py
+  )
 endif()

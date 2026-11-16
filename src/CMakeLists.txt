@@ -5,9 +5,15 @@ set(
   itkCudaMemoryProbe.cxx
 )
 
-set(CudaCommon_Kernels itkCudaSquareImageFilter.cu)
+set(CudaCommon_Kernels itkCudaUnaryImageOperators.cu)
 
 itk_module_add_library(CudaCommon ${CudaCommon_SRCS} ${CudaCommon_Kernels})
+
+target_compile_options(
+  CudaCommon
+  PUBLIC
+    "$<$<COMPILE_LANG_AND_ID:CUDA,NVIDIA>:--extended-lambda>"
+)
 target_link_libraries(
   CudaCommon
   PUBLIC
