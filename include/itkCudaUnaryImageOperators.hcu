@@ -15,20 +15,28 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef CudaSquareImageFilter_hcu
-#define CudaSquareImageFilter_hcu
+#ifndef itkCudaUnaryImageOperators_hcu
+#define itkCudaUnaryImageOperators_hcu
+
+#ifdef __CUDACC__
+
+#  include "itkCudaImageOperators.hcu"
+#  include <cmath>
+#  include <type_traits>
 
 namespace itk
 {
 
 template <class PixelType>
 void
-CudaSquareImage3D(int imSize[3], PixelType * in, PixelType * out);
+CudaSquareImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output)
+{
+  const auto square = [] __device__(PixelType value) { return static_cast<PixelType>(value * value); };
+  LaunchCudaImageOperation(numberOfPixels, square, output, input);
+}
 
-template <class PixelType>
-void
-CudaSquareImage2D(int imSize[2], PixelType * in, PixelType * out);
+} // namespace itk
 
-} // end namespace itk
+#endif // __CUDACC__
 
 #endif

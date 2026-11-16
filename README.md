@@ -61,3 +61,10 @@ What is a CudaImageToImageFilter?
 ---------------------------------
 
 An `itk::CudaImageToImageFilter` and its in place child, `itk::CudaInPlaceImageFilter`, are ITK filters which can be integrated in an ITK pipeline to process an `itk::CudaImage`. They are CUDA equivalent to the CPU classes `itk::ImageToImageFilter` and `itk::InPlaceImageFilter` in [ITK's Common module](https://github.com/InsightSoftwareConsortium/ITK/tree/main/Modules/Core/Common). See the [ITK software guide](https://itk.org/ITKSoftwareGuide/html/) for more information. Their `GPUGenerateData` member function must process the output `CudaImage` objects.
+
+CUDA image operators
+--------------------
+
+CudaCommon includes CUDA implementations of common ITK unary image operators.
+
+These operators were added to perform pixel-wise calculations directly on the GPU within an ITK pipeline. They allow pipelines using `itk::CudaImage` to keep image data on the GPU between operations, avoiding transfers to and from CPU memory just to apply these calculations.
