@@ -200,7 +200,7 @@ def main():
         configure_division,
     )
     IntegerImage = itk.CudaImage[itk.SS, 2]
-    for name in ("Modulus", "And", "Or", "Xor"):
+    for name in ("Modulus", "And", "Or", "Xor", "Pow"):
         check_binary_operator(
             getattr(itk, f"Cuda{name}ImageFilter")[IntegerImage],
             getattr(itk, f"{name}ImageFilter")[

@@ -384,6 +384,10 @@ itkCudaImageOperatorsTest(int, char *[])
       (CheckBinaryOperator<itk::CudaXorImageFilter<IntegerImage>,
                            itk::XorImageFilter<IntegerImage, IntegerImage, IntegerImage>>(constantInput, defaults)),
       EXIT_SUCCESS);
+    ITK_TEST_EXPECT_EQUAL(
+      (CheckBinaryOperator<itk::CudaPowImageFilter<IntegerImage>,
+                           itk::PowImageFilter<IntegerImage, IntegerImage, IntegerImage>>(constantInput, defaults)),
+      EXIT_SUCCESS);
   }
   return EXIT_SUCCESS;
 }

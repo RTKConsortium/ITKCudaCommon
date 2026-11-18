@@ -162,7 +162,19 @@ CudaPowImage(itk::SizeValueType numberOfPixels,
              TPixel             constant2)
 {
   const auto operation = [] __device__(TPixel a, TPixel b) {
-    return static_cast<TPixel>(pow(static_cast<double>(a), static_cast<double>(b)));
+    const auto exponent = static_cast<double>(b);
+    const auto value = pow(static_cast<double>(a), exponent);
+    if constexpr (std::is_integral_v<TPixel>)
+    {
+      // Nonnegative integer powers are integers. CUDA pow may return just
+      // below the exact value (e.g. 3^1), which would truncate to the wrong
+      // pixel. Negative exponents must still truncate fractional results.
+      return static_cast<TPixel>(exponent < 0.0 ? value : round(value));
+    }
+    else
+    {
+      return static_cast<TPixel>(value);
+    }
   };
   LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
 }
