@@ -1,0 +1,34 @@
+itk_wrap_include(itkCudaImage.h)
+itk_wrap_include(itkCudaBinaryImageToImageFilter.h)
+itk_wrap_include(itkMultiplyImageFilter.h)
+
+itk_wrap_class("itk::CudaImageToImageFilter" POINTER)
+foreach(d ${ITK_WRAP_IMAGE_DIMS})
+  foreach(t ${WRAP_ITK_SCALAR})
+    itk_wrap_template("CI${ITKM_${t}}${d}CI${ITKM_${t}}${d}Multiply"
+                        "itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${t}},${d}>, itk::MultiplyImageFilter<itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${t}},${d}> >"
+    )
+  endforeach()
+endforeach()
+itk_end_wrap_class()
+
+itk_wrap_class("itk::CudaBinaryImageToImageFilter" POINTER)
+foreach(d ${ITK_WRAP_IMAGE_DIMS})
+  foreach(t ${WRAP_ITK_SCALAR})
+    itk_wrap_template("CI${ITKM_${t}}${d}CI${ITKM_${t}}${d}Multiply"
+                        "itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${t}},${d}>, itk::MultiplyImageFilter<itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${t}},${d}> >"
+    )
+  endforeach()
+endforeach()
+itk_end_wrap_class()
+
+itk_wrap_class("itk::CudaMultiplyImageFilter" POINTER)
+
+unique(types "${WRAP_ITK_SCALAR}")
+foreach(d ${ITK_WRAP_IMAGE_DIMS})
+  foreach(t ${types})
+    itk_wrap_template("CI${ITKM_${t}}${d}" "itk::CudaImage<${ITKT_${t}},${d}>")
+  endforeach()
+endforeach()
+
+itk_end_wrap_class()

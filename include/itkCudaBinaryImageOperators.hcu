@@ -1,0 +1,337 @@
+/*=========================================================================
+ *
+ *  Copyright NumFOCUS
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         https://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *=========================================================================*/
+#ifndef itkCudaBinaryImageOperators_hcu
+#define itkCudaBinaryImageOperators_hcu
+
+#ifdef __CUDACC__
+
+#  include "itkCudaImageOperators.hcu"
+#  include "itkNumericTraits.h"
+#  include <cmath>
+#  include <limits>
+#  include <type_traits>
+
+namespace itk
+{
+
+/** Apply a binary device operation to two images, or to an image and a
+ * constant. A null input pointer selects the corresponding constant operand,
+ * which is bound to the operation on the host. */
+template <typename TOperation, typename TInputPixel1, typename TInputPixel2 = TInputPixel1>
+void
+LaunchCudaBinaryImageOperation(itk::SizeValueType   numberOfPixels,
+                               TOperation           operation,
+                               TInputPixel1 *       output,
+                               const TInputPixel1 * input1,
+                               const TInputPixel2 * input2,
+                               TInputPixel1         constant1,
+                               TInputPixel2         constant2)
+{
+  if (input1 && input2)
+  {
+    LaunchCudaImageOperation(numberOfPixels, operation, output, input1, input2);
+  }
+  else if (input1)
+  {
+    const auto unaryOperation = [operation, constant2] __device__(TInputPixel1 value) {
+      return operation(value, constant2);
+    };
+    LaunchCudaImageOperation(numberOfPixels, unaryOperation, output, input1);
+  }
+  else
+  {
+    const auto unaryOperation = [operation, constant1] __device__(TInputPixel2 value) {
+      return operation(constant1, value);
+    };
+    LaunchCudaImageOperation(numberOfPixels, unaryOperation, output, input2);
+  }
+}
+
+template <class TPixel>
+void
+CudaAddImage(itk::SizeValueType numberOfPixels,
+             const TPixel *     input1,
+             const TPixel *     input2,
+             TPixel *           output,
+             TPixel             constant1,
+             TPixel             constant2)
+{
+  const auto operation = [] __device__(TPixel a, TPixel b) { return static_cast<TPixel>(a + b); };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaSubtractImage(itk::SizeValueType numberOfPixels,
+                  const TPixel *     input1,
+                  const TPixel *     input2,
+                  TPixel *           output,
+                  TPixel             constant1,
+                  TPixel             constant2)
+{
+  const auto operation = [] __device__(TPixel a, TPixel b) { return static_cast<TPixel>(a - b); };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaMultiplyImage(itk::SizeValueType numberOfPixels,
+                  const TPixel *     input1,
+                  const TPixel *     input2,
+                  TPixel *           output,
+                  TPixel             constant1,
+                  TPixel             constant2)
+{
+  const auto operation = [] __device__(TPixel a, TPixel b) { return static_cast<TPixel>(a * b); };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaDivideImage(itk::SizeValueType numberOfPixels,
+                const TPixel *     input1,
+                const TPixel *     input2,
+                TPixel *           output,
+                TPixel             constant1,
+                TPixel             constant2)
+{
+  // Match ITK's AlmostEquals(denominator, 0), including its absolute tolerance.
+  const TPixel maximum = std::numeric_limits<TPixel>::max();
+  const TPixel zeroTolerance = static_cast<TPixel>(0.1 * std::numeric_limits<TPixel>::epsilon());
+  const auto   operation = [maximum, zeroTolerance] __device__(TPixel a, TPixel b) {
+    if constexpr (std::is_floating_point_v<TPixel>)
+    {
+      if (b >= -zeroTolerance && b <= zeroTolerance)
+        return maximum;
+    }
+    else if (b == TPixel{})
+      return maximum;
+    return static_cast<TPixel>(a / b);
+  };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaMaximumImage(itk::SizeValueType numberOfPixels,
+                 const TPixel *     input1,
+                 const TPixel *     input2,
+                 TPixel *           output,
+                 TPixel             constant1,
+                 TPixel             constant2)
+{
+  const auto operation = [] __device__(TPixel a, TPixel b) { return static_cast<TPixel>(a > b ? a : b); };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaMinimumImage(itk::SizeValueType numberOfPixels,
+                 const TPixel *     input1,
+                 const TPixel *     input2,
+                 TPixel *           output,
+                 TPixel             constant1,
+                 TPixel             constant2)
+{
+  const auto operation = [] __device__(TPixel a, TPixel b) { return static_cast<TPixel>(a < b ? a : b); };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaPowImage(itk::SizeValueType numberOfPixels,
+             const TPixel *     input1,
+             const TPixel *     input2,
+             TPixel *           output,
+             TPixel             constant1,
+             TPixel             constant2)
+{
+  const auto operation = [] __device__(TPixel a, TPixel b) {
+    return static_cast<TPixel>(pow(static_cast<double>(a), static_cast<double>(b)));
+  };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaAtan2Image(itk::SizeValueType numberOfPixels,
+               const TPixel *     input1,
+               const TPixel *     input2,
+               TPixel *           output,
+               TPixel             constant1,
+               TPixel             constant2)
+{
+  const auto operation = [] __device__(TPixel a, TPixel b) {
+    return static_cast<TPixel>(atan2(static_cast<double>(a), static_cast<double>(b)));
+  };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaDivideOrZeroOutImage(itk::SizeValueType numberOfPixels,
+                         const TPixel *     input1,
+                         const TPixel *     input2,
+                         TPixel *           output,
+                         TPixel             constant1,
+                         TPixel             constant2,
+                         TPixel             threshold,
+                         TPixel             outsideValue)
+{
+  const auto operation = [threshold, outsideValue] __device__(TPixel a, TPixel b) {
+    return b < threshold ? outsideValue : static_cast<TPixel>(a / b);
+  };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaWeightedAddImage(itk::SizeValueType                       numberOfPixels,
+                     const TPixel *                           input1,
+                     const TPixel *                           input2,
+                     TPixel *                                 output,
+                     TPixel                                   constant1,
+                     TPixel                                   constant2,
+                     typename NumericTraits<TPixel>::RealType alpha,
+                     typename NumericTraits<TPixel>::RealType beta)
+{
+  const auto operation = [alpha, beta] __device__(TPixel a, TPixel b) {
+    // ITK rounds the two RealType products separately before adding them.
+    const auto sum1 = __dmul_rn(static_cast<double>(a), alpha);
+    const auto sum2 = __dmul_rn(static_cast<double>(b), beta);
+    return static_cast<TPixel>(__dadd_rn(sum1, sum2));
+  };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaModulusImage(itk::SizeValueType numberOfPixels,
+                 const TPixel *     input1,
+                 const TPixel *     input2,
+                 TPixel *           output,
+                 TPixel             constant1,
+                 TPixel             constant2)
+{
+  const TPixel maximum = std::numeric_limits<TPixel>::max();
+  const auto   operation = [maximum] __device__(TPixel a, TPixel b) {
+    return b == TPixel{} ? maximum : static_cast<TPixel>(a % b);
+  };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaAndImage(itk::SizeValueType numberOfPixels,
+             const TPixel *     input1,
+             const TPixel *     input2,
+             TPixel *           output,
+             TPixel             constant1,
+             TPixel             constant2)
+{
+  const auto operation = [] __device__(TPixel a, TPixel b) { return static_cast<TPixel>(a & b); };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaOrImage(itk::SizeValueType numberOfPixels,
+            const TPixel *     input1,
+            const TPixel *     input2,
+            TPixel *           output,
+            TPixel             constant1,
+            TPixel             constant2)
+{
+  const auto operation = [] __device__(TPixel a, TPixel b) { return static_cast<TPixel>(a | b); };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaXorImage(itk::SizeValueType numberOfPixels,
+             const TPixel *     input1,
+             const TPixel *     input2,
+             TPixel *           output,
+             TPixel             constant1,
+             TPixel             constant2)
+{
+  const auto operation = [] __device__(TPixel a, TPixel b) { return static_cast<TPixel>(a ^ b); };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaBinaryMagnitudeImage(itk::SizeValueType numberOfPixels,
+                         const TPixel *     input1,
+                         const TPixel *     input2,
+                         TPixel *           output,
+                         TPixel             constant1,
+                         TPixel             constant2)
+{
+  const auto operation = [] __device__(TPixel a, TPixel b) {
+    const auto dA = static_cast<double>(a);
+    const auto dB = static_cast<double>(b);
+    // Separate rounding matches ITK rather than CUDA's fused multiply-add.
+    return static_cast<TPixel>(sqrt(__dadd_rn(__dmul_rn(dA, dA), __dmul_rn(dB, dB))));
+  };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaConstrainedValueAdditionImage(itk::SizeValueType numberOfPixels,
+                                  const TPixel *     input1,
+                                  const TPixel *     input2,
+                                  TPixel *           output,
+                                  TPixel             constant1,
+                                  TPixel             constant2)
+{
+  const auto maximum = static_cast<double>(NumericTraits<TPixel>::max());
+  const auto minimum = static_cast<double>(NumericTraits<TPixel>::NonpositiveMin());
+  const auto operation = [maximum, minimum] __device__(TPixel a, TPixel b) {
+    const double sum = static_cast<double>(a) + static_cast<double>(b);
+    const double upper = sum < maximum ? sum : maximum;
+    return static_cast<TPixel>(upper > minimum ? upper : minimum);
+  };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+template <class TPixel>
+void
+CudaConstrainedValueDifferenceImage(itk::SizeValueType numberOfPixels,
+                                    const TPixel *     input1,
+                                    const TPixel *     input2,
+                                    TPixel *           output,
+                                    TPixel             constant1,
+                                    TPixel             constant2)
+{
+  const auto maximum = static_cast<double>(NumericTraits<TPixel>::max());
+  const auto minimum = static_cast<double>(NumericTraits<TPixel>::NonpositiveMin());
+  const auto operation = [maximum, minimum] __device__(TPixel a, TPixel b) {
+    const double difference = static_cast<double>(a) - static_cast<double>(b);
+    const double lower = difference > minimum ? difference : minimum;
+    return static_cast<TPixel>(lower < maximum ? lower : maximum);
+  };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
+}
+
+} // namespace itk
+
+#endif // __CUDACC__
+
+#endif

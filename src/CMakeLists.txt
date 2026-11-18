@@ -5,7 +5,11 @@ set(
   itkCudaMemoryProbe.cxx
 )
 
-set(CudaCommon_Kernels itkCudaUnaryImageOperators.cu)
+set(
+  CudaCommon_Kernels
+  itkCudaUnaryImageOperators.cu
+  itkCudaBinaryImageOperators.cu
+)
 
 itk_module_add_library(CudaCommon ${CudaCommon_SRCS} ${CudaCommon_Kernels})
 

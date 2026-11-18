@@ -11,7 +11,7 @@ def make_image(image_type, values):
     index = itk.Index[2]()
     for (y, x), value in np.ndenumerate(values):
         index[0], index[1] = x, y
-        image.SetPixel(index, float(value))
+        image.SetPixel(index, value.item())
     return image
 
 
@@ -21,9 +21,13 @@ def check_image_quality(image, reference):
     assert tuple(region.GetIndex()) == tuple(reference_region.GetIndex())
     assert tuple(region.GetSize()) == tuple(reference_region.GetSize())
 
-    cpu_image_type = itk.Image[itk.F, 2]
+    pixel_type, dimension = itk.template(image)[1]
+    cpu_image_type = itk.Image[pixel_type, dimension]
     actual = itk.array_from_image(image, ttype=cpu_image_type)
     expected = itk.array_from_image(reference, ttype=cpu_image_type)
+    if np.issubdtype(actual.dtype, np.integer):
+        np.testing.assert_array_equal(actual, expected)
+        return
     # Match itk::Math::AlmostEquals<float>, including its near-zero tolerance.
     with np.errstate(over="ignore", invalid="ignore"):
         close = (actual == expected) | (
@@ -69,6 +73,43 @@ def check_unary_operator(
     assert tuple(region.GetSize()) == (17, 19)
     print(f"Checking {operator.GetNameOfClass()} against {reference.GetNameOfClass()}")
     check_image_quality(operator.GetOutput(), reference.GetOutput())
+
+
+def check_binary_operator(cuda_filter_type, cpu_filter_type, configure=None):
+    image_type = itk.template(cuda_filter_type)[1][0]
+    second_type = itk.template(cpu_filter_type)[1][1]
+    pixels = np.arange(17 * 19).reshape(19, 17)
+    # Includes 3^1 for the integer-power regression and crosses a CUDA block.
+    input1 = make_image(image_type, pixels % 5 + 1)
+    input2 = make_image(second_type, pixels % 4)
+
+    for constant_input in (0, 1, 2):
+        reference = cpu_filter_type.New()
+        operator = cuda_filter_type.New()
+        for filter_ in (reference, operator):
+            if constant_input == 1:
+                filter_.SetConstant1(2)
+            else:
+                filter_.SetInput1(input1)
+            if constant_input == 2:
+                filter_.SetConstant2(2)
+            else:
+                filter_.SetInput2(input2)
+            filter_.InPlaceOff()
+            if configure is not None:
+                configure(filter_)
+        reference.Update()
+        operator.GPUEnabledOn()
+        operator.Update()
+
+        region = operator.GetOutput().GetBufferedRegion()
+        assert tuple(region.GetIndex()) == (0, 0)
+        assert tuple(region.GetSize()) == (17, 19)
+        print(
+            f"Checking {operator.GetNameOfClass()} against "
+            f"{reference.GetNameOfClass()}, constant input {constant_input}"
+        )
+        check_image_quality(operator.GetOutput(), reference.GetOutput())
 
 
 def main():
@@ -126,6 +167,46 @@ def main():
     check_unary_operator(
         itk.CudaTanImageFilter[Image], itk.TanImageFilter[Image, Image]
     )
+    for name in (
+        "Add",
+        "Subtract",
+        "Multiply",
+        "Divide",
+        "Maximum",
+        "Minimum",
+        "Pow",
+        "Atan2",
+        "BinaryMagnitude",
+        "ConstrainedValueAddition",
+        "ConstrainedValueDifference",
+    ):
+        check_binary_operator(
+            getattr(itk, f"Cuda{name}ImageFilter")[Image],
+            getattr(itk, f"{name}ImageFilter")[Image, Image, Image],
+        )
+    check_binary_operator(
+        itk.CudaWeightedAddImageFilter[Image],
+        itk.WeightedAddImageFilter[Image, Image, Image],
+        lambda filter_: filter_.SetAlpha(0.25),
+    )
+
+    def configure_division(filter_):
+        filter_.SetThreshold(1)
+        filter_.SetConstant(7)
+
+    check_binary_operator(
+        itk.CudaDivideOrZeroOutImageFilter[Image],
+        itk.DivideOrZeroOutImageFilter[Image, Image, Image],
+        configure_division,
+    )
+    IntegerImage = itk.CudaImage[itk.SS, 2]
+    for name in ("Modulus", "And", "Or", "Xor"):
+        check_binary_operator(
+            getattr(itk, f"Cuda{name}ImageFilter")[IntegerImage],
+            getattr(itk, f"{name}ImageFilter")[
+                IntegerImage, IntegerImage, IntegerImage
+            ],
+        )
 
 
 if __name__ == "__main__":
