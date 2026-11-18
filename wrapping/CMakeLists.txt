@@ -9,6 +9,7 @@ set(
   itkInPlaceImageFilterCudaCommon
   itkImageSourceCudaCommon
   itkUnaryGeneratorImageFilterCudaCommon
+  itkBinaryGeneratorImageFilterCudaCommon
   itkAbsImageFilterCudaCommon
   itkAcosImageFilterCudaCommon
   itkAsinImageFilterCudaCommon
