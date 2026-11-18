@@ -22,6 +22,23 @@ set(
   itkRoundImageFilterCudaCommon
   itkSinImageFilterCudaCommon
   itkSqrtImageFilterCudaCommon
+  itkAddImageFilterCudaCommon
+  itkSubtractImageFilterCudaCommon
+  itkMultiplyImageFilterCudaCommon
+  itkDivideImageFilterCudaCommon
+  itkDivideOrZeroOutImageFilterCudaCommon
+  itkWeightedAddImageFilterCudaCommon
+  itkModulusImageFilterCudaCommon
+  itkAndImageFilterCudaCommon
+  itkOrImageFilterCudaCommon
+  itkXorImageFilterCudaCommon
+  itkMaximumImageFilterCudaCommon
+  itkMinimumImageFilterCudaCommon
+  itkPowImageFilterCudaCommon
+  itkAtan2ImageFilterCudaCommon
+  itkBinaryMagnitudeImageFilterCudaCommon
+  itkConstrainedValueAdditionImageFilterCudaCommon
+  itkConstrainedValueDifferenceImageFilterCudaCommon
   itkSquareImageFilterCudaCommon
   itkTanImageFilterCudaCommon
   itkCudaImageToImageFilter
@@ -39,6 +56,23 @@ set(
   itkCudaRoundImageFilter
   itkCudaSinImageFilter
   itkCudaSqrtImageFilter
+  itkCudaAddImageFilter
+  itkCudaSubtractImageFilter
+  itkCudaMultiplyImageFilter
+  itkCudaDivideImageFilter
+  itkCudaDivideOrZeroOutImageFilter
+  itkCudaWeightedAddImageFilter
+  itkCudaModulusImageFilter
+  itkCudaAndImageFilter
+  itkCudaOrImageFilter
+  itkCudaXorImageFilter
+  itkCudaMaximumImageFilter
+  itkCudaMinimumImageFilter
+  itkCudaPowImageFilter
+  itkCudaAtan2ImageFilter
+  itkCudaBinaryMagnitudeImageFilter
+  itkCudaConstrainedValueAdditionImageFilter
+  itkCudaConstrainedValueDifferenceImageFilter
   itkCudaSquareImageFilter
   itkCudaTanImageFilter
 )

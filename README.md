@@ -65,6 +65,6 @@ An `itk::CudaImageToImageFilter` and its in place child, `itk::CudaInPlaceImageF
 CUDA image operators
 --------------------
 
-CudaCommon includes CUDA implementations of common ITK unary image operators.
+CudaCommon includes CUDA implementations of common ITK unary and binary image operators.
 
 These operators were added to perform pixel-wise calculations directly on the GPU within an ITK pipeline. They allow pipelines using `itk::CudaImage` to keep image data on the GPU between operations, avoiding transfers to and from CPU memory just to apply these calculations.
