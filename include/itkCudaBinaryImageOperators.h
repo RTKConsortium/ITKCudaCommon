@@ -188,6 +188,28 @@ CudaConstrainedValueDifferenceImage(itk::SizeValueType numberOfPixels,
                                     TPixel             constant1,
                                     TPixel             constant2);
 
+template <class TPixel, class TMaskPixel>
+void
+CudaMaskImage(itk::SizeValueType numberOfPixels,
+              const TPixel *     input,
+              const TMaskPixel * mask,
+              TPixel *           output,
+              TPixel             constant1,
+              TMaskPixel         constant2,
+              TMaskPixel         maskingValue,
+              TPixel             outsideValue);
+
+template <class TPixel, class TMaskPixel>
+void
+CudaMaskNegatedImage(itk::SizeValueType numberOfPixels,
+                     const TPixel *     input,
+                     const TMaskPixel * mask,
+                     TPixel *           output,
+                     TPixel             constant1,
+                     TMaskPixel         constant2,
+                     TMaskPixel         maskingValue,
+                     TPixel             outsideValue);
+
 } // namespace itk
 
 #include "itkCudaBinaryImageOperators.hcu"

@@ -342,6 +342,40 @@ CudaConstrainedValueDifferenceImage(itk::SizeValueType numberOfPixels,
   LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input1, input2, constant1, constant2);
 }
 
+template <class TPixel, class TMaskPixel>
+void
+CudaMaskImage(itk::SizeValueType numberOfPixels,
+              const TPixel *     input,
+              const TMaskPixel * mask,
+              TPixel *           output,
+              TPixel             constant1,
+              TMaskPixel         constant2,
+              TMaskPixel         maskingValue,
+              TPixel             outsideValue)
+{
+  const auto operation = [maskingValue, outsideValue] __device__(TPixel value, TMaskPixel maskValue) {
+    return maskValue != maskingValue ? value : outsideValue;
+  };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input, mask, constant1, constant2);
+}
+
+template <class TPixel, class TMaskPixel>
+void
+CudaMaskNegatedImage(itk::SizeValueType numberOfPixels,
+                     const TPixel *     input,
+                     const TMaskPixel * mask,
+                     TPixel *           output,
+                     TPixel             constant1,
+                     TMaskPixel         constant2,
+                     TMaskPixel         maskingValue,
+                     TPixel             outsideValue)
+{
+  const auto operation = [maskingValue, outsideValue] __device__(TPixel value, TMaskPixel maskValue) {
+    return maskValue != maskingValue ? outsideValue : value;
+  };
+  LaunchCudaBinaryImageOperation(numberOfPixels, operation, output, input, mask, constant1, constant2);
+}
+
 } // namespace itk
 
 #endif // __CUDACC__

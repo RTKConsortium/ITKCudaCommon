@@ -208,6 +208,19 @@ def main():
             ],
         )
 
+    def configure_mask(filter_):
+        filter_.SetMaskingValue(1)
+        filter_.SetOutsideValue(7)
+
+    for mask_pixel_type in (itk.UC, itk.F):
+        MaskImage = itk.CudaImage[mask_pixel_type, 2]
+        for name in ("Mask", "MaskNegated"):
+            check_binary_operator(
+                getattr(itk, f"Cuda{name}ImageFilter")[Image, MaskImage],
+                getattr(itk, f"{name}ImageFilter")[Image, MaskImage, Image],
+                configure_mask,
+            )
+
 
 if __name__ == "__main__":
     main()
