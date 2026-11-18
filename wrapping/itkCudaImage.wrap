@@ -1,32 +1,60 @@
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CudaImage.i.init" "${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i" @ONLY)
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/CudaImage.i.init"
+  "${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i"
+  @ONLY
+)
 
 itk_wrap_class("itk::CudaImage" POINTER_WITH_CONST_POINTER)
-  UNIQUE(types "UC;UL;${WRAP_ITK_SCALAR}")
-  UNIQUE(vector_universe "${WRAP_ITK_VECTOR_REAL};${WRAP_ITK_COV_VECTOR_REAL}")
-  foreach(t ${types})
-    set(PixelType ${t})
-    foreach(d ${ITK_WRAP_IMAGE_DIMS})
-      itk_wrap_template("${t}${d}" "${ITKT_${t}}, ${d}")
-      set(CudaImageTypes ${t}${d})
-      configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CudaImage.i.in ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i.temp @ONLY)
-      file(READ ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i.temp CudaImageInterfaceTemp)
-      file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i ${CudaImageInterfaceTemp})
-    endforeach(d)
-  endforeach(t)
+unique(types "UC;UL;${WRAP_ITK_SCALAR}")
+unique(vector_universe "${WRAP_ITK_VECTOR_REAL};${WRAP_ITK_COV_VECTOR_REAL}")
+foreach(t ${types})
+  set(PixelType ${t})
+  foreach(d ${ITK_WRAP_IMAGE_DIMS})
+    itk_wrap_template("${t}${d}" "${ITKT_${t}}, ${d}")
+    set(CudaImageTypes ${t}${d})
+    configure_file(
+      ${CMAKE_CURRENT_SOURCE_DIR}/CudaImage.i.in
+      ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i.temp
+      @ONLY
+    )
+    file(
+      READ
+      ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i.temp
+      CudaImageInterfaceTemp
+    )
+    file(
+      APPEND
+      ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i
+      ${CudaImageInterfaceTemp}
+    )
+  endforeach(d)
+endforeach(t)
 
-  # Vector components follow ITK's selection, not the scalar operator types.
-  foreach(vt ${vector_universe})
-    string(REGEX REPLACE "^(CV|V)" "" PixelType "${vt}")
-    foreach(d ${ITK_WRAP_IMAGE_DIMS})
-      foreach(c ${ITK_WRAP_VECTOR_COMPONENTS})
-        itk_wrap_template("${ITKM_${vt}${c}}${d}" "${ITKT_${vt}${c}}, ${d}")
-        set(CudaImageTypes ${ITKM_${vt}${c}}${d})
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CudaImage.i.in ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i.temp @ONLY)
-        file(READ ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i.temp CudaImageInterfaceTemp)
-        file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i ${CudaImageInterfaceTemp})
-      endforeach()
+# Vector components follow ITK's selection, not the scalar operator types.
+foreach(vt ${vector_universe})
+  string(REGEX REPLACE "^(CV|V)" "" PixelType "${vt}")
+  foreach(d ${ITK_WRAP_IMAGE_DIMS})
+    foreach(c ${ITK_WRAP_VECTOR_COMPONENTS})
+      itk_wrap_template("${ITKM_${vt}${c}}${d}" "${ITKT_${vt}${c}}, ${d}")
+      set(CudaImageTypes ${ITKM_${vt}${c}}${d})
+      configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/CudaImage.i.in
+        ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i.temp
+        @ONLY
+      )
+      file(
+        READ
+        ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i.temp
+        CudaImageInterfaceTemp
+      )
+      file(
+        APPEND
+        ${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i
+        ${CudaImageInterfaceTemp}
+      )
     endforeach()
   endforeach()
+endforeach()
 
 itk_end_wrap_class()
 
@@ -37,11 +65,16 @@ itk_end_wrap_class()
 # itkCudaDataManagerPython.py even if the WRAPPER_SUBMODULE_ORDER is set.
 # Prefer using ITK_WRAP_PYTHON_SWIG_EXT to make sure the block is included in
 # the right file exclusively.
-set(ITK_WRAP_PYTHON_SWIG_EXT
-  "%include CudaImage.i\n${ITK_WRAP_PYTHON_SWIG_EXT}")
+set(
+  ITK_WRAP_PYTHON_SWIG_EXT
+  "%include CudaImage.i\n${ITK_WRAP_PYTHON_SWIG_EXT}"
+)
 
-file(COPY "${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i"
-  DESTINATION "${WRAPPER_MASTER_INDEX_OUTPUT_DIR}")
+file(
+  COPY
+    "${CMAKE_CURRENT_BINARY_DIR}/CudaImage.i"
+  DESTINATION "${WRAPPER_MASTER_INDEX_OUTPUT_DIR}"
+)
 
 # Make sure to rebuild the python file when CudaImage.i is modified.
 # Touching CudaImage.i directly does not force a rebuild because it is just
