@@ -58,6 +58,37 @@ CudaCommon_INSTANTIATE_INTEGER_OPERATOR(CudaAndImage);
 CudaCommon_INSTANTIATE_INTEGER_OPERATOR(CudaOrImage);
 CudaCommon_INSTANTIATE_INTEGER_OPERATOR(CudaXorImage);
 
+// Masks are limited to the integer types wrapped by default in ITK, plus the
+// image pixel type, to bound the number of kernels. Wrapping uses the same
+// types (CudaCommon_WRAP_MASK_TYPES in wrapping/CMakeLists.txt).
+#define CudaCommon_INSTANTIATE_MASK(PIXEL, MASK)                                                     \
+  template decltype(CudaMaskImage<PIXEL, MASK>) CudaCommon_EXPORT        CudaMaskImage<PIXEL, MASK>; \
+  template decltype(CudaMaskNegatedImage<PIXEL, MASK>) CudaCommon_EXPORT CudaMaskNegatedImage<PIXEL, MASK>;
+
+#define CudaCommon_INSTANTIATE_INTEGER_MASKS(PIXEL)                                                    \
+  CudaCommon_INSTANTIATE_MASK(PIXEL, unsigned char) CudaCommon_INSTANTIATE_MASK(PIXEL, unsigned short) \
+    CudaCommon_INSTANTIATE_MASK(PIXEL, short)
+
+// For pixel types that are not already an instantiated mask type.
+#define CudaCommon_INSTANTIATE_MASKS(PIXEL) \
+  CudaCommon_INSTANTIATE_INTEGER_MASKS(PIXEL) CudaCommon_INSTANTIATE_MASK(PIXEL, PIXEL)
+
+CudaCommon_INSTANTIATE_INTEGER_MASKS(unsigned char);
+CudaCommon_INSTANTIATE_INTEGER_MASKS(unsigned short);
+CudaCommon_INSTANTIATE_INTEGER_MASKS(short);
+CudaCommon_INSTANTIATE_MASKS(signed char);
+CudaCommon_INSTANTIATE_MASKS(int);
+CudaCommon_INSTANTIATE_MASKS(unsigned int);
+CudaCommon_INSTANTIATE_MASKS(long);
+CudaCommon_INSTANTIATE_MASKS(unsigned long);
+CudaCommon_INSTANTIATE_MASKS(long long);
+CudaCommon_INSTANTIATE_MASKS(unsigned long long);
+CudaCommon_INSTANTIATE_MASKS(float);
+CudaCommon_INSTANTIATE_MASKS(double);
+
+#undef CudaCommon_INSTANTIATE_MASKS
+#undef CudaCommon_INSTANTIATE_INTEGER_MASKS
+#undef CudaCommon_INSTANTIATE_MASK
 #undef CudaCommon_INSTANTIATE_OPERATOR
 #undef CudaCommon_INSTANTIATE_INTEGER_OPERATOR
 

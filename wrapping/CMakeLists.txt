@@ -39,6 +39,8 @@ set(
   itkBinaryMagnitudeImageFilterCudaCommon
   itkConstrainedValueAdditionImageFilterCudaCommon
   itkConstrainedValueDifferenceImageFilterCudaCommon
+  itkMaskImageFilterCudaCommon
+  itkMaskNegatedImageFilterCudaCommon
   itkSquareImageFilterCudaCommon
   itkTanImageFilterCudaCommon
   itkCudaImageToImageFilter
@@ -73,9 +75,21 @@ set(
   itkCudaBinaryMagnitudeImageFilter
   itkCudaConstrainedValueAdditionImageFilter
   itkCudaConstrainedValueDifferenceImageFilter
+  itkCudaMaskImageFilter
+  itkCudaMaskNegatedImageFilter
   itkCudaSquareImageFilter
   itkCudaTanImageFilter
 )
+
+# Mask pixel types of the mask filters, which are instantiated in
+# src/itkCudaBinaryImageOperators.cu: the wrapped integer types among those
+# instantiated, as in ITK, plus the image pixel type in each .wrap file.
+set(CudaCommon_WRAP_MASK_TYPES)
+foreach(m UC US SS)
+  if(m IN_LIST WRAP_ITK_INT)
+    list(APPEND CudaCommon_WRAP_MASK_TYPES ${m})
+  endif()
+endforeach()
 
 configure_file(
   ${CudaCommon_SOURCE_DIR}/wrapping/cudacommonConfig.py.in

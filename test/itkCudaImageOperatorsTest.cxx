@@ -47,6 +47,8 @@
 #include "itkCudaBinaryMagnitudeImageFilter.h"
 #include "itkCudaConstrainedValueAdditionImageFilter.h"
 #include "itkCudaConstrainedValueDifferenceImageFilter.h"
+#include "itkCudaMaskImageFilter.h"
+#include "itkCudaMaskNegatedImageFilter.h"
 #include "itkImageRegionConstIterator.h"
 #include "itkImageRegionIterator.h"
 #include "itkMath.h"
@@ -214,6 +216,7 @@ itkCudaImageOperatorsTest(int, char *[])
   using Image = itk::CudaImage<float, 2>;
   using IntegerImage = itk::CudaImage<short, 2>;
   using UnsignedImage = itk::CudaImage<unsigned char, 2>;
+  using MaskImage = itk::CudaImage<unsigned char, 2>;
   ITK_TEST_EXPECT_EQUAL((CheckUnaryOperator<itk::CudaSquareImageFilter<Image>, itk::SquareImageFilter<Image, Image>>()),
                         EXIT_SUCCESS);
   ITK_TEST_EXPECT_EQUAL((CheckUnaryOperator<itk::CudaSqrtImageFilter<Image>, itk::SqrtImageFilter<Image, Image>>(2.5f)),
@@ -312,6 +315,10 @@ itkCudaImageOperatorsTest(int, char *[])
     filter->SetThreshold(1);
     filter->SetConstant(7);
   };
+  const auto masking = [](auto filter) {
+    filter->SetMaskingValue(1);
+    filter->SetOutsideValue(7);
+  };
 
   // Image/image, constant/image, and image/constant use the same small dataset.
   for (unsigned int constantInput : { 0, 1, 2 })
@@ -387,6 +394,22 @@ itkCudaImageOperatorsTest(int, char *[])
     ITK_TEST_EXPECT_EQUAL(
       (CheckBinaryOperator<itk::CudaPowImageFilter<IntegerImage>,
                            itk::PowImageFilter<IntegerImage, IntegerImage, IntegerImage>>(constantInput, defaults)),
+      EXIT_SUCCESS);
+    ITK_TEST_EXPECT_EQUAL(
+      (CheckBinaryOperator<itk::CudaMaskImageFilter<Image, MaskImage>, itk::MaskImageFilter<Image, MaskImage, Image>>(
+        constantInput, masking)),
+      EXIT_SUCCESS);
+    ITK_TEST_EXPECT_EQUAL(
+      (CheckBinaryOperator<itk::CudaMaskNegatedImageFilter<Image, MaskImage>,
+                           itk::MaskNegatedImageFilter<Image, MaskImage, Image>>(constantInput, masking)),
+      EXIT_SUCCESS);
+    ITK_TEST_EXPECT_EQUAL(
+      (CheckBinaryOperator<itk::CudaMaskImageFilter<Image, Image>, itk::MaskImageFilter<Image, Image, Image>>(
+        constantInput, masking)),
+      EXIT_SUCCESS);
+    ITK_TEST_EXPECT_EQUAL(
+      (CheckBinaryOperator<itk::CudaMaskNegatedImageFilter<Image, Image>,
+                           itk::MaskNegatedImageFilter<Image, Image, Image>>(constantInput, masking)),
       EXIT_SUCCESS);
   }
   return EXIT_SUCCESS;

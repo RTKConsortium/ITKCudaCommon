@@ -5,15 +5,15 @@ itk_wrap_class("itk::BinaryGeneratorImageFilter" POINTER)
 
 unique(types "${WRAP_ITK_SCALAR}")
 foreach(d ${ITK_WRAP_IMAGE_DIMS})
-  if(d EQUAL 2 OR d EQUAL 3 OR d EQUAL 4)
-    foreach(t ${types})
-      foreach(m ${WRAP_ITK_SCALAR})
-        itk_wrap_template("CI${ITKM_${t}}${d}CI${ITKM_${m}}${d}CI${ITKM_${t}}${d}"
-                            "itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${m}},${d}>, itk::CudaImage<${ITKT_${t}},${d}>"
-        )
-      endforeach()
+  foreach(t ${types})
+    set(masks "${CudaCommon_WRAP_MASK_TYPES};${t}")
+    list(REMOVE_DUPLICATES masks)
+    foreach(m ${masks})
+      itk_wrap_template("CI${ITKM_${t}}${d}CI${ITKM_${m}}${d}CI${ITKM_${t}}${d}"
+                          "itk::CudaImage<${ITKT_${t}},${d}>, itk::CudaImage<${ITKT_${m}},${d}>, itk::CudaImage<${ITKT_${t}},${d}>"
+      )
     endforeach()
-  endif()
+  endforeach()
 endforeach()
 
 itk_end_wrap_class()
