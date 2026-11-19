@@ -249,6 +249,13 @@ CudaDataManager::GetGPUBufferPointer()
   return m_GPUBuffer->GetPointer();
 }
 
+const void *
+CudaDataManager::GetConstGPUBufferPointer()
+{
+  this->UpdateGPUBuffer();
+  return m_GPUBuffer->GetPointer();
+}
+
 void *
 CudaDataManager::GetGPUBufferPointerPtr()
 {

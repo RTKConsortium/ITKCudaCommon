@@ -236,6 +236,12 @@ public:
   void *
   GetGPUBufferPointer();
 
+  /** Get Cuda buffer pointer for reading only. Unlike GetGPUBufferPointer(),
+   * the CPU buffer is not marked dirty, so a later CPU access does not copy
+   * the unmodified data back from the GPU. */
+  const void *
+  GetConstGPUBufferPointer();
+
   /** Get pointer to the Cuda buffer pointer */
   void *
   GetGPUBufferPointerPtr();

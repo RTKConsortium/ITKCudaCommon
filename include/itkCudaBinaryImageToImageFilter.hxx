@@ -49,8 +49,8 @@ CudaBinaryImageToImageFilter<TImage, TInputImage2, TParentImageFilter>::GPUGener
   }
 
   this->GenerateBinaryData(
-    static_cast<const PixelType *>(input1 ? input1->GetCudaDataManager()->GetGPUBufferPointer() : nullptr),
-    static_cast<const Input2PixelType *>(input2 ? input2->GetCudaDataManager()->GetGPUBufferPointer() : nullptr),
+    static_cast<const PixelType *>(input1 ? input1->GetCudaDataManager()->GetConstGPUBufferPointer() : nullptr),
+    static_cast<const Input2PixelType *>(input2 ? input2->GetCudaDataManager()->GetConstGPUBufferPointer() : nullptr),
     input1 ? PixelType{} : this->GetConstant1(),
     input2 ? Input2PixelType{} : this->GetConstant2(),
     static_cast<PixelType *>(output->GetCudaDataManager()->GetGPUBufferPointer()),
