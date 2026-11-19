@@ -30,6 +30,7 @@
 #include "itkCudaTanImageFilter.h"
 #include "itkCudaSquareImageFilter.h"
 #include "itkCudaSqrtImageFilter.h"
+#include "itkCudaThresholdImageFilter.h"
 #include "itkCudaAddImageFilter.h"
 #include "itkCudaSubtractImageFilter.h"
 #include "itkCudaMultiplyImageFilter.h"
@@ -118,6 +119,55 @@ CheckUnaryOperator(float inputOffset = 0.0f, float inputScale = 0.25f)
 
   std::cout << "Checking " << filter->GetNameOfClass() << " against " << reference->GetNameOfClass() << std::endl;
   return CheckImageQuality<Image>(filter->GetOutput(), reference->GetOutput());
+}
+
+template <class TImage>
+int
+CheckThresholdOperator(typename TImage::PixelType lower,
+                       typename TImage::PixelType upper,
+                       typename TImage::PixelType outsideValue)
+{
+  using PixelType = typename TImage::PixelType;
+  auto input = TImage::New();
+  input->SetRegions(itk::MakeSize(17, 19));
+  input->Allocate();
+
+  const auto region = input->GetBufferedRegion();
+  int        pixel = 0;
+  for (itk::ImageRegionIterator<TImage> it(input, region); !it.IsAtEnd(); ++it, ++pixel)
+  {
+    if (pixel == 0)
+    {
+      // Both thresholds are inclusive, so the bounds must survive unchanged.
+      it.Set(lower);
+    }
+    else if (pixel == 1)
+    {
+      it.Set(upper);
+    }
+    else
+    {
+      it.Set(static_cast<PixelType>((pixel % 21 - 10) * 0.25));
+    }
+  }
+
+  auto reference = itk::ThresholdImageFilter<TImage>::New();
+  reference->SetInput(input);
+  reference->SetLower(lower);
+  reference->SetUpper(upper);
+  reference->SetOutsideValue(outsideValue);
+  ITK_TRY_EXPECT_NO_EXCEPTION(reference->Update());
+
+  auto filter = itk::CudaThresholdImageFilter<TImage>::New();
+  filter->SetInput(input);
+  filter->SetLower(lower);
+  filter->SetUpper(upper);
+  filter->SetOutsideValue(outsideValue);
+  filter->GPUEnabledOn();
+  ITK_TRY_EXPECT_NO_EXCEPTION(filter->Update());
+
+  std::cout << "Checking " << filter->GetNameOfClass() << " against " << reference->GetNameOfClass() << std::endl;
+  return CheckImageQuality<TImage>(filter->GetOutput(), reference->GetOutput());
 }
 
 template <class TCudaFilter, class TCPUFilter>
@@ -248,6 +298,8 @@ itkCudaImageOperatorsTest(int, char *[])
                         EXIT_SUCCESS);
   ITK_TEST_EXPECT_EQUAL((CheckUnaryOperator<itk::CudaTanImageFilter<Image>, itk::TanImageFilter<Image, Image>>()),
                         EXIT_SUCCESS);
+  ITK_TEST_EXPECT_EQUAL((CheckThresholdOperator<Image>(-0.5f, 1.5f, -7.0f)), EXIT_SUCCESS);
+  ITK_TEST_EXPECT_EQUAL((CheckThresholdOperator<IntegerImage>(-1, 1, 7)), EXIT_SUCCESS);
   // The loop below only uses small values, so exercise the limits of the
   // output type here.
   ITK_TEST_EXPECT_EQUAL(

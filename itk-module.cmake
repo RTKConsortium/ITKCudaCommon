@@ -14,6 +14,7 @@ itk_module(CudaCommon
   DEPENDS
     ITKCommon
     ITKImageIntensity
+    ITKThresholding
   TEST_DEPENDS
     ITKTestKernel
   DESCRIPTION

@@ -193,6 +193,23 @@ CudaTanImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelTy
   LaunchCudaImageOperation(numberOfPixels, operation, output, input);
 }
 
+template <class PixelType>
+void
+CudaThresholdImage(itk::SizeValueType numberOfPixels,
+                   const PixelType *  input,
+                   PixelType *        output,
+                   PixelType          lower,
+                   PixelType          upper,
+                   PixelType          outsideValue)
+{
+  // Match itk::ThresholdImageFilter: both bounds are inclusive, and a NaN
+  // value fails the comparison and is replaced by the outside value.
+  const auto operation = [lower, upper, outsideValue] __device__(PixelType value) {
+    return (lower <= value && value <= upper) ? value : outsideValue;
+  };
+  LaunchCudaImageOperation(numberOfPixels, operation, output, input);
+}
+
 } // namespace itk
 
 #endif // __CUDACC__

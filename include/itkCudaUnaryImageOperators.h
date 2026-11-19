@@ -86,6 +86,15 @@ template <class PixelType>
 void
 CudaTanImage(itk::SizeValueType numberOfPixels, const PixelType * input, PixelType * output);
 
+template <class PixelType>
+void
+CudaThresholdImage(itk::SizeValueType numberOfPixels,
+                   const PixelType *  input,
+                   PixelType *        output,
+                   PixelType          lower,
+                   PixelType          upper,
+                   PixelType          outsideValue);
+
 } // namespace itk
 
 // CUDA translation units get the template definitions, allowing them to

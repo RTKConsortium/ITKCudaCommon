@@ -42,7 +42,11 @@ def check_image_quality(image, reference):
 
 
 def check_unary_operator(
-    cuda_filter_type, cpu_filter_type, input_offset=0.0, input_scale=0.25
+    cuda_filter_type,
+    cpu_filter_type,
+    input_offset=0.0,
+    input_scale=0.25,
+    configure=None,
 ):
     image_type = itk.template(cuda_filter_type)[1][0]
     pixels = np.arange(17 * 19).reshape(19, 17)
@@ -60,12 +64,17 @@ def check_unary_operator(
     reference = cpu_filter_type.New()
     reference.SetInput(image)
     reference.InPlaceOff()
-    reference.Update()
 
     operator = cuda_filter_type.New()
     operator.SetInput(image)
     operator.InPlaceOff()
     operator.GPUEnabledOn()
+
+    if configure is not None:
+        configure(reference)
+        configure(operator)
+
+    reference.Update()
     operator.Update()
 
     region = operator.GetOutput().GetBufferedRegion()
@@ -166,6 +175,17 @@ def main():
     )
     check_unary_operator(
         itk.CudaTanImageFilter[Image], itk.TanImageFilter[Image, Image]
+    )
+
+    def configure_threshold(filter_):
+        filter_.SetLower(-0.5)
+        filter_.SetUpper(1.5)
+        filter_.SetOutsideValue(-7.0)
+
+    check_unary_operator(
+        itk.CudaThresholdImageFilter[Image],
+        itk.ThresholdImageFilter[Image],
+        configure=configure_threshold,
     )
     for name in (
         "Add",
