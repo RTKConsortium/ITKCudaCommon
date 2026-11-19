@@ -50,6 +50,7 @@ CudaCommon_INSTANTIATE_OPERATOR(CudaLog10Image);
 CudaCommon_INSTANTIATE_OPERATOR(CudaRoundImage);
 CudaCommon_INSTANTIATE_OPERATOR(CudaSinImage);
 CudaCommon_INSTANTIATE_OPERATOR(CudaTanImage);
+CudaCommon_INSTANTIATE_OPERATOR(CudaThresholdImage);
 
 #undef CudaCommon_INSTANTIATE_OPERATOR
 

@@ -22,6 +22,7 @@ set(
   itkRoundImageFilterCudaCommon
   itkSinImageFilterCudaCommon
   itkSqrtImageFilterCudaCommon
+  itkThresholdImageFilterCudaCommon
   itkAddImageFilterCudaCommon
   itkSubtractImageFilterCudaCommon
   itkMultiplyImageFilterCudaCommon
@@ -58,6 +59,7 @@ set(
   itkCudaRoundImageFilter
   itkCudaSinImageFilter
   itkCudaSqrtImageFilter
+  itkCudaThresholdImageFilter
   itkCudaAddImageFilter
   itkCudaSubtractImageFilter
   itkCudaMultiplyImageFilter
