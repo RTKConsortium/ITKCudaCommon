@@ -223,7 +223,7 @@ CudaDataManager::UpdateCPUBuffer()
 void
 CudaDataManager::UpdateGPUBuffer()
 {
-  m_Mutex.lock();
+  const std::lock_guard<std::mutex> lock(m_Mutex);
   if (m_IsGPUBufferDirty)
   {
     this->Allocate(); // do the allocation
@@ -239,7 +239,6 @@ CudaDataManager::UpdateGPUBuffer()
     }
     m_IsGPUBufferDirty = false;
   }
-  m_Mutex.unlock();
 }
 
 void *

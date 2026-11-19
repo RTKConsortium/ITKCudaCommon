@@ -30,6 +30,7 @@ template <class ImageType>
 void
 CudaImageDataManager<ImageType>::SetImagePointer(ImageType * img)
 {
+  const std::lock_guard<std::mutex> lock(m_Mutex);
   m_Image = img;
 
   RegionType region = m_Image->GetBufferedRegion();
@@ -80,38 +81,37 @@ template <class ImageType>
 void
 CudaImageDataManager<ImageType>::MakeCPUBufferUpToDate()
 {
-  if (m_Image)
+  const std::lock_guard<std::mutex> lock(m_Mutex);
+  if (!m_Image)
   {
-    m_Mutex.lock();
+    return;
+  }
 
-    TimeStamp gpu_time_stamp = this->GetTimeStamp();
-    TimeStamp cpu_time_stamp = m_Image->GetTimeStamp();
+  TimeStamp gpu_time_stamp = this->GetTimeStamp();
+  TimeStamp cpu_time_stamp = m_Image->GetTimeStamp();
 
-    /* Why we check dirty flag and time stamp together?
-     * Because existing CPU image filters do not use pixel/buffer
-     * access function in CudaImage and therefore dirty flag is not
-     * correctly managed. Therefore, we check the time stamp of
-     * CPU and Cuda data as well
-     */
-    if ((m_IsCPUBufferDirty || (gpu_time_stamp > cpu_time_stamp)) && m_GPUBuffer.GetPointer() != nullptr &&
-        m_CPUBuffer != nullptr)
-    {
-      cudaError_t errid;
+  /* Why we check dirty flag and time stamp together?
+   * Because existing CPU image filters do not use pixel/buffer
+   * access function in CudaImage and therefore dirty flag is not
+   * correctly managed. Therefore, we check the time stamp of
+   * CPU and Cuda data as well
+   */
+  if ((m_IsCPUBufferDirty || (gpu_time_stamp > cpu_time_stamp)) && m_GPUBuffer.GetPointer() != nullptr &&
+      m_CPUBuffer != nullptr)
+  {
+    cudaError_t errid;
 #ifdef VERBOSE
-      std::cout << this << ": GPU->CPU data copy" << std::endl;
+    std::cout << this << ": GPU->CPU data copy" << std::endl;
 #endif
 
-      CUDA_CHECK(cudaSetDevice(m_Device));
-      errid = cudaMemcpy(m_CPUBuffer, m_GPUBuffer->GetPointer(), m_BufferSize, cudaMemcpyDeviceToHost);
-      CudaCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);
+    CUDA_CHECK(cudaSetDevice(m_Device));
+    errid = cudaMemcpy(m_CPUBuffer, m_GPUBuffer->GetPointer(), m_BufferSize, cudaMemcpyDeviceToHost);
+    CudaCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);
 
-      m_Image->Modified();
+    m_Image->Modified();
 
-      m_IsCPUBufferDirty = false;
-      m_IsGPUBufferDirty = false;
-    }
-
-    m_Mutex.unlock();
+    m_IsCPUBufferDirty = false;
+    m_IsGPUBufferDirty = false;
   }
 }
 
@@ -119,11 +119,14 @@ template <class ImageType>
 void
 CudaImageDataManager<ImageType>::UpdateCPUBuffer()
 {
-  if (m_Image && !m_CPUBuffer)
   {
-    using CPUImageType = typename ImageType::Superclass;
-    m_Image->CPUImageType::Allocate();
-    this->SetCPUBufferPointer(m_Image->CPUImageType::GetBufferPointer());
+    const std::lock_guard<std::mutex> lock(m_Mutex);
+    if (m_Image && !m_CPUBuffer)
+    {
+      using CPUImageType = typename ImageType::Superclass;
+      m_Image->CPUImageType::Allocate();
+      this->SetCPUBufferPointer(m_Image->CPUImageType::GetBufferPointer());
+    }
   }
 
   Superclass::UpdateCPUBuffer();
@@ -133,38 +136,37 @@ template <class ImageType>
 void
 CudaImageDataManager<ImageType>::MakeGPUBufferUpToDate()
 {
-  if (m_Image)
+  const std::lock_guard<std::mutex> lock(m_Mutex);
+  if (!m_Image)
   {
-    m_Mutex.lock();
+    return;
+  }
 
-    TimeStamp gpu_time_stamp = this->GetTimeStamp();
-    TimeStamp cpu_time_stamp = m_Image->GetTimeStamp();
+  TimeStamp gpu_time_stamp = this->GetTimeStamp();
+  TimeStamp cpu_time_stamp = m_Image->GetTimeStamp();
 
-    /* Why we check dirty flag and time stamp together?
-     * Because existing CPU image filters do not use pixel/buffer
-     * access function in CudaImage and therefore dirty flag is not
-     * correctly managed. Therefore, we check the time stamp of
-     * CPU and GPU data as well
-     */
-    if ((m_IsGPUBufferDirty || (gpu_time_stamp < cpu_time_stamp)) && m_CPUBuffer != nullptr &&
-        m_GPUBuffer.GetPointer() != nullptr)
-    {
-      cudaError_t errid;
+  /* Why we check dirty flag and time stamp together?
+   * Because existing CPU image filters do not use pixel/buffer
+   * access function in CudaImage and therefore dirty flag is not
+   * correctly managed. Therefore, we check the time stamp of
+   * CPU and GPU data as well
+   */
+  if ((m_IsGPUBufferDirty || (gpu_time_stamp < cpu_time_stamp)) && m_CPUBuffer != nullptr &&
+      m_GPUBuffer.GetPointer() != nullptr)
+  {
+    cudaError_t errid;
 #ifdef VERBOSE
-      std::cout << "CPU->GPU data copy" << std::endl;
+    std::cout << "CPU->GPU data copy" << std::endl;
 #endif
 
-      CUDA_CHECK(cudaSetDevice(m_Device));
-      errid = cudaMemcpy(m_GPUBuffer->GetPointer(), m_CPUBuffer, m_BufferSize, cudaMemcpyHostToDevice);
-      CudaCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);
+    CUDA_CHECK(cudaSetDevice(m_Device));
+    errid = cudaMemcpy(m_GPUBuffer->GetPointer(), m_CPUBuffer, m_BufferSize, cudaMemcpyHostToDevice);
+    CudaCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);
 
-      this->SetTimeStamp(cpu_time_stamp);
+    this->SetTimeStamp(cpu_time_stamp);
 
-      m_IsCPUBufferDirty = false;
-      m_IsGPUBufferDirty = false;
-    }
-
-    m_Mutex.unlock();
+    m_IsCPUBufferDirty = false;
+    m_IsGPUBufferDirty = false;
   }
 }
 

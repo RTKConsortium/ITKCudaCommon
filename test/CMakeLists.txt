@@ -20,6 +20,7 @@ set(
   itkCudaDataManagerDirtyFlagTest.cxx
   itkCudaImageDirtyFlagTest.cxx
   itkCudaDataManagerReleaseFreeTest.cxx
+  itkCudaDataManagerMutexTest.cxx
   itkCudaImageRegionGraftTest.cxx
   itkCudaDeviceSelectionTest.cxx
 )
@@ -59,6 +60,11 @@ itk_add_test(NAME itkCudaImageDirtyFlagTest
 itk_add_test(NAME itkCudaDataManagerReleaseFreeTest
   COMMAND CudaCommonTestDriver
   itkCudaDataManagerReleaseFreeTest
+)
+
+itk_add_test(NAME itkCudaDataManagerMutexTest
+  COMMAND CudaCommonTestDriver
+  itkCudaDataManagerMutexTest
 )
 
 itk_add_test(NAME itkCudaImageRegionGraftTest

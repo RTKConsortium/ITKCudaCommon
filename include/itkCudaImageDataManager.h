@@ -60,6 +60,7 @@ public:
   ImageType *
   GetImagePointer()
   {
+    const std::lock_guard<std::mutex> lock(m_Mutex);
     return this->m_Image;
   }
 
