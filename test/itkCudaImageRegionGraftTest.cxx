@@ -17,6 +17,7 @@
  *=========================================================================*/
 
 #include "itkCudaImage.h"
+#include "itkMath.h"
 #include <iostream>
 
 using CudaImage2f = itk::CudaImage<float, 2>;
@@ -36,6 +37,49 @@ itkCudaImageRegionGraftTest(int, char *[])
   {
     std::cerr << "Initialize should create a new DataManager" << std::endl;
     return EXIT_FAILURE;
+  }
+
+  // A grafted image shares the data manager of its source, whose image pointer
+  // must not dangle when the source is released before the grafted image.
+  using DataManagerType = itk::CudaImageDataManager<CudaImage2f>;
+  const auto getImagePointer = [](const CudaImage2f * image) {
+    return static_cast<DataManagerType *>(image->GetCudaDataManager().GetPointer())->GetImagePointer();
+  };
+  for (const bool destroySource : { true, false })
+  {
+    auto source = CudaImage2f::New();
+    source->SetRegions(itk::MakeSize(4, 4));
+    source->Allocate();
+    source->FillBuffer(2.0f);
+    source->GetCudaDataManager()->GetGPUBufferPointer();
+
+    auto target = CudaImage2f::New();
+    target->Graft(source);
+    if (getImagePointer(target) != source.GetPointer())
+    {
+      std::cerr << "The source should remain the image pointer after a graft" << std::endl;
+      return EXIT_FAILURE;
+    }
+
+    if (destroySource)
+    {
+      source = nullptr;
+    }
+    else
+    {
+      // As InPlaceImageFilter::ReleaseInputs() does
+      source->ReleaseData();
+    }
+    if (getImagePointer(target) != target.GetPointer())
+    {
+      std::cerr << "The grafted image should become the image pointer" << std::endl;
+      return EXIT_FAILURE;
+    }
+    if (itk::Math::NotExactlyEquals(target->GetPixel(itk::MakeIndex(1, 1)), 2.0f))
+    {
+      std::cerr << "The grafted image should keep the data" << std::endl;
+      return EXIT_FAILURE;
+    }
   }
 
   std::cout << "CudaImageRegionGraftTest passed" << std::endl;

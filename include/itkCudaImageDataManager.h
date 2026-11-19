@@ -24,6 +24,8 @@
 #include "itkCudaUtil.h"
 #include "itkCudaDataManager.h"
 
+#include <vector>
+
 namespace itk
 {
 /**
@@ -61,6 +63,16 @@ public:
     return this->m_Image;
   }
 
+  /** Register an image that holds this manager, e.g., after a Graft(). */
+  void
+  RegisterImage(ImageType * img);
+
+  /** Unregister an image that releases this manager. If it is the image
+   * pointer, another registered image replaces it, so that the pointer never
+   * dangles when grafted images do not have the same lifetime. */
+  void
+  UnregisterImage(ImageType * img);
+
   /** actual Cuda->CPU memory copy takes place here */
   virtual void
   MakeCPUBufferUpToDate();
@@ -89,6 +101,7 @@ private:
   operator=(const Self &);
 
   ImageType *                       m_Image = nullptr;
+  std::vector<ImageType *>          m_Images;
   IndexType                         m_BufferedRegionIndex;
   SizeType                          m_BufferedRegionSize;
   typename CudaDataManager::Pointer m_GPUBufferedRegionIndex;

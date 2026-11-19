@@ -19,6 +19,8 @@
 #define itkCudaImageDataManager_hxx
 
 #include "itkCudaUtil.h"
+
+#include <algorithm>
 // #define VERBOSE
 
 namespace itk
@@ -49,6 +51,29 @@ CudaImageDataManager<ImageType>::SetImagePointer(ImageType * img)
   m_GPUBufferedRegionSize->SetBufferSize(sizeof(int) * ImageType::ImageDimension);
   m_GPUBufferedRegionSize->SetCPUBufferPointer(&m_BufferedRegionSize);
   m_GPUBufferedRegionSize->SetGPUBufferDirty();
+}
+
+template <class ImageType>
+void
+CudaImageDataManager<ImageType>::RegisterImage(ImageType * img)
+{
+  const std::lock_guard<std::mutex> lock(m_Mutex);
+  if (std::find(m_Images.begin(), m_Images.end(), img) == m_Images.end())
+  {
+    m_Images.push_back(img);
+  }
+}
+
+template <class ImageType>
+void
+CudaImageDataManager<ImageType>::UnregisterImage(ImageType * img)
+{
+  const std::lock_guard<std::mutex> lock(m_Mutex);
+  m_Images.erase(std::remove(m_Images.begin(), m_Images.end(), img), m_Images.end());
+  if (m_Image == img)
+  {
+    m_Image = m_Images.empty() ? nullptr : m_Images.back();
+  }
 }
 
 template <class ImageType>

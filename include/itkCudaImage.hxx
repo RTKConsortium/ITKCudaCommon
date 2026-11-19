@@ -28,11 +28,14 @@ template <class TPixel, unsigned int VImageDimension>
 CudaImage<TPixel, VImageDimension>::CudaImage()
 {
   m_DataManager = CudaImageDataManager<CudaImage<TPixel, VImageDimension>>::New();
+  m_DataManager->RegisterImage(this);
 }
 
 template <class TPixel, unsigned int VImageDimension>
 CudaImage<TPixel, VImageDimension>::~CudaImage()
-{}
+{
+  m_DataManager->UnregisterImage(this);
+}
 
 template <class TPixel, unsigned int VImageDimension>
 void
@@ -67,7 +70,9 @@ CudaImage<TPixel, VImageDimension>::Initialize()
   // CPU image initialize
   Superclass::Initialize();
 
+  m_DataManager->UnregisterImage(this);
   m_DataManager = CudaImageDataManager<CudaImage<TPixel, VImageDimension>>::New();
+  m_DataManager->RegisterImage(this);
 }
 
 template <class TPixel, unsigned int VImageDimension>
@@ -206,8 +211,13 @@ CudaImage<TPixel, VImageDimension>::Graft(const Self * data)
 
   // call the superclass' implementation
   Superclass::Graft(dynamic_cast<const DataObject *>(data));
-  m_DataManager = dynamic_cast<CudaImageDataManagerType *>(data->GetCudaDataManager().GetPointer());
-  return;
+  auto * dataManager = dynamic_cast<CudaImageDataManagerType *>(data->GetCudaDataManager().GetPointer());
+  if (dataManager != m_DataManager)
+  {
+    m_DataManager->UnregisterImage(this);
+    m_DataManager = dataManager;
+    m_DataManager->RegisterImage(this);
+  }
 }
 
 template <class TPixel, unsigned int VImageDimension>
