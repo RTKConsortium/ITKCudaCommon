@@ -22,6 +22,25 @@
 #include <itksys/SystemTools.hxx>
 #include <iostream>
 
+namespace
+{
+// Data manager whose device can be changed, to test a device mismatch with a
+// single GPU.
+class DeviceDataManager : public itk::CudaDataManager
+{
+public:
+  using Self = DeviceDataManager;
+  using Pointer = itk::SmartPointer<Self>;
+  itkNewMacro(Self);
+
+  void
+  SetDevice(int device)
+  {
+    m_Device = device;
+  }
+};
+} // namespace
+
 int
 itkCudaDeviceSelectionTest(int, char *[])
 {
@@ -56,6 +75,22 @@ itkCudaDeviceSelectionTest(int, char *[])
 
   // Out-of-range device index
   ITK_TRY_EXPECT_EXCEPTION(itk::SetDefaultCudaDevice(1000000));
+
+  // A GPU buffer must be on the device of the data manager it is given to.
+  void * buffer = nullptr;
+  itk::CudaCheckError(cudaGetDevice(&currentDevice));
+  itk::CudaCheckError(cudaMalloc(&buffer, 16));
+  auto sameDevice = DeviceDataManager::New();
+  sameDevice->SetBufferSize(16);
+  sameDevice->SetDevice(currentDevice);
+  ITK_TRY_EXPECT_NO_EXCEPTION(sameDevice->SetGPUBufferPointer(buffer));
+  ITK_TRY_EXPECT_NO_EXCEPTION(sameDevice->SetGPUBufferPointer(reinterpret_cast<uint64_t>(buffer)));
+  auto otherDevice = DeviceDataManager::New();
+  otherDevice->SetBufferSize(16);
+  otherDevice->SetDevice(currentDevice + 1);
+  ITK_TRY_EXPECT_EXCEPTION(otherDevice->SetGPUBufferPointer(buffer));
+  ITK_TRY_EXPECT_EXCEPTION(otherDevice->SetGPUBufferPointer(reinterpret_cast<uint64_t>(buffer)));
+  itk::CudaCheckError(cudaFree(buffer));
 
   std::cout << "CudaDeviceSelectionTest passed" << std::endl;
   return EXIT_SUCCESS;

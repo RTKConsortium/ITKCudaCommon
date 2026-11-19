@@ -167,7 +167,9 @@ public:
   void
   SetCPUBufferPointer(void * ptr);
 
-  /** Sets the internal GPU buffer pointer which must have m_BufferSize elements. */
+  /** Sets the internal GPU buffer pointer which must have m_BufferSize elements.
+   * Throws if the buffer is device memory of another CUDA device than this
+   * CudaDataManager's. */
   void
   SetGPUBufferPointer(uint64_t ptr);
   void
