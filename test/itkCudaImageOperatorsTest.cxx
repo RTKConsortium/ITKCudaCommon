@@ -468,5 +468,45 @@ itkCudaImageOperatorsTest(int, char *[])
                            itk::MaskNegatedImageFilter<Image, Image, Image>>(constantInput, masking)),
       EXIT_SUCCESS);
   }
+
+  // Inputs are read only, so their CPU buffers stay up-to-date after a GPU
+  // update and reading them on the CPU does not copy them back from the GPU.
+  for (const bool inPlace : { false, true })
+  {
+    const auto makeImage = [](float value) {
+      auto image = Image::New();
+      image->SetRegions(itk::MakeSize(4, 4));
+      image->Allocate();
+      image->FillBuffer(value);
+      return image;
+    };
+    auto first = makeImage(2.0f);
+    auto second = makeImage(3.0f);
+
+    auto binary = itk::CudaAddImageFilter<Image>::New();
+    binary->SetInput1(first);
+    binary->SetInput2(second);
+    binary->SetInPlace(inPlace);
+    ITK_TRY_EXPECT_NO_EXCEPTION(binary->Update());
+    if (!inPlace)
+    {
+      ITK_TEST_EXPECT_TRUE(!first->GetCudaDataManager()->IsCPUBufferDirty());
+    }
+    ITK_TEST_EXPECT_TRUE(!second->GetCudaDataManager()->IsCPUBufferDirty());
+    ITK_TEST_EXPECT_TRUE(binary->GetOutput()->GetCudaDataManager()->IsCPUBufferDirty());
+    ITK_TEST_EXPECT_EQUAL(binary->GetOutput()->GetPixel(itk::MakeIndex(1, 1)), 5.0f);
+
+    auto input = makeImage(3.0f);
+    auto unary = itk::CudaSquareImageFilter<Image>::New();
+    unary->SetInput(input);
+    unary->SetInPlace(inPlace);
+    ITK_TRY_EXPECT_NO_EXCEPTION(unary->Update());
+    if (!inPlace)
+    {
+      ITK_TEST_EXPECT_TRUE(!input->GetCudaDataManager()->IsCPUBufferDirty());
+    }
+    ITK_TEST_EXPECT_TRUE(unary->GetOutput()->GetCudaDataManager()->IsCPUBufferDirty());
+    ITK_TEST_EXPECT_EQUAL(unary->GetOutput()->GetPixel(itk::MakeIndex(1, 1)), 9.0f);
+  }
   return EXIT_SUCCESS;
 }

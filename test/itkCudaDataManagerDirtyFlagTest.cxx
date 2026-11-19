@@ -147,6 +147,17 @@ itkCudaDataManagerDirtyFlagTest(int, char *[])
   ITK_TEST_EXPECT_TRUE(!mgr->IsCPUBufferDirty());
   ITK_TEST_EXPECT_TRUE(!mgr->IsGPUBufferDirty());
 
+  // Reading the GPU buffer through GetConstGPUBufferPointer() updates it from
+  // the CPU buffer but keeps the CPU buffer up-to-date.
+  constexpr float CpuValueRead = 6.0f;
+  cpuBuffer.fill(CpuValueRead);
+  mgr->SetGPUDirtyFlag(true); // Frees GPU buffer
+  const void * gpuBufferPointer = mgr->GetConstGPUBufferPointer();
+  ITK_TEST_EXPECT_TRUE(gpuBufferPointer == *gpuBufferPointerPtr);
+  ITK_TEST_EXPECT_TRUE(IsGPUBufferSingleValue(CpuValueRead, *gpuBufferPointerPtr));
+  ITK_TEST_EXPECT_TRUE(!mgr->IsCPUBufferDirty());
+  ITK_TEST_EXPECT_TRUE(!mgr->IsGPUBufferDirty());
+
   // A deallocated GPU buffer cannot be marked as up-to-date.
   mgr->SetGPUDirtyFlag(true);                            // Free GPU buffer
   ITK_TRY_EXPECT_EXCEPTION(mgr->SetGPUDirtyFlag(false)); // Operation fails

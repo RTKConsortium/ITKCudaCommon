@@ -42,7 +42,7 @@ CudaUnaryImageToImageFilter<TInputImage, TOutputImage, TParentImageFilter>::GPUG
       "stream pieces with equally sized buffers");
   }
 
-  this->GenerateUnaryData(static_cast<const InputPixelType *>(input->GetCudaDataManager()->GetGPUBufferPointer()),
+  this->GenerateUnaryData(static_cast<const InputPixelType *>(input->GetCudaDataManager()->GetConstGPUBufferPointer()),
                           static_cast<OutputPixelType *>(output->GetCudaDataManager()->GetGPUBufferPointer()),
                           numberOfPixels);
 }
