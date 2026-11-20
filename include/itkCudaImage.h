@@ -193,23 +193,6 @@ public:
   void
   SetBufferedRegion(const RegionType & region) override;
 
-  /* Override DataHasBeenGenerated() in DataObject class.
-   * We need this because CPU time stamp is always bigger
-   * than Cuda's. That is because Modified() is called at
-   * the end of each filter in the pipeline so although we
-   * increment Cuda's time stamp in CudaGenerateData() the
-   * CPU's time stamp will be increased after that.
-   */
-  void
-  DataHasBeenGenerated() override
-  {
-    Superclass::DataHasBeenGenerated();
-    if (m_DataManager->IsCPUBufferDirty())
-    {
-      m_DataManager->Modified();
-    }
-  }
-
   /** Graft the data and information from one CudaImage to another. */
   void
   Graft(const Self * data);
