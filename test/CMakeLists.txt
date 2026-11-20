@@ -46,6 +46,15 @@ itk_add_test(NAME itkCudaMemoryProbeTest
   itkCudaMemoryProbeTest
 )
 
+# The probe measures the memory used on the whole device, so GPU allocations of
+# tests running in parallel would change its result.
+set_tests_properties(
+  itkCudaMemoryProbeTest
+  PROPERTIES
+    RUN_SERIAL
+      TRUE
+)
+
 itk_add_test(NAME itkCudaDataManagerDirtyFlagTest
   COMMAND CudaCommonTestDriver
   itkCudaDataManagerDirtyFlagTest
