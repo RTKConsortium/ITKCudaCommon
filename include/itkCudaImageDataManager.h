@@ -53,13 +53,11 @@ public:
   itkGetModifiableObjectMacro(GPUBufferedRegionIndex, CudaDataManager);
   itkGetModifiableObjectMacro(GPUBufferedRegionSize, CudaDataManager);
 
+  /** Record the pixel container and the buffered region of an image. The
+   * data manager keeps the pixel container, which is shared with grafted
+   * images, but not the image, which may be destroyed first. */
   void
   SetImagePointer(ImageType * img);
-  ImageType *
-  GetImagePointer()
-  {
-    return this->m_Image;
-  }
 
 #ifndef ITK_FUTURE_LEGACY_REMOVE
   /** Copy the GPU buffer to the CPU buffer if the CPU buffer is dirty.
@@ -106,11 +104,11 @@ private:
   void
   operator=(const Self &);
 
-  ImageType *                       m_Image = nullptr;
-  IndexType                         m_BufferedRegionIndex;
-  SizeType                          m_BufferedRegionSize;
-  typename CudaDataManager::Pointer m_GPUBufferedRegionIndex;
-  typename CudaDataManager::Pointer m_GPUBufferedRegionSize;
+  typename ImageType::PixelContainer::Pointer m_PixelContainer;
+  IndexType                                   m_BufferedRegionIndex;
+  SizeType                                    m_BufferedRegionSize;
+  typename CudaDataManager::Pointer           m_GPUBufferedRegionIndex;
+  typename CudaDataManager::Pointer           m_GPUBufferedRegionSize;
 };
 
 } // namespace itk

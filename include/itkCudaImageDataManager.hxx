@@ -28,9 +28,14 @@ template <class ImageType>
 void
 CudaImageDataManager<ImageType>::SetImagePointer(ImageType * img)
 {
-  m_Image = img;
+  {
+    const std::lock_guard<std::mutex> lock(m_Mutex);
+    // Unlike the superclass method, CudaImage::GetPixelContainer() marks the
+    // GPU buffer dirty.
+    m_PixelContainer = img->ImageType::Superclass::GetPixelContainer();
+  }
 
-  RegionType region = m_Image->GetBufferedRegion();
+  RegionType region = img->GetBufferedRegion();
   IndexType  index = region.GetIndex();
   SizeType   size = region.GetSize();
 
@@ -55,11 +60,15 @@ template <class ImageType>
 void
 CudaImageDataManager<ImageType>::UpdateCPUBuffer()
 {
-  if (m_Image && !m_CPUBuffer)
   {
-    using CPUImageType = typename ImageType::Superclass;
-    m_Image->CPUImageType::Allocate();
-    this->SetCPUBufferPointer(m_Image->CPUImageType::GetBufferPointer());
+    const std::lock_guard<std::mutex> lock(m_Mutex);
+    if (m_PixelContainer && !m_CPUBuffer)
+    {
+      // Allocate the pixel container shared by the images using this data
+      // manager, as Image::Allocate() does.
+      m_PixelContainer->Reserve(m_BufferSize / sizeof(typename ImageType::PixelContainer::Element));
+      this->SetCPUBufferPointer(m_PixelContainer->GetBufferPointer());
+    }
   }
 
   Superclass::UpdateCPUBuffer();
