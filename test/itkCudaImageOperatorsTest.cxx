@@ -75,9 +75,13 @@ CheckImageQuality(const TImage * image, const TImage * reference)
     const auto actualValue = actual.Get();
     const auto expectedValue = expected.Get();
     ITK_TEST_EXPECT_TRUE(actualValue == expectedValue || itk::Math::AlmostEquals(actualValue, expectedValue));
-    if (actualValue == 0 && expectedValue == 0)
+    // MSVC lacks the integral std::signbit overloads, and only floats have -0.
+    if constexpr (std::is_floating_point_v<typename TImage::PixelType>)
     {
-      ITK_TEST_EXPECT_EQUAL(std::signbit(actualValue), std::signbit(expectedValue));
+      if (actualValue == 0 && expectedValue == 0)
+      {
+        ITK_TEST_EXPECT_EQUAL(std::signbit(actualValue), std::signbit(expectedValue));
+      }
     }
   }
   return EXIT_SUCCESS;
