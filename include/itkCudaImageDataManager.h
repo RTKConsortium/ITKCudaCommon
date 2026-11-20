@@ -61,13 +61,31 @@ public:
     return this->m_Image;
   }
 
-  /** actual Cuda->CPU memory copy takes place here */
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  /** Copy the GPU buffer to the CPU buffer if the CPU buffer is dirty.
+   * \deprecated Use UpdateCPUBuffer() instead. The time stamps of the image
+   * and of the data manager are not compared anymore. */
+#  if defined(ITK_LEGACY_REMOVE) && !defined(ITK_LEGACY_SILENT) && !defined(ITK_WRAPPING)
+  [[deprecated("Use UpdateCPUBuffer() instead.")]]
+#  endif
   virtual void
-  MakeCPUBufferUpToDate();
+  MakeCPUBufferUpToDate()
+  {
+    this->UpdateCPUBuffer();
+  }
 
-  /** actual CPU->Cuda memory copy takes place here */
+  /** Copy the CPU buffer to the GPU buffer if the GPU buffer is dirty.
+   * \deprecated Use UpdateGPUBuffer() instead. The time stamps of the image
+   * and of the data manager are not compared anymore. */
+#  if defined(ITK_LEGACY_REMOVE) && !defined(ITK_LEGACY_SILENT) && !defined(ITK_WRAPPING)
+  [[deprecated("Use UpdateGPUBuffer() instead.")]]
+#  endif
   virtual void
-  MakeGPUBufferUpToDate();
+  MakeGPUBufferUpToDate()
+  {
+    this->UpdateGPUBuffer();
+  }
+#endif
 
   void
   UpdateCPUBuffer() override;
